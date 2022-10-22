@@ -1,0 +1,4 @@
+{
+  "main": "dist/k6js-admin-ui-pages-ListPage.cjs.js",
+  "module": "dist/k6js-admin-ui-pages-ListPage.esm.js"
+}

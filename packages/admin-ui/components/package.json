@@ -1,0 +1,4 @@
+{
+  "main": "dist/k6js-admin-ui-components.cjs.js",
+  "module": "dist/k6js-admin-ui-components.esm.js"
+}
