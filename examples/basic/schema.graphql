@@ -289,6 +289,8 @@ type Post {
   status: String
   content: Post_content_Document
   publishDate: DateTime
+  archiveDate: DateTime
+  score: Int
   author: User
 }
 
@@ -310,6 +312,8 @@ input PostWhereInput {
   title: StringFilter
   status: StringFilter
   publishDate: DateTimeNullableFilter
+  archiveDate: DateTimeNullableFilter
+  score: IntNullableFilter
   author: UserWhereInput
 }
 
@@ -324,11 +328,24 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
   publishDate: OrderDirection
+  archiveDate: OrderDirection
+  score: OrderDirection
 }
 
 input PostUpdateInput {
@@ -336,6 +353,8 @@ input PostUpdateInput {
   status: String
   content: JSON
   publishDate: DateTime
+  archiveDate: DateTime
+  score: Int
   author: UserRelateToOneForUpdateInput
 }
 
@@ -349,6 +368,8 @@ input PostCreateInput {
   status: String
   content: JSON
   publishDate: DateTime
+  archiveDate: DateTime
+  score: Int
   author: UserRelateToOneForCreateInput
 }
 
