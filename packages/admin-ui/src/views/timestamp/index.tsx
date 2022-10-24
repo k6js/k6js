@@ -94,7 +94,7 @@ export const Field = ({
                       dateValue: date,
                       timeValue:
                         typeof value.value.timeValue === 'object' &&
-                          value.value.timeValue.value === null
+                        value.value.timeValue.value === null
                           ? { kind: 'parsed', value: '00:00:00.000' }
                           : value.value.timeValue,
                     },
@@ -151,8 +151,8 @@ export const Field = ({
           typeof field.fieldMeta.defaultValue !== 'string' &&
           field.fieldMeta.defaultValue?.kind === 'now') ||
           field.fieldMeta.updatedAt) && (
-            <Text>When this item is saved, this field will be set to the current date and time</Text>
-          )}
+          <Text>When this item is saved, this field will be set to the current date and time</Text>
+        )}
       </Stack>
     </FieldContainer>
   );
@@ -164,9 +164,9 @@ function validate(
   label: string
 ):
   | {
-    time?: string;
-    date?: string;
-  }
+      time?: string;
+      date?: string;
+    }
   | undefined {
   const val = value.value;
   const hasDateValue = val.dateValue !== null;
@@ -271,7 +271,9 @@ export const controller = (
     validate: value => validate(value, config.fieldMeta, config.label) === undefined,
     filter: {
       Filter(props) {
-        const formattedValue = isValid(parseISO(props.value)) ? format(parseISO(props.value), 'Pp') : '';
+        const formattedValue = isValid(parseISO(props.value))
+          ? format(parseISO(props.value), 'Pp')
+          : '';
         let [value, setValue] = useState(formattedValue);
 
         const parseDate = (value: string) => {

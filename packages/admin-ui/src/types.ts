@@ -6,18 +6,18 @@ import { FunctionComponent } from 'react';
 import { ItemData } from './utils';
 
 export type ItemPageComponents = {
-  Header?: FunctionComponent<{ listKey: string; item: ItemData; label: string }>;
-  Sidebar?: FunctionComponent<{ listKey: string; item: ItemData }>;
-  Actions?: FunctionComponent<{ listKey: string; item: ItemData }>;
+  ItemPageHeader?: FunctionComponent<{ listKey: string; item: ItemData; label: string }>;
+  ItemPageSidebar?: FunctionComponent<{ listKey: string; item: ItemData }>;
+  ItemPageActions?: FunctionComponent<{ listKey: string; item: ItemData }>;
 };
 
 export type ListPageComponents = {
-  Header?: FunctionComponent<{ listKey: string }>;
-  Actions?: FunctionComponent<{
+  ListPageHeader?: FunctionComponent<{ listKey: string }>;
+  ListPageActions?: FunctionComponent<{
     listKey: string;
     refetch: () => void;
   }>;
-  SelectionActions?: FunctionComponent<{
+  ListItemsActions?: FunctionComponent<{
     list: ListMeta;
     selectedItems: ReadonlySet<string>;
     refetch: () => void;

@@ -265,8 +265,8 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
   return (
     <PageContainer
       header={
-        components.Header ? (
-          <components.Header listKey={listKey} />
+        components.ListPageHeader ? (
+          <components.ListPageHeader listKey={listKey} />
         ) : (
           <ListPageHeader listKey={listKey} />
         )
@@ -311,7 +311,9 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
                 Reset to defaults
               </Button>
             )}
-            {components.Actions && <components.Actions listKey={listKey} refetch={refetch} />}
+            {components.ListPageActions && (
+              <components.ListPageActions listKey={listKey} refetch={refetch} />
+            )}
           </Stack>
           {data.count ? (
             <Fragment>
@@ -344,8 +346,8 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
                             refetch={refetch}
                           />
                         )}
-                        {components.SelectionActions && (
-                          <components.SelectionActions
+                        {components.ListItemsActions && (
+                          <components.ListItemsActions
                             list={list}
                             selectedItems={selectedItems}
                             refetch={refetch}

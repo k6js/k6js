@@ -353,8 +353,8 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
     <PageContainer
       title={pageTitle}
       header={
-        components.Header ? (
-          <components.Header
+        components.ItemPageHeader ? (
+          <components.ItemPageHeader
             listKey={listKey}
             item={data?.item}
             label={
@@ -449,7 +449,9 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
                     )}
                   </Tooltip>
                 </div>
-                {components.Sidebar && <components.Sidebar listKey={listKey} item={data?.item} />}
+                {components.ItemPageSidebar && (
+                  <components.ItemPageSidebar listKey={listKey} item={data?.item} />
+                )}
               </StickySidebar>
             </Fragment>
           )}

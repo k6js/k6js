@@ -8,8 +8,8 @@ import { Button } from '@keystone-ui/button';
 import { Fragment } from 'react';
 
 const components: ListPageComponents = {
-  Header: ({ listKey }) => <div>List Header Custom - {listKey}</div>,
-  Actions: ({}) => (
+  ListPageHeader: ({ listKey }) => <div>List Header Custom - {listKey}</div>,
+  ListPageActions: ({}) => (
     <Fragment>
       <Button tone="active">Action 1</Button>
       <Button tone="active">Action 2</Button>
@@ -33,7 +33,7 @@ const components: ListPageComponents = {
       <Button tone="active">Action 20</Button>
     </Fragment>
   ),
-  SelectionActions: ({ list, refetch, selectedItems }) => (
+  ListItemsActions: ({ list, refetch, selectedItems }) => (
     <Fragment>
       <Button tone="active">Action 1</Button>
       <Button tone="active">Action 2</Button>
