@@ -5,18 +5,16 @@ import { Box, jsx } from '@keystone-ui/core';
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { ListMeta, FieldMeta } from '@keystone-6/core/types';
 import { Button } from '@keystone-ui/button';
-import { DrawerController } from '@keystone-ui/modals';
+import { DrawerController, Drawer } from '@keystone-ui/modals';
 
 import isDeepEqual from 'fast-deep-equal';
 import { FieldContainer, FieldLabel, MultiSelect } from '@keystone-ui/fields';
-import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
-
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo';
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context';
 
-import { GraphQLErrorNotice } from '../../components';
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
 import { Fields } from '../../utils';
 // import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 

@@ -19,7 +19,7 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-6/core/types';
-import { CellContainer, CellLink } from '../../../components';
+import { CellContainer, CellLink } from '../../components';
 import {
   constructTimestamp,
   deconstructTimestamp,

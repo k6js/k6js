@@ -43,7 +43,8 @@
       "pages/*/index.tsx",
       "fields/*/index.ts",
       "fields/*/views/index.tsx",
-      "views/*/index.tsx"
+      "views/*/index.tsx",
+      "utils/index.ts"
     ]
   },
   "repository": "https://github.com/k6js/k6js/tree/main/packages/admin-ui"
