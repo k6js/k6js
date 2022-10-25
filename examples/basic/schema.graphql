@@ -291,6 +291,7 @@ type Post {
   publishDate: DateTime
   archiveDate: DateTime
   score: Int
+  isDeleted: Boolean
   author: User
 }
 
@@ -314,6 +315,7 @@ input PostWhereInput {
   publishDate: DateTimeNullableFilter
   archiveDate: DateTimeNullableFilter
   score: IntNullableFilter
+  isDeleted: BooleanFilter
   author: UserWhereInput
 }
 
@@ -346,6 +348,7 @@ input PostOrderByInput {
   publishDate: OrderDirection
   archiveDate: OrderDirection
   score: OrderDirection
+  isDeleted: OrderDirection
 }
 
 input PostUpdateInput {
@@ -355,6 +358,7 @@ input PostUpdateInput {
   publishDate: DateTime
   archiveDate: DateTime
   score: Int
+  isDeleted: Boolean
   author: UserRelateToOneForUpdateInput
 }
 
@@ -370,6 +374,7 @@ input PostCreateInput {
   publishDate: DateTime
   archiveDate: DateTime
   score: Int
+  isDeleted: Boolean
   author: UserRelateToOneForCreateInput
 }
 

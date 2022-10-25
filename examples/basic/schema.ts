@@ -170,7 +170,8 @@ export const lists: Lists = {
       }),
       publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
       archiveDate: timestamp(),
-      score: integer(),
+      score: integer({ defaultValue: 1 }),
+      isDeleted: checkbox({ defaultValue: false }),
       author: relationship({
         ref: 'User.posts',
         ui: {

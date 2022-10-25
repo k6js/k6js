@@ -118,7 +118,7 @@ export function UpdateItemsDrawer({
               const isBoolean = typeof serialized[fieldPath] === 'boolean';
               if (
                 isBoolean ||
-                !isDeepEqual(serialized, controller.serialize(controller.defaultValue))
+                !isDeepEqual(serialized, controller.serialize({ [fieldPath]: undefined }))
               ) {
                 Object.assign(data, serialized);
               }

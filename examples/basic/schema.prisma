@@ -47,7 +47,8 @@ model Post {
   content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   publishDate DateTime?
   archiveDate DateTime?
-  score       Int?
+  score       Int?      @default(1)
+  isDeleted   Boolean   @default(false)
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
 
