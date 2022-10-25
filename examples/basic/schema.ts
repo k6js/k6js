@@ -9,6 +9,7 @@ import {
   virtual,
   image,
   file,
+  integer,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
@@ -167,7 +168,9 @@ export const lists: Lists = {
         links: true,
         dividers: true,
       }),
-      publishDate: timestamp(),
+      publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
+      archiveDate: timestamp(),
+      score: integer(),
       author: relationship({
         ref: 'User.posts',
         ui: {

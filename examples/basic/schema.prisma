@@ -46,6 +46,8 @@ model Post {
   status      String    @default("draft")
   content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   publishDate DateTime?
+  archiveDate DateTime?
+  score       Int?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
 

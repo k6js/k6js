@@ -42,10 +42,12 @@ import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
 import { usePreventNavigation } from '../../utils/usePreventNavigation';
 import { CreateButtonLink } from '../../components/CreateButtonLink';
+import { ItemPageComponents } from '../../types';
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common';
 
 type ItemPageProps = {
   listKey: string;
+  components?: ItemPageComponents;
 };
 
 function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
@@ -269,7 +271,7 @@ function DeleteButton({
 
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
 
-const ItemPage = ({ listKey }: ItemPageProps) => {
+const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
   const list = useList(listKey);
   const id = useRouter().query.id as string;
   const { spacing, typography } = useTheme();
@@ -351,14 +353,26 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
     <PageContainer
       title={pageTitle}
       header={
-        <ItemPageHeader
-          list={list}
-          label={
-            loading
-              ? 'Loading...'
-              : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
-          }
-        />
+        components.ItemPageHeader ? (
+          <components.ItemPageHeader
+            listKey={listKey}
+            item={data?.item}
+            label={
+              loading
+                ? 'Loading...'
+                : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+            }
+          />
+        ) : (
+          <ItemPageHeader
+            list={list}
+            label={
+              loading
+                ? 'Loading...'
+                : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+            }
+          />
+        )
       }
     >
       {loading ? (
@@ -435,6 +449,9 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
                     )}
                   </Tooltip>
                 </div>
+                {components.ItemPageSidebar && (
+                  <components.ItemPageSidebar listKey={listKey} item={data?.item} />
+                )}
               </StickySidebar>
             </Fragment>
           )}

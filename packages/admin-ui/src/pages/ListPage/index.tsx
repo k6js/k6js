@@ -27,6 +27,7 @@ import { CellLink } from '../../components';
 import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { Pagination, PaginationLabel } from '../../components/Pagination';
 import { CreateButtonLink } from '../../components/CreateButtonLink';
+import { ListPageComponents } from '../../types';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
@@ -34,8 +35,9 @@ import { SortSelection } from './SortSelection';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { useSort } from './useSort';
+import { UpdateManyButton } from './UpdateItems';
 
-type ListPageProps = { listKey: string };
+type ListPageProps = { listKey: string; components?: ListPageComponents };
 
 type FetchedFieldMeta = {
   path: string;
@@ -130,7 +132,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />;
 
-const ListPage = ({ listKey }: ListPageProps) => {
+const ListPage = ({ listKey, components = {} }: ListPageProps) => {
   const list = useList(listKey);
 
   const { query, push } = useRouter();
@@ -261,7 +263,16 @@ const ListPage = ({ listKey }: ListPageProps) => {
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
 
   return (
-    <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
+    <PageContainer
+      header={
+        components.ListPageHeader ? (
+          <components.ListPageHeader listKey={listKey} />
+        ) : (
+          <ListPageHeader listKey={listKey} />
+        )
+      }
+      title={list.label}
+    >
       {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
@@ -300,6 +311,9 @@ const ListPage = ({ listKey }: ListPageProps) => {
                 Reset to defaults
               </Button>
             )}
+            {components.ListPageActions && (
+              <components.ListPageActions listKey={listKey} refetch={refetch} />
+            )}
           </Stack>
           {data.count ? (
             <Fragment>
@@ -309,10 +323,22 @@ const ListPage = ({ listKey }: ListPageProps) => {
                   const selectedItemsCount = selectedItems.size;
                   if (selectedItemsCount) {
                     return (
-                      <Fragment>
+                      <Box
+                        css={{
+                          display: 'flex',
+                          gap: theme.spacing.small,
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                        }}
+                      >
                         <span css={{ marginRight: theme.spacing.small }}>
                           Selected {selectedItemsCount} of {data.items.length}
                         </span>
+                        <UpdateManyButton
+                          list={list}
+                          selectedItems={selectedItems}
+                          refetch={refetch}
+                        />
                         {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
                           <DeleteManyButton
                             list={list}
@@ -320,7 +346,14 @@ const ListPage = ({ listKey }: ListPageProps) => {
                             refetch={refetch}
                           />
                         )}
-                      </Fragment>
+                        {components.ListItemsActions && (
+                          <components.ListItemsActions
+                            list={list}
+                            selectedItems={selectedItems}
+                            refetch={refetch}
+                          />
+                        )}
+                      </Box>
                     );
                   }
                   return (
@@ -395,18 +428,19 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
 };
 
 const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
-  <p
+  <div
     css={{
       // TODO: don't do this
       // (this is to make it so things don't move when a user selects an item)
       minHeight: 38,
-
+      marginTop: '0.5em',
+      marginBottom: '0.5em',
       display: 'flex',
       alignItems: 'center',
     }}
   >
     {children}
-  </p>
+  </div>
 );
 
 const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
