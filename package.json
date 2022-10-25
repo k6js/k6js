@@ -18,7 +18,10 @@
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types && yarn lint:filters",
     "build": "preconstruct build",
     "prepare": "manypkg check && preconstruct dev",
-    "update": "manypkg upgrade"
+    "update": "manypkg upgrade",
+    "changeset": "changeset",
+    "publish-changed": "yarn build && changeset publish --public",
+    "version-packages": "changeset version"
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
