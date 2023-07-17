@@ -2159,18 +2159,18 @@
   dependencies:
     "@changesets/types" "^5.2.1"
 
-"@changesets/changelog-github@^0.4.1":
+"@changesets/changelog-github@^0.4.8":
   version "0.4.8"
-  resolved "https://registry.npmjs.org/@changesets/changelog-github/-/changelog-github-0.4.8.tgz#b7f8ae85d0c0ff08028d924c5e59a1cbd3742634"
+  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.4.8.tgz#b7f8ae85d0c0ff08028d924c5e59a1cbd3742634"
   integrity sha512-jR1DHibkMAb5v/8ym77E4AMNWZKB5NPzw5a5Wtqm1JepAuIF+hrKp2u04NKM14oBZhHglkCfrla9uq8ORnK/dw==
   dependencies:
     "@changesets/get-github-info" "^0.5.2"
     "@changesets/types" "^5.2.1"
     dotenv "^8.1.0"
 
-"@changesets/cli@^2.18.0":
+"@changesets/cli@^2.26.2":
   version "2.26.2"
-  resolved "https://registry.npmjs.org/@changesets/cli/-/cli-2.26.2.tgz#8914dd6ef3ea425a7d5935f6c35a8b7ccde54e45"
+  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.26.2.tgz#8914dd6ef3ea425a7d5935f6c35a8b7ccde54e45"
   integrity sha512-dnWrJTmRR8bCHikJHl9b9HW3gXACCehz4OasrXpMp7sx97ECuBGGNjJhjPhdZNCvMy9mn4BWdplI323IbqsRig==
   dependencies:
     "@babel/runtime" "^7.20.1"
