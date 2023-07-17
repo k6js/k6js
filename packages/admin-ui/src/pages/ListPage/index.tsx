@@ -171,7 +171,6 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
   const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search);
   const searchLabels = searchFields.map(key => list.fields[key].label);
 
-
   const searchParam = typeof query.search === 'string' ? query.search : '';
   const [searchString, updateSearchString] = useState(searchParam);
   const search = useFilter(searchParam, list, searchFields);

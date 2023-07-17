@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Stack, useTheme, Text  } from '@keystone-ui/core';
-import { memo, ReactNode, useContext, useId, useMemo  } from 'react';
+import { jsx, Stack, useTheme, Text } from '@keystone-ui/core';
+import { memo, ReactNode, useContext, useId, useMemo } from 'react';
 import { FieldDescription } from '@keystone-ui/fields';
 import { ButtonContext } from '@keystone-ui/button';
-import { FieldGroupMeta, FieldMeta  } from '@keystone-6/core/types';
+import { FieldGroupMeta, FieldMeta } from '@keystone-6/core/types';
 import { Value } from '.';
 
 type RenderFieldProps = {

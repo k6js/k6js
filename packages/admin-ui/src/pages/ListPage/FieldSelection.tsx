@@ -33,9 +33,9 @@ const Option: typeof OptionPrimitive = props => {
 };
 
 // TODO: return type required by pnpm :(
-  export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['components'] = {
-    Option,
-  };
+export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['components'] = {
+  Option,
+};
 
 export function FieldSelection({
   list,

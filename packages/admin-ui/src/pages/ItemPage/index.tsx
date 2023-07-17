@@ -72,6 +72,7 @@ function ItemForm({
   fieldPositions,
   showDelete,
   item,
+  components = {},
 }: {
   listKey: string;
   itemGetter: DataGetter<ItemData>;
@@ -80,6 +81,7 @@ function ItemForm({
   fieldPositions: Record<string, 'form' | 'sidebar'>;
   showDelete: boolean;
   item: ItemData;
+  components?: ItemPageComponents;
 }) {
   const list = useList(listKey);
   const { spacing, typography } = useTheme();
@@ -255,6 +257,7 @@ function ItemForm({
             value={state.value}
           />
         </Box>
+        {components.ItemPageSidebar && <components.ItemPageSidebar listKey={listKey} item={item} />}
       </StickySidebar>
     </Fragment>
   );
@@ -424,8 +427,8 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
   const pageTitle: string = list.isSingleton
     ? list.label
     : loading
-      ? undefined
-      : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
+    ? undefined
+    : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
 
   return (
     <PageContainer
@@ -442,14 +445,14 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
             }
           />
         ) : (
-          <ItemPageHeader
-            list={list}
-            label={
-              loading
-                ? 'Loading...'
-                : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
-            }
-          />
+        <ItemPageHeader
+          list={list}
+          label={
+            loading
+              ? 'Loading...'
+              : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+          }
+        />
         )
       }
     >
@@ -497,6 +500,7 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
                 listKey={listKey}
                 itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
                 item={data.item}
+                components={components}
               />
             </Fragment>
           )}
