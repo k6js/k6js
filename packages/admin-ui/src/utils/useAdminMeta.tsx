@@ -48,7 +48,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     fetchPolicy: 'network-only',
   });
 
-  let shouldFetchAdminMeta = adminMetaFromLocalStorage === undefined && !called;
+  const shouldFetchAdminMeta = adminMetaFromLocalStorage === undefined && !called;
 
   useEffect(() => {
     if (shouldFetchAdminMeta) {
@@ -66,13 +66,16 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     const runtimeAdminMeta: AdminMeta = {
       lists: {},
     };
-    adminMeta.lists.forEach(list => {
+
+    for (const list of adminMeta.lists) {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
-        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }),
+        groups: [],
+        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }), // TODO: replace with an object
         fields: {},
       };
-      list.fields.forEach(field => {
+
+      for (const field of list.fields) {
         expectedExports.forEach(exportName => {
           if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
@@ -105,13 +108,18 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             }
           });
         }
+
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
           itemView: {
             fieldMode: field.itemView?.fieldMode ?? null,
+            fieldPosition: field.itemView?.fieldPosition ?? null,
+          },
+          graphql: {
+            isNonNull: field.isNonNull,
           },
           views,
-          controller: fieldViews[field.viewsIndex].controller({
+          controller: views.controller({
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,
@@ -120,14 +128,24 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             customViews,
           }),
         };
-      });
-    });
+      }
+
+      for (const group of list.groups) {
+        runtimeAdminMeta.lists[list.key].groups.push({
+          label: group.label,
+          description: group.description,
+          fields: group.fields.map(field => runtimeAdminMeta.lists[list.key].fields[field.path]),
+        });
+      }
+    }
+
     if (typeof window !== 'undefined' && !adminMetaFromLocalStorage) {
       localStorage.setItem(
         adminMetaLocalStorageKey,
         JSON.stringify({ hash: hashString(JSON.stringify(adminMeta)), meta: adminMeta })
       );
     }
+
     return runtimeAdminMeta;
   }, [data, error, adminMetaFromLocalStorage, fieldViews]);
 
@@ -143,8 +161,8 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     return {
       state: 'error' as const,
       error,
-      refetch: () => {
-        fetchStaticAdminMeta();
+      refetch: async () => {
+        await fetchStaticAdminMeta();
       },
     };
   }

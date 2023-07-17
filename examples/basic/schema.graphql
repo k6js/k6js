@@ -10,9 +10,9 @@ type User {
   password: PasswordState
   isAdmin: Boolean
   roles: String
-  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0): [PhoneNumber!]
+  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   randomNumber: Float
 }
@@ -232,21 +232,7 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  not: NestedStringNullableFilter
-}
-
-input NestedStringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringNullableFilter
+  not: StringNullableFilter
 }
 
 input PhoneNumberOrderByInput {
@@ -426,13 +412,13 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0): [PhoneNumber!]
+  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
@@ -472,9 +458,10 @@ type KeystoneAdminUIListMeta {
   pageSize: Int!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
+  groups: [KeystoneAdminUIFieldGroupMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
-  isSingleton: Boolean
+  isSingleton: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
@@ -483,6 +470,7 @@ type KeystoneAdminUIFieldMeta {
   description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
+  isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -490,6 +478,12 @@ type KeystoneAdminUIFieldMeta {
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
+}
+
+enum KeystoneAdminUIFieldMetaIsNonNull {
+  read
+  create
+  update
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
@@ -512,6 +506,7 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
@@ -520,9 +515,20 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   hidden
 }
 
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
+}
+
 enum QueryMode {
   default
   insensitive
+}
+
+type KeystoneAdminUIFieldGroupMeta {
+  label: String!
+  description: String
+  fields: [KeystoneAdminUIFieldMeta!]!
 }
 
 type KeystoneAdminUISort {
