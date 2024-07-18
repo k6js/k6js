@@ -2,10 +2,10 @@
 /** @jsx jsx */
 import { Button } from '@keystone-ui/button'
 import { jsx } from '@keystone-ui/core'
-import { type ListMeta } from '@keystone-6/core/types'
+import type { ListMeta } from '@keystone-6/core/types'
 import { Link } from '@keystone-6/core/admin-ui/router'
 
-export const CreateButtonLink = (props: { list: ListMeta }) => {
+export function CreateButtonLink (props: { list: ListMeta }) {
   return (
     <Button
       css={{

@@ -3,9 +3,9 @@ import { type ComponentProps, useState, useMemo, useRef, useEffect, useCallback 
 import isDeepEqual from 'fast-deep-equal'
 import { useMutation, gql, type ApolloError } from '@keystone-6/core/admin-ui/apollo'
 import { useKeystone } from '@keystone-6/core/admin-ui/context'
-import { type ListMeta } from '@keystone-6/core/types'
+import type { ListMeta } from '@keystone-6/core/types'
 import { usePreventNavigation } from './usePreventNavigation'
-import { type Fields, type Value } from '.'
+import type { Fields, Value } from '.'
 
 type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
 
@@ -67,7 +67,6 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
   })
 
   const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
-
   const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
 
   useEffect(() => {

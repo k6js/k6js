@@ -16,6 +16,7 @@ import { type ListMeta } from '@keystone-6/core/types'
 import { useFilter } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 import { gql, type TypedDocumentNode, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import { useList } from '@keystone-6/core/admin-ui/context'
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice'
 import { Link, useRouter } from '@keystone-6/core/admin-ui/router'
 import {
   getRootGraphQLFieldsFromFieldController,
@@ -131,7 +132,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
 
 export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
 
-const ListPage = ({ listKey, components = {} }: ListPageProps) => {
+function ListPage ({ listKey, components = {} }: ListPageProps) {
   const list = useList(listKey)
 
   const { query, push } = useRouter()
@@ -147,7 +148,7 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
 
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
-  let { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
+  const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {}
     const orderableFields = new Set<string>()
     const filterableFields = new Set<string>()
@@ -184,26 +185,28 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
     }
   }
 
-  let selectedFields = useSelectedFields(list, listViewFieldModesByField)
+  const selectedFields = useSelectedFields(list, listViewFieldModesByField)
 
-  let {
+  const {
     data: newData,
     error: newError,
     refetch,
   } = useQuery(
     useMemo(() => {
-      let selectedGqlFields = [...selectedFields]
+      const selectedGqlFields = [...selectedFields]
         .map(fieldPath => {
           return list.fields[fieldPath].controller.graphqlSelection
         })
         .join('\n')
+
+      // TODO: FIXME: this is bad
       return gql`
       query ($where: ${list.gqlNames.whereInputName}, $take: Int!, $skip: Int!, $orderBy: [${
         list.gqlNames.listOrderName
       }!]) {
         items: ${
           list.gqlNames.listQueryName
-        }(where: $where,take: $take, skip: $skip, orderBy: $orderBy) {
+        }(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'
@@ -227,14 +230,12 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
     }
   )
 
-  let [dataState, setDataState] = useState({ data: newData, error: newError })
-
+  const [dataState, setDataState] = useState({ data: newData, error: newError })
   if (newData && dataState.data !== newData) {
     setDataState({ data: newData, error: newError })
   }
 
   const { data, error } = dataState
-
   const dataGetter = makeDataGetter<
     DeepNullable<{ count: number, items: { id: string, [key: string]: any }[] }>
   >(data, error?.graphQLErrors)
@@ -270,10 +271,11 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
       }
       title={list.label}
     >
-      {metaQuery.error ? (
-        // TODO: Show errors nicely and with information
-        'Error...'
-      ) : data && metaQuery.data ? (
+      {error?.graphQLErrors.length || error?.networkError ? (
+        <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
+      ) : null}
+      {metaQuery.error ? 'Error...' : null}
+      {data && metaQuery.data ? (
         <Fragment>
           {list.description !== null && (
             <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
@@ -303,7 +305,7 @@ const ListPage = ({ listKey, components = {} }: ListPageProps) => {
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
             ) : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-            {Boolean(filters.filters.length || query.sortBy || query.fields || query.search) && (
+            {Boolean(filters.filters.length || query.sortBy !== undefined || query.fields || query.search) && (
               <Button size="small" onClick={resetToDefaults}>
                 Reset to defaults
               </Button>

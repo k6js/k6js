@@ -1,6 +1,6 @@
-import { type GraphQLError } from 'graphql'
-import { type JSONValue, type FieldMeta } from '@keystone-6/core/types'
-import { type DataGetter } from './dataGetter'
+import type { GraphQLError } from 'graphql'
+import type { JSONValue, FieldMeta } from '@keystone-6/core/types'
+import type { DataGetter } from './dataGetter'
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController'
 
 export type ItemData = { id: string, [key: string]: any }

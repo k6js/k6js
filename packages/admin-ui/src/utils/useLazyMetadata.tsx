@@ -1,4 +1,4 @@
-import { type GraphQLError } from 'graphql'
+import type { GraphQLError } from 'graphql'
 import { useMemo } from 'react'
 import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '@keystone-6/core/types'
 import {
@@ -18,7 +18,7 @@ export function useLazyMetadata (query: DocumentNode): {
   visibleLists: VisibleLists
   createViewFieldModes: CreateViewFieldModes
 } {
-  const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' })
+  const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'no-cache' })
   return useMemo(() => {
     const refetch = async () => {
       await result.refetch()

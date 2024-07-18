@@ -1,9 +1,9 @@
-import { type GraphQLError } from 'graphql'
+import type { GraphQLError } from 'graphql'
 import { useMemo } from 'react'
 import isDeepEqual from 'fast-deep-equal'
-import { type FieldMeta } from '@keystone-6/core/types'
+import type { FieldMeta } from '@keystone-6/core/types'
 import { type ItemData, deserializeValue, serializeValueToObjByFieldKey } from './serialization'
-import { type DataGetter } from './dataGetter'
+import type { DataGetter } from './dataGetter'
 
 export type Value = Record<
   string,

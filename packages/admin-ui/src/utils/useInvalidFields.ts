@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
-import { type FieldMeta } from '@keystone-6/core/types'
-import { type Value } from './item-form'
+import type { FieldMeta } from '@keystone-6/core/types'
+
+import type { Value } from './item-form'
 
 export function useInvalidFields (
   fields: Record<string, FieldMeta>,
