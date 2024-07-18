@@ -1,3 +1,3 @@
-import { getCreateItemPage } from '@k6js/admin-ui/pages/CreateItemPage';
+import { getCreateItemPage } from '@k6js/admin-ui/pages/CreateItemPage'
 
-export default getCreateItemPage({ listKey: 'PhoneNumber' });
+export default getCreateItemPage({ listKey: 'PhoneNumber' })

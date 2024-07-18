@@ -1,70 +1,70 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import copyToClipboard from 'clipboard-copy';
-import { useRouter } from 'next/router';
+import copyToClipboard from 'clipboard-copy'
+import { useRouter } from 'next/router'
 import {
   Fragment,
-  HTMLAttributes,
+  type HTMLAttributes,
   memo,
-  ReactElement,
+  type ReactElement,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-} from 'react';
+} from 'react'
 
-import { Button } from '@keystone-ui/button';
-import { Box, Center, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
-import { LoadingDots } from '@keystone-ui/loading';
-import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon';
-import { AlertDialog } from '@keystone-ui/modals';
-import { Notice } from '@keystone-ui/notice';
-import { useToasts } from '@keystone-ui/toast';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { FieldLabel, TextInput } from '@keystone-ui/fields';
-import type { ListMeta, FieldMeta } from '@keystone-6/core/types';
-import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo';
-import { useList } from '@keystone-6/core/admin-ui/context';
+import { Button } from '@keystone-ui/button'
+import { Box, Center, Stack, Text, jsx, useTheme } from '@keystone-ui/core'
+import { LoadingDots } from '@keystone-ui/loading'
+import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon'
+import { AlertDialog } from '@keystone-ui/modals'
+import { Notice } from '@keystone-ui/notice'
+import { useToasts } from '@keystone-ui/toast'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { FieldLabel, TextInput } from '@keystone-ui/fields'
+import type { ListMeta, FieldMeta } from '@keystone-6/core/types'
+import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
+import { useList } from '@keystone-6/core/admin-ui/context'
 import {
-  DataGetter,
-  DeepNullable,
+  type DataGetter,
+  type DeepNullable,
   makeDataGetter,
   deserializeValue,
-  ItemData,
+  type ItemData,
   useInvalidFields,
   Fields,
   useChangedFieldsAndDataForUpdate,
-} from '../../utils';
+} from '../../utils'
 
-import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
-import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
-import { usePreventNavigation } from '../../utils/usePreventNavigation';
-import { CreateButtonLink } from '../../components/CreateButtonLink';
-import { ItemPageComponents } from '../../types';
-import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common';
+import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer'
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice'
+import { usePreventNavigation } from '../../utils/usePreventNavigation'
+import { CreateButtonLink } from '../../components/CreateButtonLink'
+import { type ItemPageComponents } from '../../types'
+import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
 
 type ItemPageProps = {
-  listKey: string;
-  components?: ItemPageComponents;
-};
-
-function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
-  const callbackRef = useRef(callback);
-  const cb = useCallback((...args: any[]) => {
-    return callbackRef.current(...args);
-  }, []);
-  useEffect(() => {
-    callbackRef.current = callback;
-  });
-  return cb as any;
+  listKey: string
+  components?: ItemPageComponents
 }
 
-type ItemViewFieldModes = NonNullable<FieldMeta['itemView']['fieldMode']>;
-type ItemViewFieldPositions = NonNullable<FieldMeta['itemView']['fieldPosition']>;
+function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
+  const callbackRef = useRef(callback)
+  const cb = useCallback((...args: any[]) => {
+    return callbackRef.current(...args)
+  }, [])
+  useEffect(() => {
+    callbackRef.current = callback
+  })
+  return cb as any
+}
 
-function ItemForm({
+type ItemViewFieldModes = NonNullable<FieldMeta['itemView']['fieldMode']>
+type ItemViewFieldPositions = NonNullable<FieldMeta['itemView']['fieldPosition']>
+
+function ItemForm ({
   listKey,
   itemGetter,
   selectedFields,
@@ -74,17 +74,17 @@ function ItemForm({
   item,
   components = {},
 }: {
-  listKey: string;
-  itemGetter: DataGetter<ItemData>;
-  selectedFields: string;
-  fieldModes: Record<string, ItemViewFieldModes>;
-  fieldPositions: Record<string, 'form' | 'sidebar'>;
-  showDelete: boolean;
-  item: ItemData;
-  components?: ItemPageComponents;
+  listKey: string
+  itemGetter: DataGetter<ItemData>
+  selectedFields: string
+  fieldModes: Record<string, ItemViewFieldModes>
+  fieldPositions: Record<string, 'form' | 'sidebar'>
+  showDelete: boolean
+  item: ItemData
+  components?: ItemPageComponents
 }) {
-  const list = useList(listKey);
-  const { spacing, typography } = useTheme();
+  const list = useList(listKey)
+  const { spacing, typography } = useTheme()
 
   const [update, { loading, error, data }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
@@ -93,41 +93,41 @@ function ItemForm({
       }
     }`,
     { errorPolicy: 'all' }
-  );
+  )
   itemGetter =
     useMemo(() => {
       if (data) {
-        return makeDataGetter(data, error?.graphQLErrors).get('item');
+        return makeDataGetter(data, error?.graphQLErrors).get('item')
       }
-    }, [data, error]) ?? itemGetter;
+    }, [data, error]) ?? itemGetter
 
   const [state, setValue] = useState(() => {
-    const value = deserializeValue(list.fields, itemGetter);
-    return { value, item: itemGetter };
-  });
+    const value = deserializeValue(list.fields, itemGetter)
+    return { value, item: itemGetter }
+  })
   if (
     !loading &&
     state.item.data !== itemGetter.data &&
     (itemGetter.errors || []).every(x => x.path?.length !== 1)
   ) {
-    const value = deserializeValue(list.fields, itemGetter);
-    setValue({ value, item: itemGetter });
+    const value = deserializeValue(list.fields, itemGetter)
+    setValue({ value, item: itemGetter })
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
     list.fields,
     state.item,
     state.value
-  );
+  )
 
-  const invalidFields = useInvalidFields(list.fields, state.value);
+  const invalidFields = useInvalidFields(list.fields, state.value)
 
-  const [forceValidation, setForceValidation] = useState(false);
-  const toasts = useToasts();
+  const [forceValidation, setForceValidation] = useState(false)
+  const toasts = useToasts()
   const onSave = useEventCallback(() => {
-    const newForceValidation = invalidFields.size !== 0;
-    setForceValidation(newForceValidation);
-    if (newForceValidation) return;
+    const newForceValidation = invalidFields.size !== 0
+    setForceValidation(newForceValidation)
+    if (newForceValidation) return
 
     update({ variables: { data: dataForUpdate, id: state.item.get('id').data } })
       // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
@@ -136,30 +136,30 @@ function ItemForm({
         // we're checking for path being undefined OR path.length === 1 because errors with a path larger than 1 will
         // be field level errors which are handled seperately and do not indicate a failure to
         // update the item, path being undefined generally indicates a failure in the graphql mutation itself - ie a type error
-        const error = errors?.find(x => x.path === undefined || x.path?.length === 1);
+        const error = errors?.find(x => x.path === undefined || x.path?.length === 1)
         if (error) {
           toasts.addToast({
             title: 'Failed to update item',
             tone: 'negative',
             message: error.message,
-          });
+          })
         } else {
           toasts.addToast({
             // title: data.item[list.labelField] || data.item.id,
             tone: 'positive',
             title: 'Saved successfully',
             // message: 'Saved successfully',
-          });
+          })
         }
       })
       .catch(err => {
-        toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message });
-      });
-  });
-  const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField];
-  const itemId = state.item.data?.id!;
-  const hasChangedFields = !!changedFields.size;
-  usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]));
+        toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message })
+      })
+  })
+  const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField]
+  const itemId = state.item.data?.id!
+  const hasChangedFields = !!changedFields.size
+  usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]))
   return (
     <Fragment>
       <Box marginTop="xlarge">
@@ -179,7 +179,7 @@ function ItemForm({
           fieldPositions={fieldPositions}
           onChange={useCallback(
             value => {
-              setValue(state => ({ item: state.item, value: value(state.value) }));
+              setValue(state => ({ item: state.item, value: value(state.value) }))
             },
             [setValue]
           )}
@@ -192,7 +192,7 @@ function ItemForm({
             setValue(state => ({
               item: state.item,
               value: deserializeValue(list.fields, state.item),
-            }));
+            }))
           })}
           loading={loading}
           deleteButton={useMemo(
@@ -231,7 +231,7 @@ function ItemForm({
                 {...props}
                 aria-label="Copy ID"
                 onClick={() => {
-                  copyToClipboard(item.id);
+                  copyToClipboard(item.id)
                 }}
               >
                 <ClipboardIcon size="small" />
@@ -250,7 +250,7 @@ function ItemForm({
             fieldPositions={fieldPositions}
             onChange={useCallback(
               value => {
-                setValue(state => ({ item: state.item, value: value(state.value) }));
+                setValue(state => ({ item: state.item, value: value(state.value) }))
               },
               [setValue]
             )}
@@ -260,19 +260,19 @@ function ItemForm({
         {components.ItemPageSidebar && <components.ItemPageSidebar listKey={listKey} item={item} />}
       </StickySidebar>
     </Fragment>
-  );
+  )
 }
 
-function DeleteButton({
+function DeleteButton ({
   itemLabel,
   itemId,
   list,
 }: {
-  itemLabel: string;
-  itemId: string;
-  list: ListMeta;
+  itemLabel: string
+  itemId: string
+  list: ListMeta
 }) {
-  const toasts = useToasts();
+  const toasts = useToasts()
   const [deleteItem, { loading }] = useMutation(
     gql`mutation ($id: ID!) {
       ${list.gqlNames.deleteMutationName}(where: { id: $id }) {
@@ -280,16 +280,16 @@ function DeleteButton({
       }
     }`,
     { variables: { id: itemId } }
-  );
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+  )
+  const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
 
   return (
     <Fragment>
       <Button
         tone="negative"
         onClick={() => {
-          setIsOpen(true);
+          setIsOpen(true)
         }}
       >
         Delete
@@ -304,27 +304,27 @@ function DeleteButton({
             label: 'Delete',
             action: async () => {
               try {
-                await deleteItem();
+                await deleteItem()
               } catch (err: any) {
                 return toasts.addToast({
                   title: `Failed to delete ${list.singular} item: ${itemLabel}`,
                   message: err.message,
                   tone: 'negative',
-                });
+                })
               }
-              router.push(list.isSingleton ? '/' : `/${list.path}`);
+              router.push(list.isSingleton ? '/' : `/${list.path}`)
               return toasts.addToast({
                 title: itemLabel,
                 message: `Deleted ${list.singular} item successfully`,
                 tone: 'positive',
-              });
+              })
             },
             loading,
           },
           cancel: {
             label: 'Cancel',
             action: () => {
-              setIsOpen(false);
+              setIsOpen(false)
             },
           },
         }}
@@ -332,14 +332,14 @@ function DeleteButton({
         Are you sure you want to delete <strong>{itemLabel}</strong>?
       </AlertDialog>
     </Fragment>
-  );
+  )
 }
 
-export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
+export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
 
 const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
-  const list = useList(listKey);
-  const id = useRouter().query.id as string;
+  const list = useList(listKey)
+  const id = useRouter().query.id as string
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
@@ -350,9 +350,9 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
           fieldKey === 'id'
       )
       .map(([fieldKey]) => {
-        return list.fields[fieldKey].controller.graphqlSelection;
+        return list.fields[fieldKey].controller.graphqlSelection
       })
-      .join('\n');
+      .join('\n')
     return {
       selectedFields,
       query: gql`
@@ -377,58 +377,58 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
           }
         }
       `,
-    };
-  }, [list]);
+    }
+  }, [list])
   let { data, error, loading } = useQuery(query, {
     variables: { id, listKey },
     errorPolicy: 'all',
     skip: id === undefined,
-  });
-  loading ||= id === undefined;
+  })
+  loading ||= id === undefined
 
   const dataGetter = makeDataGetter<
     DeepNullable<{
-      item: ItemData;
+      item: ItemData
       keystone: {
         adminMeta: {
           list: {
             fields: {
-              path: string;
+              path: string
               itemView: {
-                fieldMode: ItemViewFieldModes;
-                fieldPosition: ItemViewFieldPositions;
-              };
-            }[];
-          };
-        };
-      };
+                fieldMode: ItemViewFieldModes
+                fieldPosition: ItemViewFieldPositions
+              }
+            }[]
+          }
+        }
+      }
     }>
-  >(data, error?.graphQLErrors);
+  >(data, error?.graphQLErrors)
 
   const itemViewFieldModesByField = useMemo(() => {
-    const itemViewFieldModesByField: Record<string, ItemViewFieldModes> = {};
+    const itemViewFieldModesByField: Record<string, ItemViewFieldModes> = {}
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
-      if (field === null || field.path === null || field?.itemView?.fieldMode == null) return;
-      itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
-    });
-    return itemViewFieldModesByField;
-  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
+      if (field === null || field.path === null || field?.itemView?.fieldMode == null) return
+      itemViewFieldModesByField[field.path] = field.itemView.fieldMode
+    })
+    return itemViewFieldModesByField
+  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields])
 
   const itemViewFieldPositionsByField = useMemo(() => {
-    const itemViewFieldPositionsByField: Record<string, ItemViewFieldPositions> = {};
+    const itemViewFieldPositionsByField: Record<string, ItemViewFieldPositions> = {}
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
-      if (field === null || field.path === null || field?.itemView?.fieldPosition == null) return;
-      itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition;
-    });
-    return itemViewFieldPositionsByField;
-  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
+      if (field === null || field.path === null || field?.itemView?.fieldPosition == null) return
+      itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition
+    })
+    return itemViewFieldPositionsByField
+  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields])
 
-  const metaQueryErrors = dataGetter.get('keystone').errors;
+  const metaQueryErrors = dataGetter.get('keystone').errors
   const pageTitle: string = list.isSingleton
     ? list.label
     : loading
     ? undefined
-    : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
+    : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
 
   return (
     <PageContainer
@@ -507,24 +507,24 @@ const ItemPage = ({ listKey, components = {} }: ItemPageProps) => {
         </ColumnLayout>
       )}
     </PageContainer>
-  );
-};
+  )
+}
 
 // Styled Components
 // ------------------------------
 
-const Toolbar = memo(function Toolbar({
+const Toolbar = memo(function Toolbar ({
   hasChangedFields,
   loading,
   onSave,
   onReset,
   deleteButton,
 }: {
-  hasChangedFields: boolean;
-  loading: boolean;
-  onSave: () => void;
-  onReset: () => void;
-  deleteButton?: ReactElement;
+  hasChangedFields: boolean
+  loading: boolean
+  onSave: () => void
+  onReset: () => void
+  deleteButton?: ReactElement
 }) {
   return (
     <BaseToolbar>
@@ -548,18 +548,18 @@ const Toolbar = memo(function Toolbar({
         {deleteButton}
       </Stack>
     </BaseToolbar>
-  );
-});
+  )
+})
 
-function ResetChangesButton(props: { onReset: () => void }) {
-  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+function ResetChangesButton (props: { onReset: () => void }) {
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false)
 
   return (
     <Fragment>
       <Button
         weight="none"
         onClick={() => {
-          setConfirmModalOpen(true);
+          setConfirmModalOpen(true)
         }}
       >
         Reset changes
@@ -582,11 +582,11 @@ function ResetChangesButton(props: { onReset: () => void }) {
         {null}
       </AlertDialog>
     </Fragment>
-  );
+  )
 }
 
 const StickySidebar = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { spacing } = useTheme();
+  const { spacing } = useTheme()
   return (
     <div
       css={{
@@ -597,5 +597,5 @@ const StickySidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}

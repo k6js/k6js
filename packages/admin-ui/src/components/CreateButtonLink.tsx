@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Button } from '@keystone-ui/button';
-import { jsx } from '@keystone-ui/core';
-import { ListMeta } from '@keystone-6/core/types';
-import { Link } from '@keystone-6/core/admin-ui/router';
+import { Button } from '@keystone-ui/button'
+import { jsx } from '@keystone-ui/core'
+import { type ListMeta } from '@keystone-6/core/types'
+import { Link } from '@keystone-6/core/admin-ui/router'
 
 export const CreateButtonLink = (props: { list: ListMeta }) => {
   return (
@@ -22,5 +22,5 @@ export const CreateButtonLink = (props: { list: ListMeta }) => {
     >
       Create {props.list.singular}
     </Button>
-  );
-};
+  )
+}

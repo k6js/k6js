@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { ListPageComponents } from '@k6js/admin-ui';
-import { getListPage } from '@k6js/admin-ui/pages/ListPage';
-import { Button } from '@keystone-ui/button';
-import { Fragment } from 'react';
+import { jsx } from '@keystone-ui/core'
+import { type ListPageComponents } from '@k6js/admin-ui'
+import { getListPage } from '@k6js/admin-ui/pages/ListPage'
+import { Button } from '@keystone-ui/button'
+import { Fragment } from 'react'
 
 const components: ListPageComponents = {
   ListPageHeader: ({ listKey }) => <div>List Header Custom - {listKey}</div>,
@@ -57,6 +57,6 @@ const components: ListPageComponents = {
       <Button tone="active">Action 20</Button>
     </Fragment>
   ),
-};
+}
 
-export default getListPage({ listKey: 'Post', components });
+export default getListPage({ listKey: 'Post', components })

@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme, H3 } from '@keystone-ui/core';
-import { useKeystone } from '@keystone-6/core/admin-ui/context';
-import Link from 'next/link';
+import { jsx, useTheme, H3 } from '@keystone-ui/core'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
+import Link from 'next/link'
 
 export const Logo = () => {
-  const { spacing } = useTheme();
-  const { adminConfig } = useKeystone();
+  const { spacing } = useTheme()
+  const { adminConfig } = useKeystone()
 
   if (adminConfig.components?.Logo) {
-    return <adminConfig.components.Logo />;
+    return <adminConfig.components.Logo />
   }
 
   return (
@@ -55,5 +55,5 @@ export const Logo = () => {
         Keystone 6
       </Link>
     </H3>
-  );
-};
+  )
+}

@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { FieldProps } from '@keystone-6/core/types';
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
-import { controller } from '@keystone-6/core/fields/types/text/views';
+import { type FieldProps } from '@keystone-6/core/types'
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields'
+import { type controller } from '@keystone-6/core/fields/types/text/views'
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -14,7 +14,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
         <TextArea
           autoFocus={autoFocus}
           onChange={event => {
-            onChange({ ...value, inner: { kind: 'value', value: event.target.value } });
+            onChange({ ...value, inner: { kind: 'value', value: event.target.value } })
           }}
           value={value.inner.kind === 'null' ? '' : value.inner.value}
         />
@@ -22,7 +22,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
         <TextInput
           autoFocus={autoFocus}
           onChange={event => {
-            onChange({ ...value, inner: { kind: 'value', value: event.target.value } });
+            onChange({ ...value, inner: { kind: 'value', value: event.target.value } })
           }}
           value={value.inner.kind === 'null' ? '' : value.inner.value}
         />
@@ -31,4 +31,4 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
       value.inner.value
     )}
   </FieldContainer>
-);
+)

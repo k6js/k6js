@@ -1,19 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Fragment, HTMLAttributes, ReactNode } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { Fragment, type HTMLAttributes, type ReactNode } from 'react'
 
-import { Navigation } from './Navigation';
-import { Logo } from './Logo';
+import { Navigation } from './Navigation'
+import { Logo } from './Logo'
 
 type PageContainerProps = {
-  children: ReactNode;
-  header: ReactNode;
-  title?: string;
-};
+  children: ReactNode
+  header: ReactNode
+  title?: string
+}
 
-export const HEADER_HEIGHT = 80;
+export const HEADER_HEIGHT = 80
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
   // const { colors } = useTheme();
@@ -33,8 +33,8 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
         {...props}
       />
     </Fragment>
-  );
-};
+  )
+}
 
 const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
   // const { colors } = useTheme();
@@ -49,11 +49,11 @@ const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 const Content = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing } = useTheme()
 
   return (
     <main
@@ -69,11 +69,11 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 export const PageContainer = ({ children, header, title }: PageContainerProps) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing } = useTheme()
   return (
     <PageWrapper>
       <div
@@ -109,5 +109,5 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
       </Sidebar>
       <Content>{children}</Content>
     </PageWrapper>
-  );
-};
+  )
+}

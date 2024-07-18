@@ -1,11 +1,11 @@
-import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
+import { config } from '@keystone-6/core'
+import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
 
-import { lists, extendGraphqlSchema } from './schema';
+import { lists, extendGraphqlSchema } from './schema'
 
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
+let sessionMaxAge = 60 * 60 * 24 * 30 // 30 days
 
 const auth = createAuth({
   listKey: 'User',
@@ -18,7 +18,7 @@ const auth = createAuth({
     },
   },
   sessionData: 'name isAdmin',
-});
+})
 
 // TODO -- Create a separate example for access control in the Admin UI
 // const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
@@ -64,4 +64,4 @@ export default auth.withAuth(
     //   secret: sessionSecret,
     // }),
   })
-);
+)

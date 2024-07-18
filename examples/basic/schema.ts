@@ -1,4 +1,4 @@
-import { list, graphql } from '@keystone-6/core';
+import { list, graphql } from '@keystone-6/core'
 import {
   text,
   relationship,
@@ -10,29 +10,29 @@ import {
   image,
   file,
   integer,
-} from '@keystone-6/core/fields';
-import { document } from '@keystone-6/fields-document';
-import { v4 } from 'uuid';
-import { allowAll } from '@keystone-6/core/access';
-import { Lists } from '.keystone/types';
+} from '@keystone-6/core/fields'
+import { document } from '@keystone-6/fields-document'
+import { v4 } from 'uuid'
+import { allowAll } from '@keystone-6/core/access'
+import { type Lists } from '.keystone/types'
 
 type AccessArgs = {
   session?: {
-    itemId?: string;
-    listKey?: string;
+    itemId?: string
+    listKey?: string
     data: {
-      name?: string;
-      isAdmin: boolean;
-    };
-  };
-  item?: any;
-};
+      name?: string
+      isAdmin: boolean
+    }
+  }
+  item?: any
+}
 
 export const access = {
   isAdmin: ({ session }: AccessArgs) => !!session?.data.isAdmin,
-};
+}
 
-const randomNumber = () => Math.round(Math.random() * 10);
+const randomNumber = () => Math.round(Math.random() * 10)
 
 const User: Lists.User = list({
   access: allowAll,
@@ -86,13 +86,13 @@ const User: Lists.User = list({
     randomNumber: virtual({
       field: graphql.field({
         type: graphql.Float,
-        resolve() {
-          return randomNumber();
+        resolve () {
+          return randomNumber()
         },
       }),
     }),
   },
-});
+})
 
 export const lists: Lists = {
   User,
@@ -106,8 +106,8 @@ export const lists: Lists = {
       label: virtual({
         field: graphql.field({
           type: graphql.String,
-          resolve(item) {
-            return `${item.type} - ${item.value}`;
+          resolve (item) {
+            return `${item.type} - ${item.value}`
           },
         }),
         ui: {
@@ -184,7 +184,7 @@ export const lists: Lists = {
       }),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = graphql.extend(base => {
   const RandomNumber = graphql.object<{ number: number }>()({
@@ -193,20 +193,20 @@ export const extendGraphqlSchema = graphql.extend(base => {
       number: graphql.field({ type: graphql.Int }),
       generatedAt: graphql.field({
         type: graphql.Int,
-        resolve() {
-          return Date.now();
+        resolve () {
+          return Date.now()
         },
       }),
     },
-  });
+  })
 
   return {
     mutation: {
       createRandomPosts: graphql.field({
         type: graphql.nonNull(graphql.list(graphql.nonNull(base.object('Post')))),
         resolve: async (rootVal, args, context) => {
-          const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
-          return context.db.Post.createMany({ data });
+          const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }))
+          return context.db.Post.createMany({ data })
         },
       }),
     },
@@ -220,5 +220,5 @@ export const extendGraphqlSchema = graphql.extend(base => {
         resolve: () => v4(),
       }),
     },
-  };
-});
+  }
+})

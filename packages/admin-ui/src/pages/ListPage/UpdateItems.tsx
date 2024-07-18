@@ -1,43 +1,43 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Box, jsx } from '@keystone-ui/core';
+import { Box, jsx } from '@keystone-ui/core'
 
-import { Fragment, useCallback, useMemo, useState } from 'react';
-import { ListMeta, FieldMeta } from '@keystone-6/core/types';
-import { Button } from '@keystone-ui/button';
-import { DrawerController, Drawer } from '@keystone-ui/modals';
+import { Fragment, useCallback, useMemo, useState } from 'react'
+import { type ListMeta, type FieldMeta } from '@keystone-6/core/types'
+import { Button } from '@keystone-ui/button'
+import { DrawerController, Drawer } from '@keystone-ui/modals'
 
-import isDeepEqual from 'fast-deep-equal';
-import { FieldContainer, FieldLabel, MultiSelect } from '@keystone-ui/fields';
-import { useToasts } from '@keystone-ui/toast';
-import { LoadingDots } from '@keystone-ui/loading';
-import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo';
-import { useKeystone, useList } from '@keystone-6/core/admin-ui/context';
+import isDeepEqual from 'fast-deep-equal'
+import { FieldContainer, FieldLabel, MultiSelect } from '@keystone-ui/fields'
+import { useToasts } from '@keystone-ui/toast'
+import { LoadingDots } from '@keystone-ui/loading'
+import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 
-import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
-import { Fields } from '../../utils';
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice'
+import { Fields } from '../../utils'
 // import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 
-type Option = { label: string; value: string; isDisabled?: boolean };
-type Options<Option> = readonly Option[];
+type Option = { label: string, value: string, isDisabled?: boolean }
+type Options<Option> = readonly Option[]
 
-type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } };
+type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
 
-export function UpdateItemsDrawer({
+export function UpdateItemsDrawer ({
   selectedItems,
   listKey,
   onClose,
   onUpdate,
 }: {
-  selectedItems: ReadonlySet<string>;
-  listKey: string;
-  onClose: () => void;
-  onUpdate: () => void;
+  selectedItems: ReadonlySet<string>
+  listKey: string
+  onClose: () => void
+  onUpdate: () => void
 }) {
-  const { createViewFieldModes } = useKeystone();
-  const list = useList(listKey);
+  const { createViewFieldModes } = useKeystone()
+  const list = useList(listKey)
 
-  const toasts = useToasts();
+  const toasts = useToasts()
 
   const [updateItems, { loading, error }] = useMutation(
     useMemo(
@@ -53,16 +53,16 @@ export function UpdateItemsDrawer({
       [list]
     ),
     { errorPolicy: 'all' }
-  );
+  )
 
-  const [selectedFields, setSelectedFields] = useState<Options<Option>>([]);
+  const [selectedFields, setSelectedFields] = useState<Options<Option>>([])
   const [value, setValue] = useState(() => {
-    const value: ValueWithoutServerSideErrors = {};
+    const value: ValueWithoutServerSideErrors = {}
     Object.keys(list.fields).forEach(fieldPath => {
-      value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue };
-    });
-    return value;
-  });
+      value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue }
+    })
+    return value
+  })
 
   const options = useMemo(
     // remove the `options` key from select type fields
@@ -71,30 +71,30 @@ export function UpdateItemsDrawer({
         .filter(field => field.itemView.fieldMode !== 'hidden')
         .map(({ label, path }) => ({ label, value: path })),
     [list.fields]
-  );
+  )
 
   const renderedFields: Record<string, FieldMeta> = selectedFields.reduce(
     (fields, { value }) => ({ ...fields, [value]: list.fields[value] }),
     {}
-  );
+  )
   const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>();
+    const invalidFields = new Set<string>()
 
     Object.keys(value).forEach(fieldPath => {
-      const val = value[fieldPath].value;
+      const val = value[fieldPath].value
 
-      const validateFn = list.fields[fieldPath].controller.validate;
+      const validateFn = list.fields[fieldPath].controller.validate
       if (renderedFields[fieldPath] && validateFn) {
-        const result = validateFn(val);
+        const result = validateFn(val)
         if (result === false) {
-          invalidFields.add(fieldPath);
+          invalidFields.add(fieldPath)
         }
       }
-    });
-    return invalidFields;
-  }, [list, value, renderedFields]);
+    })
+    return invalidFields
+  }, [list, value, renderedFields])
 
-  const [forceValidation, setForceValidation] = useState(false);
+  const [forceValidation, setForceValidation] = useState(false)
 
   return (
     <Drawer
@@ -107,15 +107,15 @@ export function UpdateItemsDrawer({
           label: `Update ${list.plural}`,
           loading,
           action: () => {
-            const newForceValidation = invalidFields.size !== 0;
-            setForceValidation(newForceValidation);
+            const newForceValidation = invalidFields.size !== 0
+            setForceValidation(newForceValidation)
 
-            if (newForceValidation) return;
-            const data: Record<string, any> = {};
+            if (newForceValidation) return
+            const data: Record<string, any> = {}
             Object.keys(renderedFields).forEach(fieldPath => {
-              const { controller } = list.fields[fieldPath];
-              const serialized = controller.serialize(value[fieldPath].value);
-              const isBoolean = typeof serialized[fieldPath] === 'boolean';
+              const { controller } = list.fields[fieldPath]
+              const serialized = controller.serialize(value[fieldPath].value)
+              const isBoolean = typeof serialized[fieldPath] === 'boolean'
               if (
                 isBoolean ||
                 !isDeepEqual(
@@ -127,9 +127,9 @@ export function UpdateItemsDrawer({
                   )
                 )
               ) {
-                Object.assign(data, serialized);
+                Object.assign(data, serialized)
               }
-            });
+            })
 
             updateItems({
               variables: {
@@ -137,14 +137,14 @@ export function UpdateItemsDrawer({
               },
             })
               .then(({ data }) => {
-                onUpdate();
+                onUpdate()
                 toasts.addToast({
                   title: `${data.items.length} ${list.plural}`,
                   message: 'Updated Successfully',
                   tone: 'positive',
-                });
+                })
               })
-              .catch(() => {});
+              .catch(() => {})
           },
         },
         cancel: {
@@ -183,7 +183,7 @@ export function UpdateItemsDrawer({
           portalMenu
           menuPortalTarget={document.body}
           onChange={value => {
-            setSelectedFields(value);
+            setSelectedFields(value)
           }}
         />
       </FieldContainer>
@@ -197,30 +197,30 @@ export function UpdateItemsDrawer({
           invalidFields={invalidFields}
           value={value}
           onChange={useCallback(getNewValue => {
-            setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors);
+            setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
           }, [])}
         />
       </Box>
     </Drawer>
-  );
+  )
 }
 
-export function UpdateManyButton({
+export function UpdateManyButton ({
   selectedItems,
   list,
   refetch,
 }: {
-  selectedItems: ReadonlySet<string>;
-  list: ListMeta;
-  refetch: () => void;
+  selectedItems: ReadonlySet<string>
+  list: ListMeta
+  refetch: () => void
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
   return (
     <Fragment>
       <Button
         tone="active"
         onClick={async () => {
-          setIsOpen(true);
+          setIsOpen(true)
         }}
       >
         Update
@@ -230,14 +230,14 @@ export function UpdateManyButton({
           selectedItems={selectedItems}
           listKey={list.key}
           onUpdate={() => {
-            refetch();
-            setIsOpen(false);
+            refetch()
+            setIsOpen(false)
           }}
           onClose={() => {
-            setIsOpen(false);
+            setIsOpen(false)
           }}
         />
       </DrawerController>
     </Fragment>
-  );
+  )
 }

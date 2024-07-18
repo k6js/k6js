@@ -1,3 +1,3 @@
-import { getListPage } from '@k6js/admin-ui/pages/ListPage';
+import { getListPage } from '@k6js/admin-ui/pages/ListPage'
 
-export default getListPage({ listKey: 'PhoneNumber' });
+export default getListPage({ listKey: 'PhoneNumber' })

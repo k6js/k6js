@@ -1,6 +1,6 @@
 // import React from 'react';
 
-import { AdminConfig } from '@keystone-6/core/types';
+import { type AdminConfig } from '@keystone-6/core/types'
 
 // import { DarkTheme } from '@keystone-6/core/admin-ui/themes';
 // export const theme = DarkTheme;
@@ -9,7 +9,7 @@ import { AdminConfig } from '@keystone-6/core/types';
 
 export const components: AdminConfig['components'] = {
   // Logo: CustomLogo,
-};
+}
 
 // const nav = [{
 //   'users',
