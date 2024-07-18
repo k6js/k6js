@@ -13,7 +13,7 @@ export { Navigation, NavigationContainer, NavItem, ListNavItems, ListNavItem } f
 export type { NavigationProps } from '@keystone-6/core/types'
 
 // CUSTOM PAGE BUILDING UTILITIES
-export { PageContainer } from './PageContainer'
+export { PageContainer, HEADER_HEIGHT } from './PageContainer'
 export { CreateItemDrawer } from './CreateItemDrawer'
 export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 

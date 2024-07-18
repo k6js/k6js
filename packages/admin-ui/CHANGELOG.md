@@ -1,4 +1,10 @@
-# @keystone-6/auth
+# @k6js/admin-ui
+
+## 0.2.1
+
+### Patch Changes
+
+- Exported more types and components
 
 ## 0.2.0
 
