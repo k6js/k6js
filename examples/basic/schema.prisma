@@ -15,11 +15,11 @@ model User {
   id                  String        @id @default(cuid())
   name                String        @default("")
   email               String        @unique @default("")
+  avatar_id           String?
   avatar_filesize     Int?
-  avatar_extension    String?
   avatar_width        Int?
   avatar_height       Int?
-  avatar_id           String?
+  avatar_extension    String?
   attachment_filesize Int?
   attachment_filename String?
   password            String?

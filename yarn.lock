@@ -4136,6 +4136,7 @@ __metadata:
     "@types/jest": "npm:^29.0.0"
     "@types/node-fetch": "npm:^2.5.12"
     eslint: "npm:^9.2.0"
+    fp-ts: "npm:^2.16.8"
     jest: "npm:^29.0.0"
     jest-environment-jsdom: "npm:^29.0.0"
     patch-package: "npm:^6.5.1"
@@ -8436,6 +8437,13 @@ __metadata:
   version: 0.2.0
   resolution: "forwarded@npm:0.2.0"
   checksum: 10c0/9b67c3fac86acdbc9ae47ba1ddd5f2f81526fa4c8226863ede5600a3f7c7416ef451f6f1e240a3cc32d0fd79fcfe6beb08fd0da454f360032bde70bf80afbb33
+  languageName: node
+  linkType: hard
+
+"fp-ts@npm:^2.16.8":
+  version: 2.16.8
+  resolution: "fp-ts@npm:2.16.8"
+  checksum: 10c0/57e39db2b6ec336cdaaacde831b5e830e9194794028de088b0489a22e741a61ba5ecb4d886e2f308dd823471a159c4d6e790917a2c03c92f86ff65f45f31e766
   languageName: node
   linkType: hard
 
