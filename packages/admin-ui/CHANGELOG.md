@@ -1,5 +1,11 @@
 # @keystone-6/auth
 
+## 0.2.0
+
+### Minor Changes
+
+- ff0c01f: Upgraded tsx files to @keystone-6/core@6.1.0 version
+
 ## 0.1.0
 
 ### Minor Changes
