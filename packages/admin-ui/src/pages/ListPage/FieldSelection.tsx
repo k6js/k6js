@@ -1,5 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+'use client'
+
 import { Button } from '@keystone-ui/button'
 import { Box, jsx } from '@keystone-ui/core'
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'

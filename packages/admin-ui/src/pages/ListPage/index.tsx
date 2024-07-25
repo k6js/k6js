@@ -15,7 +15,7 @@ import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon'
 import { type ListMeta } from '@keystone-6/core/types'
 import { useFilter } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
 import { gql, type TypedDocumentNode, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
-import { useList } from '@keystone-6/core/admin-ui/context'
+import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice'
 import { Link, useRouter } from '@keystone-6/core/admin-ui/router'
 import {
@@ -26,7 +26,7 @@ import {
 } from '../../utils'
 import { CellLink } from '../../components'
 import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer'
-import { Pagination, PaginationLabel } from '../../components/Pagination'
+import { Pagination, PaginationLabel, usePaginationParams } from '../../components/Pagination'
 import { CreateButtonLink } from '../../components/CreateButtonLink'
 import { type ListPageComponents } from '../../types'
 import { FieldSelection } from './FieldSelection'
@@ -38,7 +38,7 @@ import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
 import { UpdateManyButton } from './UpdateItems'
 
-type ListPageProps = { listKey: string, components?: ListPageComponents }
+type ListPageProps = { params: { listKey: string }, components?: ListPageComponents }
 
 type FetchedFieldMeta = {
   path: string
@@ -100,7 +100,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
         return x.startsWith('!') || storeableQueries.includes(x)
       })
 
-      if (!hasSomeQueryParamsWhichAreAboutListPage && router.isReady) {
+      if (!hasSomeQueryParamsWhichAreAboutListPage) {
         const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
         let parsed
         try {
@@ -111,7 +111,7 @@ function useQueryParamsFromLocalStorage (listKey: string) {
         }
       }
     },
-    [localStorageKey, router.isReady]
+    [localStorageKey]
   )
   useEffect(() => {
     let queryParamsToSerialize: Record<string, string> = {}
@@ -130,22 +130,14 @@ function useQueryParamsFromLocalStorage (listKey: string) {
   return { resetToDefaults }
 }
 
-export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />
-
-function ListPage ({ listKey, components = {} }: ListPageProps) {
+export function ListPage ({ params, components = {} }: ListPageProps) {
+  const { listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[params.listKey]
   const list = useList(listKey)
 
   const { query, push } = useRouter()
-
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
-
-  const currentPage =
-    typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1
-  const pageSize =
-    typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
-      ? parseInt(query.pageSize)
-      : list.pageSize
-
+  const { currentPage, pageSize } = usePaginationParams({ defaultPageSize: list.pageSize })
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } })
 
   const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
@@ -174,7 +166,6 @@ function ListPage ({ listKey, components = {} }: ListPageProps) {
   const searchParam = typeof query.search === 'string' ? query.search : ''
   const [searchString, updateSearchString] = useState(searchParam)
   const search = useFilter(searchParam, list, searchFields)
-
   const updateSearch = (value: string) => {
     const { search, ...queries } = query
 
@@ -186,7 +177,6 @@ function ListPage ({ listKey, components = {} }: ListPageProps) {
   }
 
   const selectedFields = useSelectedFields(list, listViewFieldModesByField)
-
   const {
     data: newData,
     error: newError,
@@ -194,19 +184,23 @@ function ListPage ({ listKey, components = {} }: ListPageProps) {
   } = useQuery(
     useMemo(() => {
       const selectedGqlFields = [...selectedFields]
-        .map(fieldPath => {
-          return list.fields[fieldPath].controller.graphqlSelection
-        })
+        .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
         .join('\n')
 
       // TODO: FIXME: this is bad
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $take: Int!, $skip: Int!, $orderBy: [${
-        list.gqlNames.listOrderName
-      }!]) {
-        items: ${
-          list.gqlNames.listQueryName
-        }(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
+        query (
+          $where: ${list.gqlNames.whereInputName},
+          $take: Int!,
+          $skip: Int!,
+          $orderBy: [${list.gqlNames.listOrderName}!]
+        ) {
+          items: ${list.gqlNames.listQueryName}(
+            where: $where,
+            take: $take,
+            skip: $skip,
+            orderBy: $orderBy
+          ) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'
@@ -615,6 +609,7 @@ function ListTable ({
   orderableFields: Set<string>
 }) {
   const list = useList(listKey)
+  const { adminPath } = useKeystone()
   const { query } = useRouter()
   const shouldShowLinkIcon =
     !list.fields[selectedFields.keys().next().value].views.Cell.supportsLinkTo
@@ -737,8 +732,8 @@ function ListTable ({
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
-                      href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                      href={`${adminPath}/${list.path}/[id]`}
+                      as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                     >
                       <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
@@ -758,8 +753,8 @@ function ListTable ({
                         <TableBodyCell css={{ color: 'red' }} key={path}>
                           {i === 0 && Cell.supportsLinkTo ? (
                             <CellLink
-                              href={`/${list.path}/[id]`}
-                              as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                              href={`${adminPath}/${list.path}/[id]`}
+                              as={`${adminPath}/${list.path}/${encodeURIComponent(itemId)}`}
                             >
                               {errorMessage}
                             </CellLink>
@@ -780,8 +775,8 @@ function ListTable ({
                         linkTo={
                           i === 0 && Cell.supportsLinkTo
                             ? {
-                                href: `/${list.path}/[id]`,
-                                as: `/${list.path}/${encodeURIComponent(itemId)}`,
+                                href: `${adminPath}/${list.path}/[id]`,
+                                as: `${adminPath}/${list.path}/${encodeURIComponent(itemId)}`,
                               }
                             : undefined
                         }
@@ -794,7 +789,7 @@ function ListTable ({
           })}
         </tbody>
       </TableContainer>
-      <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
+      <Pagination singular={list.singular} plural={list.plural} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   )
 }

@@ -88,5 +88,9 @@
       "!packages/core/src/fields/**/test-fixtures.{js,ts}"
     ]
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.3.1",
+  "resolutions": {
+    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20240725-01",
+    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20240725-01"
+  }
 }

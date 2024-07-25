@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+'use client'
 
 import { Box, jsx } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
@@ -16,6 +17,7 @@ import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
 function CreatePageForm (props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
+  const { adminPath } = useKeystone()
   return (
     <Box paddingTop="xlarge">
       {createItem.error && (
@@ -34,7 +36,7 @@ function CreatePageForm (props: { list: ListMeta }) {
           onClick={async () => {
             const item = await createItem.create()
             if (item) {
-              router.push(`/${props.list.path}/${item.id}`)
+              router.push(`${adminPath}/${props.list.path}/${item.id}`)
             }
           }}
         >
@@ -45,14 +47,11 @@ function CreatePageForm (props: { list: ListMeta }) {
   )
 }
 
-type CreateItemPageProps = { listKey: string }
+type CreateItemPageProps = { params: { listKey: string } }
 
-export const getCreateItemPage = (props: CreateItemPageProps) => () =>
-  <CreateItemPage {...props} />
-
-function CreateItemPage (props: CreateItemPageProps) {
-  const list = useList(props.listKey)
-  const { createViewFieldModes } = useKeystone()
+export function CreateItemPage ({ params }: CreateItemPageProps) {
+  const { createViewFieldModes, listsKeyByPath } = useKeystone()
+  const list = useList(listsKeyByPath[params.listKey])
 
   return (
     <PageContainer

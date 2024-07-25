@@ -6,11 +6,12 @@ import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
 import { type ListMeta } from '@keystone-6/core/types'
 import { Fragment, type HTMLAttributes, type ReactNode } from 'react'
 import { Link } from '@keystone-6/core/admin-ui/router'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
 import { Container } from '../../components/Container'
 
 export function ItemPageHeader (props: { list: ListMeta, label: string }) {
   const { palette, spacing } = useTheme()
-
+  const { adminPath } = useKeystone()
   return (
     <Container
       css={{
@@ -33,7 +34,7 @@ export function ItemPageHeader (props: { list: ListMeta, label: string }) {
         ) : (
           <Fragment>
             <Heading type="h3">
-              <Link href={`/${props.list.path}`} css={{ textDecoration: 'none' }}>
+              <Link href={`${adminPath}/${props.list.path}`} css={{ textDecoration: 'none' }}>
                 {props.list.label}
               </Link>
             </Heading>

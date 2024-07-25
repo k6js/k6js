@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+'use client'
 
 import copyToClipboard from 'clipboard-copy'
 import { useRouter } from 'next/router'
@@ -26,7 +27,8 @@ import { Tooltip } from '@keystone-ui/tooltip'
 import { FieldLabel, TextInput } from '@keystone-ui/fields'
 import type { ListMeta, FieldMeta } from '@keystone-6/core/types'
 import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
-import { useList } from '@keystone-6/core/admin-ui/context'
+import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
+
 import {
   type DataGetter,
   type DeepNullable,
@@ -46,7 +48,10 @@ import { type ItemPageComponents } from '../../types'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
 
 type ItemPageProps = {
-  listKey: string
+  params: { 
+    id: string 
+    listKey: string
+  },
   components?: ItemPageComponents
 }
 
@@ -272,6 +277,7 @@ function DeleteButton ({
   itemId: string
   list: ListMeta
 }) {
+  const { adminPath } = useKeystone()
   const toasts = useToasts()
   const [deleteItem, { loading }] = useMutation(
     gql`mutation ($id: ID!) {
@@ -312,7 +318,7 @@ function DeleteButton ({
                   tone: 'negative',
                 })
               }
-              router.push(list.isSingleton ? '/' : `/${list.path}`)
+              router.push(`${adminPath}/${list.isSingleton ? '' : `${list.path}`}`)
               return toasts.addToast({
                 title: itemLabel,
                 message: `Deleted ${list.singular} item successfully`,
@@ -335,11 +341,11 @@ function DeleteButton ({
   )
 }
 
-export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
-
-function ItemPage ({ listKey, components = {} }: ItemPageProps) {
+export function ItemPage ({ params, components = {} }: ItemPageProps) {
+  const { listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[params.listKey]
   const list = useList(listKey)
-  const id = useRouter().query.id as string
+  const id = params.id as string
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
