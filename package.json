@@ -44,8 +44,6 @@
     "jest-environment-jsdom": "^29.0.0",
     "patch-package": "^6.5.1",
     "prettier": "^3.3.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "typescript": "^5.5.0",
     "typescript-eslint": "^7.8.0"
   },
@@ -90,6 +88,8 @@
   },
   "packageManager": "yarn@4.3.1",
   "resolutions": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20240725-01",
     "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20240725-01"
   }

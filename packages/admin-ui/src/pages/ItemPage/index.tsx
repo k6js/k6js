@@ -1,9 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-'use client'
 
 import copyToClipboard from 'clipboard-copy'
-import { useRouter } from 'next/router'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 import {
   Fragment,
   type HTMLAttributes,

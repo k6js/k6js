@@ -1,11 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-'use client'
 
 import { Box, jsx } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
 import { Button } from '@keystone-ui/button'
-import { useRouter } from 'next/router'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { type ListMeta } from '@keystone-6/core/types'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { Fields } from '../../utils'

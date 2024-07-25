@@ -7,7 +7,7 @@ import { Box, jsx } from '@keystone-ui/core'
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
 import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options'
 import { Popover } from '@keystone-ui/popover'
-import { useRouter } from 'next/router'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { type ListMeta } from '@keystone-6/core/types'
 import { useSelectedFields } from './useSelectedFields'
 
