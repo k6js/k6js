@@ -1,8 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+'use client'
 
 import { jsx } from '@keystone-ui/core'
-import { getItemPage } from '@k6js/admin-ui/pages/ItemPage'
+import { ItemPage } from '@k6js/admin-ui/pages/ItemPage'
 import { type ItemPageComponents } from '@k6js/admin-ui'
 
 const components: ItemPageComponents = {
@@ -10,4 +11,4 @@ const components: ItemPageComponents = {
   ItemPageSidebar: ({ item }) => <div>Page sidebar Custom - {item?.id}</div>,
 }
 
-export default getItemPage({ listKey: 'Post', components })
+export default ({ params }) => ItemPage({ params: { ...params, listKey: 'posts' }, components })

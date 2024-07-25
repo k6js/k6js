@@ -1,9 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+'use client'
 
 import { jsx } from '@keystone-ui/core'
 import { type ListPageComponents } from '@k6js/admin-ui'
-import { getListPage } from '@k6js/admin-ui/pages/ListPage'
+import { ListPage } from '@k6js/admin-ui/pages/ListPage'
 import { Button } from '@keystone-ui/button'
 import { Fragment } from 'react'
 
@@ -59,4 +60,4 @@ const components: ListPageComponents = {
   ),
 }
 
-export default getListPage({ listKey: 'Post', components })
+export default () =>  ListPage({ params: { listKey: 'posts' }, components })
