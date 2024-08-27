@@ -20,7 +20,7 @@ export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 // additional exports
 export { Container } from './Container'
 export { CreateButtonLink } from './CreateButtonLink'
-export { Pagination, PaginationLabel } from './Pagination'
+export { Pagination, PaginationLabel, usePaginationParams,  } from './Pagination'
 export { SignoutButton } from './SignoutButton'
 
 // export page specific components

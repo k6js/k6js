@@ -1,5 +1,8 @@
-import { type GraphQLError } from 'graphql'
-import { type JSONValue } from '@keystone-6/core/types'
+import type {
+  GraphQLError,
+  GraphQLFormattedError,
+} from 'graphql'
+import type { JSONValue } from '@keystone-6/core/types'
 
 type Path = (string | number)[]
 
@@ -61,7 +64,7 @@ function dataGetterWithErrors (
 
 export function makeDataGetter<Data extends JSONValue> (
   data: Data,
-  errors: readonly GraphQLError[] | undefined
+  errors: readonly GraphQLFormattedError[] | undefined
 ): DataGetter<Data> {
   if (errors?.length) {
     return dataGetterWithErrors(data, errors as readonly [GraphQLError, ...GraphQLError[]], [])

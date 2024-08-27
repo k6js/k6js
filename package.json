@@ -24,13 +24,13 @@
     "version-packages": "changeset version"
   },
   "dependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.25.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.0",
-    "@babel/plugin-transform-runtime": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-react": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.25.0",
+    "@babel/preset-env": "^7.25.0",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.7",
     "@eslint/js": "^9.2.0",
@@ -90,7 +90,7 @@
   "resolutions": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20240725-01",
-    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20240725-01"
+    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20240827-01",
+    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20240827-01"
   }
 }
