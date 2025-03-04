@@ -1,7 +1,4 @@
 'use client'
-/* eslint-disable */
-import { getInitPage } from '@keystone-6/auth/pages/InitPage'
+import makeSigninPage from '@keystone-6/auth/pages/InitPage'
 
-const fieldPaths = ["name","email","password"]
-
-export default getInitPage({"listKey":"User","fieldPaths":["name","email","password"],"enableWelcome":true})
+export default makeSigninPage({"listKey":"User","authGqlNames":{"authenticateItemWithPassword":"authenticateUserWithPassword","ItemAuthenticationWithPasswordResult":"UserAuthenticationWithPasswordResult","ItemAuthenticationWithPasswordSuccess":"UserAuthenticationWithPasswordSuccess","ItemAuthenticationWithPasswordFailure":"UserAuthenticationWithPasswordFailure","CreateInitialInput":"CreateInitialUserInput","createInitialItem":"createInitialUser"},"fieldPaths":["name","email","password"],"enableWelcome":true})

@@ -1,77 +1,65 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+import React, { type Usable, use } from 'react'
 
-import { Box, jsx } from '@keystone-ui/core'
-import { LoadingDots } from '@keystone-ui/loading'
-import { Button } from '@keystone-ui/button'
+import { Button } from '@keystar/ui/button'
+import { VStack } from '@keystar/ui/layout'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
-import { type ListMeta } from '@keystone-6/core/types'
+import { Fields } from '@keystone-6/core/admin-ui/utils'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
-import { Fields } from '../../utils'
-import { PageContainer } from '../../components/PageContainer'
-import { GraphQLErrorNotice } from '../../components'
+import { GraphQLErrorNotice, PageContainer } from '@keystone-6/core/admin-ui/components'
 import { useCreateItem } from '../../utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
 
-function CreatePageForm (props: { list: ListMeta }) {
-  const createItem = useCreateItem(props.list)
+export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => (
+  <CreateItemPage {...props} />
+)
+
+export function CreateItemPage({ params }: { params: Usable<{ listKey: string }> }) {
+  const { listsKeyByPath } = useKeystone()
+  const _params = use<{ listKey: string }>(params)
+  const list = useList(listsKeyByPath[_params.listKey])
+  const createItem = useCreateItem(list)
   const router = useRouter()
   const { adminPath } = useKeystone()
-  return (
-    <Box paddingTop="xlarge">
-      {createItem.error && (
-        <GraphQLErrorNotice
-          networkError={createItem.error?.networkError}
-          errors={createItem.error?.graphQLErrors}
-        />
-      )}
-
-      <Fields {...createItem.props} />
-      <BaseToolbar>
-        <Button
-          isLoading={createItem.state === 'loading'}
-          weight="bold"
-          tone="active"
-          onClick={async () => {
-            const item = await createItem.create()
-            if (item) {
-              router.push(`${adminPath}/${props.list.path}/${item.id}`)
-            }
-          }}
-        >
-          Create {props.list.singular}
-        </Button>
-      </BaseToolbar>
-    </Box>
-  )
-}
-
-type CreateItemPageProps = { params: { listKey: string } }
-
-export function CreateItemPage ({ params }: CreateItemPageProps) {
-  const { createViewFieldModes, listsKeyByPath } = useKeystone()
-  const list = useList(listsKeyByPath[params.listKey])
 
   return (
     <PageContainer
       title={`Create ${list.singular}`}
-      header={<ItemPageHeader list={list} label="Create" />}
+      header={<ItemPageHeader list={list} label="Create" title={`Create ${list.singular}`} />}
     >
       <ColumnLayout>
-        <Box>
-          {createViewFieldModes.state === 'error' && (
+        <form
+          onSubmit={async e => {
+            e.preventDefault()
+
+            const item = await createItem.create()
+            if (!item) return
+
+            router.push(`${adminPath}/${list.path}/${item.id}`)
+          }}
+          style={{ display: 'contents' }}
+        >
+          {/*
+            Workaround for react-aria "bug" where pressing enter in a form field
+            moves focus to the submit button.
+            See: https://github.com/adobe/react-spectrum/issues/5940
+          */}
+          <button type="submit" style={{ display: 'none' }} />
+          <VStack gap="large" gridArea="main" marginTop="xlarge" minWidth={0}>
             <GraphQLErrorNotice
-              networkError={
-                createViewFieldModes.error instanceof Error ? createViewFieldModes.error : undefined
-              }
-              errors={
-                createViewFieldModes.error instanceof Error ? undefined : createViewFieldModes.error
-              }
+              errors={[
+                createItem?.error?.networkError,
+                ...(createItem?.error?.graphQLErrors ?? []),
+              ]}
             />
-          )}
-          {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
-          <CreatePageForm list={list} />
-        </Box>
+            <Fields {...createItem.props} />
+          </VStack>
+
+          <BaseToolbar>
+            <Button isPending={createItem.state === 'loading'} prominence="high" type="submit">
+              Create
+            </Button>
+          </BaseToolbar>
+        </form>
       </ColumnLayout>
     </PageContainer>
   )

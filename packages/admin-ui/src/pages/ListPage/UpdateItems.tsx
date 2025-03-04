@@ -1,7 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Box, jsx } from '@keystone-ui/core'
-
+import { Box } from '@keystone-ui/core'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { type ListMeta, type FieldMeta } from '@keystone-6/core/types'
 import { Button } from '@keystone-ui/button'

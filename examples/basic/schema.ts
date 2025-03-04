@@ -106,8 +106,8 @@ export const lists: Lists = {
       label: virtual({
         field: graphql.field({
           type: graphql.String,
-          resolve (item) {
-            return `${item.type} - ${item.value}`
+          resolve(item) {
+            return `${item.type} - ${item.value}`;
           },
         }),
         ui: {
@@ -150,41 +150,41 @@ export const lists: Lists = {
         },
         defaultValue: 'draft',
       }),
-      content: document({
-        relationships: {
-          mention: {
-            label: 'Mention',
-            listKey: 'User',
-          },
-        },
-        formatting: true,
-        layouts: [
-          [1, 1],
-          [1, 1, 1],
-          [2, 1],
-          [1, 2],
-          [1, 2, 1],
-        ],
-        links: true,
-        dividers: true,
-      }),
-      publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
+      // content: document({
+      //   relationships: {
+      //     mention: {
+      //       label: 'Mention',
+      //       listKey: 'User',
+      //     },
+      //   },
+      //   formatting: true,
+      //   layouts: [
+      //     [1, 1],
+      //     [1, 1, 1],
+      //     [2, 1],
+      //     [1, 2],
+      //     [1, 2, 1],
+      //   ],
+      //   links: true,
+      //   dividers: true,
+      // }),
+      // publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
       archiveDate: timestamp(),
       score: integer({ defaultValue: 1 }),
       isDeleted: checkbox({ defaultValue: false }),
       author: relationship({
         ref: 'User.posts',
         ui: {
-          displayMode: 'cards',
-          cardFields: ['name', 'email'],
-          inlineEdit: { fields: ['name', 'email'] },
-          linkToItem: true,
-          inlineCreate: { fields: ['name', 'email'] },
+          // displayMode: 'cards',
+          // cardFields: ['name', 'email'],
+          // inlineEdit: { fields: ['name', 'email'] },
+          // linkToItem: true,
+          // inlineCreate: { fields: ['name', 'email'] },
         },
       }),
     },
   }),
-}
+};
 
 export const extendGraphqlSchema = graphql.extend(base => {
   const RandomNumber = graphql.object<{ number: number }>()({
