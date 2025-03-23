@@ -24,6 +24,7 @@ import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
+import type { TypedDocumentNode } from '@keystone-6/core/admin-ui/apollo'
 import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { EmptyState } from '../../components/EmptyState'
@@ -102,8 +103,11 @@ export function ListPage(props: ListPageProps) {
   const search = useSearchFilter(searchParam, list, list.initialSearchFields)
 
   const selectedFields = useSelectedFields(list)
-  const { data, error, refetch } = useQuery(
-    useMemo(() => {
+  const { data, error, refetch, loading } = useQuery(
+    useMemo((): TypedDocumentNode<{
+      items: Record<string, unknown>[] | null
+      count: number | null
+    }> => {
       const selectedGqlFields = [...selectedFields]
         .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
         .join('\n')
@@ -155,6 +159,11 @@ export function ListPage(props: ListPageProps) {
     }
   }
 
+  const [dataWithPevious, setDataWithPrevious] = useState<typeof data>(data)
+  if (!loading && data !== dataWithPevious) {
+    setDataWithPrevious(data)
+  }
+
   const allowCreate = !(list.hideCreate ?? true)
   const allowDelete = !(list.hideDelete ?? true)
   const isConstrained = Boolean(filters.filters.length || query.search)
@@ -202,13 +211,13 @@ export function ListPage(props: ListPageProps) {
         <ListTable
           listKey={listKey}
           allowDelete={allowDelete}
-          count={data?.count ?? 0}
+          data={dataWithPevious}
           currentPage={currentPage}
           isConstrained={isConstrained}
           pageSize={pageSize}
           refetch={refetch}
-          items={data?.items ?? []}
           selectedFields={selectedFields}
+          loading={loading}
         />
       </VStack>
     </PageContainer>
@@ -235,24 +244,24 @@ function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?:
 
 function ListTable({
   allowDelete,
-  count,
+  data,
   currentPage,
   isConstrained,
   listKey,
-  items,
   pageSize,
   refetch,
   selectedFields,
+  loading,
 }: {
   allowDelete: boolean
-  count: number
   currentPage: number
   isConstrained: boolean
   listKey: string
   pageSize: number
   refetch: () => void
   selectedFields: ReturnType<typeof useSelectedFields>
-  items: Record<string, unknown>[]
+  data: { items: Record<string, unknown>[] | null; count: number | null } | undefined
+  loading: boolean
 }) {
   const list = useList(listKey)
   const { adminPath } = useKeystone()
@@ -271,7 +280,7 @@ function ListTable({
     return {
       id: path,
       label: field.label,
-      allowsSorting: !isConstrained && !items.length ? false : field.isOrderable,
+      allowsSorting: !isConstrained && !data?.items?.length ? false : field.isOrderable,
     }
   })
 
@@ -288,7 +297,9 @@ function ListTable({
           onSelectionChange={setSelectedKeys}
           selectedKeys={selectedKeys}
           renderEmptyState={() =>
-            isConstrained ? (
+            loading ? (
+              <ProgressCircle isIndeterminate />
+            ) : isConstrained ? (
               <EmptyState
                 icon={searchXIcon}
                 title="No results"
@@ -303,6 +314,9 @@ function ListTable({
             )
           }
           flex
+          UNSAFE_style={{
+            opacity: loading && !!data ? 0.5 : undefined,
+          }}
         >
           <TableHeader columns={columns}>
             {({ label, id, ...options }) => (
@@ -311,7 +325,7 @@ function ListTable({
               </Column>
             )}
           </TableHeader>
-          <TableBody items={items}>
+          <TableBody items={data?.items ?? []}>
             {row => {
               return (
                 <Row href={`${adminPath}/${list.path}/${row?.id}`}>
@@ -352,7 +366,7 @@ function ListTable({
             switch (key) {
               case 'delete':
                 if (selectedKeys === 'all') {
-                  const ids = items.filter(x => x.id != null).map(x => `${x.id}`)
+                  const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
                   setIdsForDeletion(new Set(ids))
                 } else {
                   setIdsForDeletion(selectedKeys)
@@ -370,13 +384,13 @@ function ListTable({
         </ActionBar>
       </ActionBarContainer>
 
-      {count > 0 && (
+      {!!data?.count && (
         <Pagination
           currentPage={currentPage}
           pageSize={pageSize}
           plural={list.plural}
           singular={list.singular}
-          total={count}
+          total={data.count}
         />
       )}
 

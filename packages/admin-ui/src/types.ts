@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import { type ListMeta } from '@keystone-6/core/types'
 import { type FunctionComponent } from 'react'
 import { type ItemData } from './utils'
@@ -17,9 +14,14 @@ export type ListPageComponents = {
     listKey: string
     refetch: () => void
   }>
-  ListItemsActions?: FunctionComponent<{
-    list: ListMeta
-    selectedItems: ReadonlySet<string>
-    refetch: () => void
-  }>
+  // ListItemsActions?: {
+  //   actions: {
+  //     key: string
+  //     label: string
+  //     icon?: React.JSX.Element
+  //     onClick: (selectedItems: ItemData[]) => void
+  //   }[]
+  //   component: FunctionComponent<{ listKey: string, refetch: () => void, selectedItems: ItemData[] }>
+  // }
+  ListItemsActions?: <T>(props: ItemProps<T>) => React.JSX.Element
 }

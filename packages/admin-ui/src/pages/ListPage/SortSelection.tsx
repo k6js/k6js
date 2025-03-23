@@ -1,7 +1,5 @@
-// /** @jsxRuntime classic */
-// /** @jsx jsx */
 // import { Button } from '@keystone-ui/button'
-// import { Divider, Heading, jsx, Stack } from '@keystone-ui/core'
+// import { Divider, Heading, Stack } from '@keystone-ui/core'
 // import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon'
 // import { Options } from '@keystone-ui/options'
 // import { PopoverDialog, usePopover } from '@keystone-ui/popover'
