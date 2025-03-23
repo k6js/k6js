@@ -13,10 +13,9 @@ export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) =
   <CreateItemPage {...props} />
 )
 
-export function CreateItemPage({ params }: { params: Usable<{ listKey: string }> }) {
+export function CreateItemPage({ listKey }: { listKey: string }) {
   const { listsKeyByPath } = useKeystone()
-  const _params = use<{ listKey: string }>(params)
-  const list = useList(listsKeyByPath[_params.listKey])
+  const list = useList(listsKeyByPath[listKey])
   const createItem = useCreateItem(list)
   const router = useRouter()
   const { adminPath } = useKeystone()

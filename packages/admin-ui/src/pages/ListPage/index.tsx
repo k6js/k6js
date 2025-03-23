@@ -8,6 +8,7 @@ import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
+import { zapIcon } from '@keystar/ui/icon/icons/zapIcon'
 import { HStack, VStack } from '@keystar/ui/layout'
 import { SearchField } from '@keystar/ui/search-field'
 import { css, tokenSchema } from '@keystar/ui/style'
@@ -29,7 +30,8 @@ import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { EmptyState } from '../../components/EmptyState'
 import { GraphQLErrorNotice, PageContainer } from '@keystone-6/core/admin-ui/components'
-import { CreateButtonLink } from '../../components'
+import { CreateButtonLink, ErrorBoundary } from '../../components'
+import { type ListPageComponents } from '../../types'
 import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
 import { FilterList } from './FilterList'
@@ -38,9 +40,10 @@ import { useFilters } from './useFilters'
 import { useSearchFilter } from '../../utils/useSearchFilter'
 import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
+import { ProgressCircle } from '@keystar/ui/progress'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-type ListPageProps = { listKey: string }
+type ListPageProps = { listKey: string, components?: ListPageComponents }
 type SelectedKeys = 'all' | Set<number | string>
 
 const storeableQueries = ['sortBy', 'fields']
@@ -91,6 +94,7 @@ export function ListPage(props: ListPageProps) {
   const keystone = useKeystone()
   const listKey = keystone.listsKeyByPath[props.listKey]
   const list = useList(listKey)
+  const components = props.components ?? {}
   const { query, push } = useRouter()
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({
@@ -171,7 +175,11 @@ export function ListPage(props: ListPageProps) {
 
   return (
     <PageContainer
-      header={<ListPageHeader listKey={listKey} showCreate={allowCreate} />}
+      header={components.ListPageHeader ? (
+        <components.ListPageHeader listKey={listKey} showCreate={allowCreate} />
+      ) : (
+        <ListPageHeader listKey={listKey} showCreate={allowCreate} />
+      )}
       title={list.label}
     >
       <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
@@ -202,6 +210,9 @@ export function ListPage(props: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           )}
+          {components.ListPageActions && (
+            <components.ListPageActions listKey={listKey} refetch={refetch} />
+          )}
         </HStack>
 
         {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
@@ -218,6 +229,7 @@ export function ListPage(props: ListPageProps) {
           refetch={refetch}
           selectedFields={selectedFields}
           loading={loading}
+          itemActions={components.ListItemsActions}
         />
       </VStack>
     </PageContainer>
@@ -252,6 +264,7 @@ function ListTable({
   refetch,
   selectedFields,
   loading,
+  itemActions,
 }: {
   allowDelete: boolean
   currentPage: number
@@ -262,6 +275,7 @@ function ListTable({
   selectedFields: ReturnType<typeof useSelectedFields>
   data: { items: Record<string, unknown>[] | null; count: number | null } | undefined
   loading: boolean
+  itemActions?: ListPageComponents['ListItemsActions']
 }) {
   const list = useList(listKey)
   const { adminPath } = useKeystone()
@@ -275,6 +289,8 @@ function ListTable({
   const selectionMode = allowDelete ? 'multiple' : 'none'
   const selectedItemCount = selectedKeys === 'all' ? 'all' : selectedKeys.size
   const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
+  const [idsForAction, setIdsForAction] = useState<Set<Key> | null>(null)
+  const [activeAction, setActiveAction] = useState<Key | null>(null)
   const columns = [...selectedFields].map(path => {
     const field = list.fields[path]
     return {
@@ -351,7 +367,10 @@ function ListTable({
 
         <ActionBar
           selectedItemCount={selectedItemCount}
-          onClearSelection={() => setSelectedKeys(new Set())}
+          onClearSelection={() => {
+            setSelectedKeys(new Set())
+            setActiveAction(null)
+          }}
           UNSAFE_className={css({
             // TODO: update in @keystar/ui package
             // make `tokenSchema.size.shadow.regular` token "0 1px 4px"
@@ -363,8 +382,24 @@ function ListTable({
             },
           })}
           onAction={key => {
+            setActiveAction(key)
+            const customAction = itemActions?.actions?.find(i => i.key === key)
+            customAction?.onAction?.(idsForAction, list, refetch, () => {
+              setSelectedKeys(new Set())
+              setActiveAction(null)
+              setIdsForAction(null)
+            })
             switch (key) {
               case 'delete':
+                if (itemActions?.actions?.find(i => i.key === 'delete')) {
+                  if (selectedKeys === 'all') {
+                    const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
+                    setIdsForAction(new Set(ids))
+                  } else {
+                    setIdsForAction(selectedKeys)
+                  }
+                  return
+                }
                 if (selectedKeys === 'all') {
                   const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
                   setIdsForDeletion(new Set(ids))
@@ -373,17 +408,41 @@ function ListTable({
                 }
                 break
               default:
+                console.log('make', selectedKeys)
+                if (selectedKeys === 'all') {
+                  const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
+                  setIdsForAction(new Set(ids))
+                } else {
+                  setIdsForAction(selectedKeys)
+                }
                 break
             }
           }}
+          buttonLabelBehavior="show"
         >
+          {!itemActions?.actions?.find(i => i.key === 'delete') ? (
           <Item key="delete" textValue="Delete">
             <Icon src={trash2Icon} />
             <Text>Delete</Text>
           </Item>
+          ) : null}
+          <>
+            {itemActions?.actions?.length ? itemActions.actions.map(i =>
+              <Item key={i.key} textValue={i.label}>
+                <ErrorBoundary>
+                  <Icon src={i.icon || zapIcon} />
+                </ErrorBoundary>
+              <Text>{i.label}</Text>
+            </Item>
+            ) : null}
+          </>
         </ActionBar>
       </ActionBarContainer>
-
+      {itemActions?.Component ? <itemActions.Component list={list} refetch={refetch} selectedItems={idsForAction} action={activeAction} onClear={() => {
+        setSelectedKeys(new Set())
+        setActiveAction(null)
+        setIdsForAction(null)
+      }} /> : null}
       {!!data?.count && (
         <Pagination
           currentPage={currentPage}
