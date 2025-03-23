@@ -19,11 +19,11 @@ type User {
 
 type ImageFieldOutput {
   id: ID!
+  url: String!
+  extension: ImageExtension!
   filesize: Int!
   width: Int!
   height: Int!
-  extension: ImageExtension!
-  url: String!
 }
 
 enum ImageExtension {
@@ -273,16 +273,10 @@ type Post {
   id: ID!
   title: String
   status: String
-  content: Post_content_Document
-  publishDate: DateTime
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
   author: User
-}
-
-type Post_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -298,7 +292,6 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   status: StringFilter
-  publishDate: DateTimeNullableFilter
   archiveDate: DateTimeNullableFilter
   score: IntNullableFilter
   isDeleted: BooleanFilter
@@ -331,7 +324,6 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
-  publishDate: OrderDirection
   archiveDate: OrderDirection
   score: OrderDirection
   isDeleted: OrderDirection
@@ -340,8 +332,6 @@ input PostOrderByInput {
 input PostUpdateInput {
   title: String
   status: String
-  content: JSON
-  publishDate: DateTime
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
@@ -356,8 +346,6 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   status: String
-  content: JSON
-  publishDate: DateTime
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
@@ -412,17 +400,17 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
-  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
+  authenticatedItem: User
   randomNumber: RandomNumber
   uuid: ID!
 }
@@ -431,8 +419,6 @@ type RandomNumber {
   number: Int
   generatedAt: Int
 }
-
-union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
@@ -445,23 +431,23 @@ type KeystoneAdminMeta {
 
 type KeystoneAdminUIListMeta {
   key: String!
-  itemQueryName: String!
-  listQueryName: String!
-  hideCreate: Boolean!
-  hideDelete: Boolean!
   path: String!
+  description: String
   label: String!
+  labelField: String!
   singular: String!
   plural: String!
-  description: String
-  initialColumns: [String!]!
-  pageSize: Int!
-  labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  graphql: KeystoneAdminUIGraphQL!
+  pageSize: Int!
+  initialColumns: [String!]!
+  initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
-  isHidden: Boolean!
   isSingleton: Boolean!
+  hideNavigation: Boolean!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
@@ -505,8 +491,8 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
-  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
@@ -529,6 +515,33 @@ type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIGraphQL {
+  names: KeystoneAdminUIGraphQLNames!
+}
+
+type KeystoneAdminUIGraphQLNames {
+  outputTypeName: String!
+  whereInputName: String!
+  whereUniqueInputName: String!
+  createInputName: String!
+  createMutationName: String!
+  createManyMutationName: String!
+  relateToOneForCreateInputName: String!
+  relateToManyForCreateInputName: String!
+  itemQueryName: String!
+  listOrderName: String!
+  listQueryCountName: String!
+  listQueryName: String!
+  updateInputName: String!
+  updateMutationName: String!
+  updateManyInputName: String!
+  updateManyMutationName: String!
+  relateToOneForUpdateInputName: String!
+  relateToManyForUpdateInputName: String!
+  deleteMutationName: String!
+  deleteManyMutationName: String!
 }
 
 type KeystoneAdminUISort {

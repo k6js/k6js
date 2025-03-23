@@ -1,21 +1,21 @@
 import { useMemo } from 'react'
+
 import { type ListMeta } from '@keystone-6/core/types'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-export function useSelectedFields (
-  list: ListMeta,
-  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
-): ReadonlySet<string> {
+export function useSelectedFields(list: ListMeta): ReadonlySet<string> {
   const { query } = useRouter()
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : ''
   return useMemo(() => {
-    let selectedFieldsArray = selectedFieldsFromUrl
+    const selectedFieldsArray = selectedFieldsFromUrl
       ? selectedFieldsFromUrl.split(',')
       : list.initialColumns
-    let fields = selectedFieldsArray.filter(field => {
-      return fieldModesByFieldPath[field] === 'read'
+    const fields = selectedFieldsArray.filter(fieldKey => {
+      const field = list.fields[fieldKey]
+      if (!field) return false
+      return field.listView.fieldMode === 'read'
     })
 
     return new Set(fields.length === 0 ? [list.labelField] : fields)
-  }, [list, selectedFieldsFromUrl, fieldModesByFieldPath])
+  }, [list, selectedFieldsFromUrl])
 }

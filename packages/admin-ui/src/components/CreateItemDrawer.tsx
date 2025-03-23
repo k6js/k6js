@@ -1,7 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx, Box } from '@keystone-ui/core'
+import { Box } from '@keystone-ui/core'
 import { Drawer } from '@keystone-ui/modals'
 import { LoadingDots } from '@keystone-ui/loading'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'

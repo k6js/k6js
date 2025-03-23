@@ -1,9 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { type ListMeta } from '@keystone-6/core/types'
-import { type FunctionComponent } from 'react'
-import { type ItemData } from './utils'
+import type { MaybePromise, ListMeta } from '@keystone-6/core/types'
+import type { FunctionComponent, Key } from 'react'
+import type { ItemData } from './utils'
 
 export type ItemPageComponents = {
   ItemPageHeader?: FunctionComponent<{ listKey: string, item: ItemData, label: string }>
@@ -12,14 +9,24 @@ export type ItemPageComponents = {
 }
 
 export type ListPageComponents = {
-  ListPageHeader?: FunctionComponent<{ listKey: string }>
+  ListPageHeader?: FunctionComponent<{ listKey: string, showCreate: boolean }>
   ListPageActions?: FunctionComponent<{
     listKey: string
     refetch: () => void
   }>
-  ListItemsActions?: FunctionComponent<{
-    list: ListMeta
-    selectedItems: ReadonlySet<string>
-    refetch: () => void
-  }>
+  ListItemsActions?: {
+    actions: {
+      key: string
+      label: string
+      icon?: React.JSX.Element
+      onAction: (selectedItems: Set<Key> | null, list: ListMeta, refetch: () => void, onClear: () => void) => MaybePromise<void>
+    }[]
+    Component?: (props: {
+      list: ListMeta
+      refetch: () => void
+      selectedItems: Set<Key> | null
+      action: Key | null
+      onClear: () => void
+    }) => React.JSX.Element
+  }
 }

@@ -1,7 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx, useTheme } from '@keystone-ui/core'
+import { useTheme } from '@keystone-ui/core'
 import { Link, type LinkProps } from '@keystone-6/core/admin-ui/router'
 
 /**

@@ -1,8 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
 import { type FieldProps } from '@keystone-6/core/types'
-import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields'
 import { type controller } from '@keystone-6/core/fields/types/text/views'
 

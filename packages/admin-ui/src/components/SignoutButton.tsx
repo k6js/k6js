@@ -1,7 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-
-import { jsx } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { type ReactNode, useEffect } from 'react'
 import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'

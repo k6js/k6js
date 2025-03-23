@@ -16,10 +16,10 @@ model User {
   name                String        @default("")
   email               String        @unique @default("")
   avatar_id           String?
+  avatar_extension    String?
   avatar_filesize     Int?
   avatar_width        Int?
   avatar_height       Int?
-  avatar_extension    String?
   attachment_filesize Int?
   attachment_filename String?
   password            String?
@@ -43,8 +43,6 @@ model Post {
   id          String    @id @default(cuid())
   title       String    @default("")
   status      String    @default("draft")
-  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  publishDate DateTime?
   archiveDate DateTime?
   score       Int?      @default(1)
   isDeleted   Boolean   @default(false)
