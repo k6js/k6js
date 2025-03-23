@@ -90,7 +90,7 @@
   "resolutions": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20250302-01",
-    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20250302-01"
+    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20250323-01",
+    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20250323-01"
   }
 }
