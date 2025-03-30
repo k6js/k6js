@@ -1,5 +1,3 @@
-// import React from 'react';
-
 import { type AdminConfig } from '@keystone-6/core/types'
 
 // import { DarkTheme } from '@keystone-6/core/admin-ui/themes';

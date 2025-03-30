@@ -1,4 +1,3 @@
-import React from 'react'
 import {allIcons} from '@keystar/ui/icon/all'
 import {Icon} from '@keystar/ui/icon'
 import {HStack} from '@keystar/ui/layout'

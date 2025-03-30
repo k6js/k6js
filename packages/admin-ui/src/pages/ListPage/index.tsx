@@ -1,4 +1,4 @@
-import React, { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
+import { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton } from '@keystar/ui/button'

@@ -1,4 +1,4 @@
-import React, { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
+import { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, DialogTrigger } from '@keystar/ui/dialog'

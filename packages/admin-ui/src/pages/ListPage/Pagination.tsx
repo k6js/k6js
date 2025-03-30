@@ -1,4 +1,4 @@
-import React, { type Key, useEffect } from 'react'
+import { type Key, useEffect } from 'react'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import { PaginationControls, snapValueToClosest } from './PaginationControls'
 
