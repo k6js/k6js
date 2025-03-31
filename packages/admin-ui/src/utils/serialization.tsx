@@ -3,15 +3,15 @@ import type { JSONValue, FieldMeta } from '@keystone-6/core/types'
 import type { DataGetter } from './dataGetter'
 import { getRootGraphQLFieldsFromFieldController } from './utils'
 
-export type ItemData = { id: string, [key: string]: any }
+export type ItemData = { id: string; [key: string]: any }
 
 export type DeserializedValue = Record<
   string,
-  | { kind: 'error', errors: readonly [GraphQLError, ...GraphQLError[]] }
-  | { kind: 'value', value: any }
+  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
+  | { kind: 'value'; value: any }
 >
 
-export function deserializeValue (
+export function deserializeValue(
   fields: Record<string, FieldMeta>,
   itemGetter: DataGetter<ItemData>
 ) {
@@ -38,7 +38,7 @@ export function deserializeValue (
   return value
 }
 
-export function serializeValueToObjByFieldKey (
+export function serializeValueToObjByFieldKey(
   fields: Record<string, FieldMeta>,
   value: DeserializedValue
 ) {

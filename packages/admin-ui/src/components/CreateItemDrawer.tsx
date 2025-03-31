@@ -7,14 +7,14 @@ import { Fields } from '../utils/Fields'
 import { useCreateItem } from '../utils/useCreateItem'
 import { GraphQLErrorNotice } from './GraphQLErrorNotice'
 
-export function CreateItemDrawer ({
+export function CreateItemDrawer({
   listKey,
   onClose,
   onCreate,
 }: {
   listKey: string
   onClose: () => void
-  onCreate: (item: { id: string, label: string }) => void
+  onCreate: (item: { id: string; label: string }) => void
 }) {
   const { createViewFieldModes } = useKeystone()
   const list = useList(listKey)

@@ -8,7 +8,7 @@ const END_SESSION = gql`
   }
 `
 
-function SignoutButton ({ children }: { children?: ReactNode }) {
+function SignoutButton({ children }: { children?: ReactNode }) {
   const [endSession, { loading, data }] = useMutation(END_SESSION)
   useEffect(() => {
     if (data?.endSession) {

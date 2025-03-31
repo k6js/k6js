@@ -261,7 +261,9 @@ function ItemForm({
             fieldModes={fieldModes}
             fieldPositions={fieldPositions}
           />
-          {components.ItemPageSidebar && <components.ItemPageSidebar listKey={listKey} item={value as any} />}
+          {components.ItemPageSidebar && (
+            <components.ItemPageSidebar listKey={listKey} item={value as any} />
+          )}
         </StickySidebar>
 
         <BaseToolbar>

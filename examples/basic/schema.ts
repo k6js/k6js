@@ -86,7 +86,7 @@ const User: Lists.User = list({
     randomNumber: virtual({
       field: graphql.field({
         type: graphql.Float,
-        resolve () {
+        resolve() {
           return randomNumber()
         },
       }),
@@ -107,7 +107,7 @@ export const lists: Lists = {
         field: graphql.field({
           type: graphql.String,
           resolve(item) {
-            return `${item.type} - ${item.value}`;
+            return `${item.type} - ${item.value}`
           },
         }),
         ui: {
@@ -184,7 +184,7 @@ export const lists: Lists = {
       }),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = graphql.extend(base => {
   const RandomNumber = graphql.object<{ number: number }>()({
@@ -193,7 +193,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       number: graphql.field({ type: graphql.Int }),
       generatedAt: graphql.field({
         type: graphql.Int,
-        resolve () {
+        resolve() {
           return Date.now()
         },
       }),

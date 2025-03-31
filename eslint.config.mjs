@@ -1,31 +1,36 @@
 // @ts-check
 
-const eslint = require('@eslint/js')
-const tseslint = require('typescript-eslint')
+// @ts-check
 
-module.exports = tseslint.config(
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import reactHooks from 'eslint-plugin-react-hooks'
+
+
+export default tseslint.config(
   {
     ignores: [
       '**/.keystone/',
+      '**/.next/',
       '**/dist/',
+      '**/__generated__/',
       '**/node_modules/',
       '**/syntax-error.js',
       '**/public/',
-      'examples/extend-graphql-schema-nexus/nexus-types.ts'
+      'examples/',
     ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.strict,
-//    ...tseslint.configs.stylistic,
+  reactHooks.configs['recommended-latest'],
+  //    ...tseslint.configs.stylistic,
   {
     rules: {
-      // TODO: remove
-      'no-empty': 'off',
-      'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }],
+      'no-empty': ['error', { allowEmptyCatch: true }],
+      'prefer-const': 'off',
       'no-extra-boolean-cast': 'off',
       'no-async-promise-executor': 'off',
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-      'prefer-const': 'off',
       'no-regex-spaces': 'off',
       'no-useless-escape': 'off',
       '@typescript-eslint/no-var-requires': 'off',
@@ -37,34 +42,24 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-invalid-void-type': 'off',
       '@typescript-eslint/no-namespace': 'off',
       'import/no-unresolved': 'off',
-      // TODO: remove
 
-      semi: ['error', 'never'],
       quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
       'block-spacing': ['error', 'always'],
       'brace-style': ['error', '1tbs', { allowSingleLine: true }],
       'comma-spacing': ['error', { before: false, after: true }],
       'func-call-spacing': ['error', 'never'],
       'no-undef': 'off', // https://typescript-eslint.io/troubleshooting/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
-      'semi-spacing': ['error', { before: false, after: true }],
-      'space-before-blocks': ['error', 'always'],
-      'space-before-function-paren': ['error', 'always'],
-      'space-in-parens': ['error', 'never'],
-      '@typescript-eslint/member-delimiter-style': [
+      '@typescript-eslint/consistent-type-imports': [
         'error',
         {
-          multiline: { delimiter: 'none' },
-          singleline: { delimiter: 'comma', requireLast: false }
-        }
+          disallowTypeAnnotations: true,
+          fixStyle: 'separate-type-imports',
+          prefer: 'type-imports',
+        },
       ],
-      '@typescript-eslint/consistent-type-imports': ['error', {
-        disallowTypeAnnotations: true,
-        fixStyle: 'inline-type-imports',
-        prefer: 'type-imports',
-      }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
-      '@typescript-eslint/semi': ['error', 'never'],
-    }
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
   }
 )

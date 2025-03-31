@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function ReportPage () {
+export default function ReportPage() {
   return (
     <div>
       <h1>Reports</h1>

@@ -25,7 +25,7 @@ export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 // additional exports
 export { Container } from './Container'
 export { CreateButtonLink } from './CreateButtonLink'
-export { Pagination, usePaginationParams,  } from '../pages/ListPage/Pagination'
+export { Pagination, usePaginationParams } from '../pages/ListPage/Pagination'
 export { SignoutButton } from './SignoutButton'
 
 // export page specific components

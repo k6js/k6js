@@ -15,12 +15,12 @@ import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice'
 import { Fields } from '../../utils'
 // import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 
-type Option = { label: string, value: string, isDisabled?: boolean }
+type Option = { label: string; value: string; isDisabled?: boolean }
 type Options<Option> = readonly Option[]
 
-type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
+type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } }
 
-export function UpdateItemsDrawer ({
+export function UpdateItemsDrawer({
   selectedItems,
   listKey,
   onClose,
@@ -202,7 +202,7 @@ export function UpdateItemsDrawer ({
   )
 }
 
-export function UpdateManyButton ({
+export function UpdateManyButton({
   selectedItems,
   list,
   refetch,

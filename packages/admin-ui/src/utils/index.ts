@@ -5,7 +5,6 @@ export * from './serialization'
 export * from './useCreateItem'
 export * from './usePreventNavigation'
 
-
 export type DeepNullable<T> =
   | null
   | (T extends Array<infer Item>
