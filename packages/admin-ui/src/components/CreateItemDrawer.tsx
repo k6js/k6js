@@ -1,6 +1,6 @@
 import { Box } from '@keystone-ui/core'
 import { Drawer } from '@keystone-ui/modals'
-import { LoadingDots } from '@keystone-ui/loading'
+import { ProgressBar } from '@keystar/ui/progress'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 
 import { Fields } from '../utils/Fields'
@@ -58,7 +58,7 @@ export function CreateItemDrawer({
           }
         />
       )}
-      {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
+      {createViewFieldModes.state === 'loading' && <ProgressBar label="Loading create form" />}
       {createItemState.error && (
         <GraphQLErrorNotice
           networkError={createItemState.error?.networkError}

@@ -1,7 +1,7 @@
 import { Box } from '@keystone-ui/core'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { type ListMeta, type FieldMeta } from '@keystone-6/core/types'
-import { Button } from '@keystone-ui/button'
+import { Button } from '@keystar/ui/button'
 import { DrawerController, Drawer } from '@keystone-ui/modals'
 
 import isDeepEqual from 'fast-deep-equal'

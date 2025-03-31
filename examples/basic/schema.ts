@@ -10,6 +10,7 @@ import {
   image,
   file,
   integer,
+  multiselect,
 } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 import { v4 } from 'uuid'
@@ -67,22 +68,37 @@ const User: Lists.User = list({
         },
       },
     }),
-    roles: text({}),
     phoneNumbers: relationship({
       ref: 'PhoneNumber.user',
       many: true,
       ui: {
         // TODO: Work out how to use custom views to customise the card + edit / create forms
         // views: './admin/fieldViews/user/phoneNumber',
-        displayMode: 'cards',
-        cardFields: ['type', 'value'],
-        inlineEdit: { fields: ['type', 'value'] },
-        inlineCreate: { fields: ['type', 'value'] },
-        linkToItem: true,
-        // removeMode: 'delete',
+        displayMode: 'table',
+        columns: ['type', 'value'],
+        itemView: {
+          fieldMode: 'read',
+        }
       },
     }),
     posts: relationship({ ref: 'Post.author', many: true }),
+    roles: multiselect({
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Author', value: 'author' },
+        { label: 'Subscriber', value: 'subscriber' },
+        { label: 'Contributor', value: 'contributor' },
+        { label: 'Member', value: 'member' },
+        { label: 'Customer', value: 'customer' },
+        { label: 'VIP', value: 'vip' },
+        { label: 'Super Admin', value: 'super-admin' },
+      ],
+      defaultValue: ['subscriber'],
+      // ui: {
+      //   displayMode: 'checkboxes',
+      // },
+    }),
     randomNumber: virtual({
       field: graphql.field({
         type: graphql.Float,
