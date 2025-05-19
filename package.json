@@ -35,7 +35,7 @@
     "@changesets/cli": "^2.27.7",
     "@eslint/js": "^9.2.0",
     "@manypkg/cli": "^0.21.4",
-    "@preconstruct/cli": "2.8.7",
+    "@preconstruct/cli": "2.8.11",
     "@types/jest": "^29.0.0",
     "@types/node-fetch": "^2.5.12",
     "eslint": "^9.2.0",
@@ -86,11 +86,12 @@
       "!packages/core/src/fields/**/test-fixtures.{js,ts}"
     ]
   },
-  "packageManager": "yarn@4.3.1",
+  "packageManager": "yarn@4.9.1",
   "resolutions": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20250323-01",
-    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20250323-01"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@keystar/ui": "npm:@keystar/ui@0.7.19",
+    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20250518-01",
+    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20250518-01"
   }
 }

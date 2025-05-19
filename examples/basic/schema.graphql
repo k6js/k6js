@@ -205,6 +205,11 @@ type PhoneNumber {
   user: User
   type: String
   value: String
+  content: PhoneNumber_content_Document
+}
+
+type PhoneNumber_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input PhoneNumberWhereUniqueInput {
@@ -245,6 +250,7 @@ input PhoneNumberUpdateInput {
   user: UserRelateToOneForUpdateInput
   type: String
   value: String
+  content: JSON
 }
 
 input UserRelateToOneForUpdateInput {
@@ -262,6 +268,7 @@ input PhoneNumberCreateInput {
   user: UserRelateToOneForCreateInput
   type: String
   value: String
+  content: JSON
 }
 
 input UserRelateToOneForCreateInput {
@@ -273,10 +280,15 @@ type Post {
   id: ID!
   title: String
   status: String
+  content: Post_content_Document
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
   author: User
+}
+
+type Post_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -332,6 +344,7 @@ input PostOrderByInput {
 input PostUpdateInput {
   title: String
   status: String
+  content: JSON
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
@@ -346,6 +359,7 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   status: String
+  content: JSON
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean

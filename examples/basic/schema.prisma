@@ -30,11 +30,12 @@ model User {
 }
 
 model PhoneNumber {
-  id     String  @id @default(cuid())
-  user   User?   @relation("PhoneNumber_user", fields: [userId], references: [id])
-  userId String? @map("user")
-  type   String?
-  value  String  @default("")
+  id      String  @id @default(cuid())
+  user    User?   @relation("PhoneNumber_user", fields: [userId], references: [id])
+  userId  String? @map("user")
+  type    String?
+  value   String  @default("")
+  content String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 
   @@index([userId])
 }
@@ -43,6 +44,7 @@ model Post {
   id          String    @id @default(cuid())
   title       String    @default("")
   status      String    @default("draft")
+  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   archiveDate DateTime?
   score       Int?      @default(1)
   isDeleted   Boolean   @default(false)

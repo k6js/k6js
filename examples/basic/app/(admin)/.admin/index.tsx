@@ -8,8 +8,9 @@ import * as view5 from "@keystone-6/core/fields/types/checkbox/views"
 import * as view6 from "@keystone-6/core/fields/types/relationship/views"
 import * as view7 from "@keystone-6/core/fields/types/virtual/views"
 import * as view8 from "@keystone-6/core/fields/types/select/views"
-import * as view9 from "@keystone-6/core/fields/types/timestamp/views"
-import * as view10 from "@keystone-6/core/fields/types/integer/views"
+import * as view9 from "@keystone-6/fields-document/views"
+import * as view10 from "@keystone-6/core/fields/types/timestamp/views"
+import * as view11 from "@keystone-6/core/fields/types/integer/views"
 
 import * as packageAdminConfig from "./config"
 
@@ -21,5 +22,5 @@ export const config = {
   },
   apiPath: '/api/graphql',
   adminPath: '',
-  fieldViews: [view0,view1,view2,view3,view4,view5,view6,view7,view8,view9,view10],
+  fieldViews: [view0,view1,view2,view3,view4,view5,view6,view7,view8,view9,view10,view11],
 };

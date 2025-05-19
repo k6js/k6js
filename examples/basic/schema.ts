@@ -131,6 +131,32 @@ export const lists: Lists = {
         },
       }),
       value: text({}),
+      content: document({
+        formatting: {
+          inlineMarks: {
+            bold: true,
+            italic: true,
+          },
+          listTypes: { unordered: true },
+        },
+        links: true,
+        // relationships: {
+        //   mention: {
+        //     label: 'Mention',
+        //     listKey: 'User',
+        //   },
+        // },
+        // formatting: true,
+        // layouts: [
+        //   [1, 1],
+        //   [1, 1, 1],
+        //   [2, 1],
+        //   [1, 2],
+        //   [1, 2, 1],
+        // ],
+        // links: true,
+        // dividers: true,
+      }),
     },
   }),
   Post: list({
@@ -150,24 +176,24 @@ export const lists: Lists = {
         },
         defaultValue: 'draft',
       }),
-      // content: document({
-      //   relationships: {
-      //     mention: {
-      //       label: 'Mention',
-      //       listKey: 'User',
-      //     },
+      content: document({
+      // relationships: {
+      //   mention: {
+      //     label: 'Mention',
+      //     listKey: 'User',
       //   },
-      //   formatting: true,
-      //   layouts: [
-      //     [1, 1],
-      //     [1, 1, 1],
-      //     [2, 1],
-      //     [1, 2],
-      //     [1, 2, 1],
-      //   ],
-      //   links: true,
-      //   dividers: true,
-      // }),
+        // },
+        // formatting: true,
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
+        links: true,
+        dividers: true,
+      }),
       // publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
       archiveDate: timestamp(),
       score: integer({ defaultValue: 1 }),
