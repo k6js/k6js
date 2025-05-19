@@ -1,4 +1,4 @@
-import React, { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
+import { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton } from '@keystar/ui/button'
@@ -43,7 +43,7 @@ import { useSort } from './useSort'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-type ListPageProps = { listKey: string, components?: ListPageComponents }
+type ListPageProps = { listKey: string; components?: ListPageComponents }
 type SelectedKeys = 'all' | Set<number | string>
 
 const storeableQueries = ['sortBy', 'fields']
@@ -175,11 +175,13 @@ export function ListPage(props: ListPageProps) {
 
   return (
     <PageContainer
-      header={components.ListPageHeader ? (
-        <components.ListPageHeader listKey={listKey} showCreate={allowCreate} />
-      ) : (
-        <ListPageHeader listKey={listKey} showCreate={allowCreate} />
-      )}
+      header={
+        components.ListPageHeader ? (
+          <components.ListPageHeader listKey={listKey} showCreate={allowCreate} />
+        ) : (
+          <ListPageHeader listKey={listKey} showCreate={allowCreate} />
+        )
+      }
       title={list.label}
     >
       <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
@@ -421,28 +423,38 @@ function ListTable({
           buttonLabelBehavior="show"
         >
           {!itemActions?.actions?.find(i => i.key === 'delete') ? (
-          <Item key="delete" textValue="Delete">
-            <Icon src={trash2Icon} />
-            <Text>Delete</Text>
-          </Item>
+            <Item key="delete" textValue="Delete">
+              <Icon src={trash2Icon} />
+              <Text>Delete</Text>
+            </Item>
           ) : null}
           <>
-            {itemActions?.actions?.length ? itemActions.actions.map(i =>
-              <Item key={i.key} textValue={i.label}>
-                <ErrorBoundary>
-                  <Icon src={i.icon || zapIcon} />
-                </ErrorBoundary>
-              <Text>{i.label}</Text>
-            </Item>
-            ) : null}
+            {itemActions?.actions?.length
+              ? itemActions.actions.map(i => (
+                  <Item key={i.key} textValue={i.label}>
+                    <ErrorBoundary>
+                      <Icon src={i.icon || zapIcon} />
+                    </ErrorBoundary>
+                    <Text>{i.label}</Text>
+                  </Item>
+                ))
+              : null}
           </>
         </ActionBar>
       </ActionBarContainer>
-      {itemActions?.Component ? <itemActions.Component list={list} refetch={refetch} selectedItems={idsForAction} action={activeAction} onClear={() => {
-        setSelectedKeys(new Set())
-        setActiveAction(null)
-        setIdsForAction(null)
-      }} /> : null}
+      {itemActions?.Component ? (
+        <itemActions.Component
+          list={list}
+          refetch={refetch}
+          selectedItems={idsForAction}
+          action={activeAction}
+          onClear={() => {
+            setSelectedKeys(new Set())
+            setActiveAction(null)
+            setIdsForAction(null)
+          }}
+        />
+      ) : null}
       {!!data?.count && (
         <Pagination
           currentPage={currentPage}

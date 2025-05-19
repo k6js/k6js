@@ -3,11 +3,11 @@ import { type ChangeEvent, type FocusEvent, useState } from 'react'
 
 const FULL_TIME_PATTERN = 'HH:mm:ss.SSS'
 
-function formatFullTime (date: Date) {
+function formatFullTime(date: Date) {
   return format(date, FULL_TIME_PATTERN)
 }
 
-export function formatTime (time: string) {
+export function formatTime(time: string) {
   const date = parse(time, FULL_TIME_PATTERN, new Date())
   if (date.getMilliseconds() !== 0) {
     return format(date, FULL_TIME_PATTERN)
@@ -18,7 +18,7 @@ export function formatTime (time: string) {
   return format(date, 'HH:mm')
 }
 
-export function parseTime (time: string) {
+export function parseTime(time: string) {
   for (const pattern of ['H:m:s.SSS', 'H:m:s', 'H:m', 'H']) {
     const parsed = parse(time, pattern, new Date())
     if (isValid(parsed)) {
@@ -28,7 +28,7 @@ export function parseTime (time: string) {
   return undefined
 }
 
-export function constructTimestamp ({
+export function constructTimestamp({
   dateValue,
   timeValue,
 }: {
@@ -38,14 +38,14 @@ export function constructTimestamp ({
   return new Date(`${dateValue}T${timeValue}`).toISOString()
 }
 
-export function deconstructTimestamp (value: string): InnerValue {
+export function deconstructTimestamp(value: string): InnerValue {
   return {
     dateValue: formatISO(new Date(value), { representation: 'date' }),
     timeValue: { kind: 'parsed', value: formatFullTime(new Date(value)) },
   }
 }
 
-export function formatOutput (value: string | null) {
+export function formatOutput(value: string | null) {
   if (!value) return ''
   const date = new Date(value)
   return date.toLocaleString()
@@ -53,7 +53,7 @@ export function formatOutput (value: string | null) {
 
 export type InnerValue = {
   dateValue: string | null
-  timeValue: string | { kind: 'parsed', value: string | null }
+  timeValue: string | { kind: 'parsed'; value: string | null }
 }
 
 export type Value =
@@ -74,7 +74,7 @@ type Config<ParsedValue extends ParsedValueBase> = {
   format: (value: ParsedValue) => string
 }
 
-export function useFormattedInput<ParsedValue extends ParsedValueBase> (
+export function useFormattedInput<ParsedValue extends ParsedValueBase>(
   config: Config<ParsedValue>,
   {
     value,
@@ -121,17 +121,17 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase> (
 
   return {
     value: internalValueState,
-    onChange (event: ChangeEvent<HTMLInputElement>) {
+    onChange(event: ChangeEvent<HTMLInputElement>) {
       const value = event.target.value
       const parsed = config.parse(value)
       onChange(parsed)
       setInternalValueState(value)
     },
-    onFocus (event: FocusEvent<HTMLInputElement>) {
+    onFocus(event: FocusEvent<HTMLInputElement>) {
       onFocus?.(event)
       setIsFocused(true)
     },
-    onBlur (event: FocusEvent<HTMLInputElement>) {
+    onBlur(event: FocusEvent<HTMLInputElement>) {
       onBlur?.(event)
       setIsFocused(false)
       // this isn't strictly necessary since we already do this in render

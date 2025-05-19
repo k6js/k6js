@@ -164,7 +164,7 @@ const components: ListPageComponents = {
         onAction: (idsForAction, list, refetch) => {
           console.log('2343242', idsForAction, list, refetch)
         },
-      }
+      },
     ],
     Component: ({ list, refetch, selectedItems, action, onClear }) => {
       console.log('list', list, selectedItems, action)
@@ -216,4 +216,4 @@ const components: ListPageComponents = {
   },
 }
 
-export default () =>  ListPage({ listKey: 'posts', components })
+export default () => ListPage({ listKey: 'posts', components })

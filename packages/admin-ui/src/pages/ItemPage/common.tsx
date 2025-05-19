@@ -1,4 +1,4 @@
-import React, { type HTMLAttributes, type ReactNode, Fragment } from 'react'
+import { type HTMLAttributes, type ReactNode, Fragment } from 'react'
 
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
 import { Grid, HStack } from '@keystar/ui/layout'

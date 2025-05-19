@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren, useId, useMemo, useRef } from 'react'
+import { type PropsWithChildren, useId, useMemo, useRef } from 'react'
 
 import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo'
 
