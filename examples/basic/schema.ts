@@ -48,8 +48,8 @@ const User: Lists.User = list({
     /** Email is used to log into the system. */
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     /** Avatar upload for the users profile, stored locally */
-    avatar: image({ storage: 'my_images' }),
-    attachment: file({ storage: 'my_files' }),
+    // avatar: image({ storage: 'my_images' }),
+    // attachment: file({ storage: 'my_files' }),
     /** Used to log in. */
     password: password(),
     /** Administrators have more access to various lists and fields. */

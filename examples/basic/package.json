@@ -12,7 +12,7 @@
     "@babel/runtime": "^7.25.0",
     "@k6js/admin-ui": "workspace:*",
     "@keystone-6/auth": "^8.1.0",
-    "@keystone-6/core": "^6.5.0",
+    "@keystone-6/core": "^6.5.1",
     "@keystone-6/document-renderer": "^0.0.0-rc-20250515045907",
     "@keystone-6/fields-document": "^0.0.0-rc-20250515045907",
     "@keystone-ui/button": "^7.0.2",
@@ -22,16 +22,16 @@
     "@keystone-ui/loading": "^6.0.2",
     "@keystone-ui/modals": "^6.0.3",
     "@keystone-ui/tooltip": "^6.0.2",
-    "@types/react": "^18.3.3",
+    "@types/react": "^19.1.4",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "slate-dom": "^0.112.2",
+    "slate-dom": "^0.114.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "typescript": "^5.8.3"
   },
   "repository": "https://github.com/k6js/k6js/tree/main/examples/basic"
 }
