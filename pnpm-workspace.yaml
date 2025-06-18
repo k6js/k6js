@@ -1,0 +1,20 @@
+packages:
+  - packages/*
+  - examples/*
+
+onlyBuiltDependencies:
+  - '@apollo/protobufjs'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - esbuild
+  - prisma
+  - sharp
+
+overrides:
+  react: ^19.1.0
+  react-dom: ^19.1.0
+  next: ^15.3.3
+  '@keystar/ui': 0.7.19
+  '@keystone-6/fields-document': 0.0.0-rc-20250618053610
+  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250618-02
+  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250618-02

@@ -20,7 +20,12 @@ import { SlotProvider } from '@keystar/ui/slots'
 import { toastQueue } from '@keystar/ui/toast'
 import { Heading, Text } from '@keystar/ui/typography'
 
-import type { ListMeta } from '@keystone-6/core/types'
+import type {
+  BaseListTypeInfo,
+  ConditionalFieldFilter,
+  ConditionalFieldFilterCase,
+  ListMeta,
+} from '@keystone-6/core/types'
 import { useKeystone, useList, useListItem } from '@keystone-6/core/admin-ui/context'
 import {
   Fields,
@@ -157,12 +162,14 @@ function ItemForm({
   onSaveSuccess,
   fieldModes,
   fieldPositions,
+  isRequireds,
   components = {},
 }: {
   listKey: string
   initialValue: Record<string, unknown>
   onSaveSuccess: () => void
-  fieldModes: Record<string, 'edit' | 'read' | 'hidden'>
+  fieldModes: Record<string, ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
+  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
   components?: ItemPageComponents
 }) {
@@ -183,7 +190,7 @@ function ItemForm({
   }
   useEffect(() => resetValueState(), [initialValue])
 
-  const invalidFields = useInvalidFields(list.fields, value)
+  const invalidFields = useInvalidFields(list.fields, value, isRequireds)
   const [forceValidation, setForceValidation] = useState(false)
   const onSave = useEventCallback(async (e: FormEvent<HTMLFormElement>) => {
     if (e.target !== e.currentTarget) return
@@ -245,6 +252,7 @@ function ItemForm({
             invalidFields={invalidFields}
             onChange={useCallback(value => setValue(value), [setValue])}
             value={value}
+            isRequireds={isRequireds}
           />
         </VStack>
 
@@ -260,6 +268,7 @@ function ItemForm({
             value={value}
             fieldModes={fieldModes}
             fieldPositions={fieldPositions}
+            isRequireds={isRequireds}
           />
           {components.ItemPageSidebar && (
             <components.ItemPageSidebar listKey={listKey} item={value as any} />
@@ -305,20 +314,24 @@ export function ItemPage(props: ItemPageProps) {
     return deserializeItemToValue(list.fields, data.item)
   }, [list.fields, data?.item])
 
-  const { fieldModes, fieldPositions } = useMemo(() => {
+  const { fieldModes, fieldPositions, isRequireds } = useMemo(() => {
     const fieldModes = Object.fromEntries(
       Object.entries(list.fields).map(([key, val]) => [key, val.itemView.fieldMode])
     )
     const fieldPositions = Object.fromEntries(
       Object.entries(list.fields).map(([key, val]) => [key, val.itemView.fieldPosition])
     )
+    const isRequireds = Object.fromEntries(
+      Object.entries(list.fields).map(([key, val]) => [key, val.itemView.isRequired])
+    )
     for (const field of data?.keystone.adminMeta.list?.fields ?? []) {
       if (field.itemView) {
         fieldModes[field.path] = field.itemView.fieldMode
         fieldPositions[field.path] = field.itemView.fieldPosition
+        isRequireds[field.path] = field.itemView.isRequired
       }
     }
-    return { fieldModes, fieldPositions }
+    return { fieldModes, fieldPositions, isRequireds }
   }, [data?.keystone.adminMeta, list.fields])
 
   return (
@@ -379,6 +392,7 @@ export function ItemPage(props: ItemPageProps) {
             <ItemForm
               fieldModes={fieldModes}
               fieldPositions={fieldPositions}
+              isRequireds={isRequireds}
               listKey={listKey}
               initialValue={initialValue}
               onSaveSuccess={refetch}

@@ -6,12 +6,21 @@ import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { GraphQLErrorNotice, PageContainer } from '@keystone-6/core/admin-ui/components'
 import { useCreateItem } from '../../utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
+import { Suspense } from 'react'
 
 export const getCreateItemPage = (props: Parameters<typeof CreateItemPage>[0]) => () => (
   <CreateItemPage {...props} />
 )
 
 export function CreateItemPage({ listKey }: { listKey: string }) {
+  return (
+    <Suspense>
+      <XCreateItemPage listKey={listKey} />
+    </Suspense>
+  )
+}
+
+export function XCreateItemPage({ listKey }: { listKey: string }) {
   const { listsKeyByPath } = useKeystone()
   const list = useList(listsKeyByPath[listKey])
   const createItem = useCreateItem(list)

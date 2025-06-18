@@ -132,6 +132,7 @@ type KeystoneAdminUIListMeta {
   initialColumns: [String!]!
   initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
+  initialFilter: JSON
   isSingleton: Boolean!
   hideNavigation: Boolean!
   hideCreate: Boolean!
@@ -161,12 +162,8 @@ enum KeystoneAdminUIFieldMetaIsNonNull {
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-  edit
-  hidden
+  fieldMode: JSON!
+  isRequired: JSON!
 }
 
 type KeystoneAdminUIFieldMetaListView {
@@ -179,14 +176,9 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+  fieldMode: JSON!
   fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-  edit
-  read
-  hidden
+  isRequired: JSON!
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {

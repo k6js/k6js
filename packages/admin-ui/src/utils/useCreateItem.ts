@@ -1,4 +1,4 @@
-import { type ComponentProps, useEffect, useRef, useState } from 'react'
+import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
 
@@ -35,9 +35,17 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
     }`
   )
 
+  const isRequireds = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(list.fields).map(([key, field]) => [key, field.createView.isRequired])
+      ),
+    [list.fields]
+  )
+
   const [forceValidation, setForceValidation] = useState(false)
   const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
-  const invalidFields = useInvalidFields(list.fields, value)
+  const invalidFields = useInvalidFields(list.fields, value, isRequireds)
 
   const hasChangedFields = useHasChanges(
     'create',
@@ -65,6 +73,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
       forceValidation,
       invalidFields,
       value,
+      isRequireds,
       onChange: newItemValue => setValue(newItemValue),
     },
     async create(): Promise<{ id: string; label: string | null } | undefined> {
@@ -126,8 +135,16 @@ export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildIte
   const fields = fieldKeys.length
     ? Object.fromEntries(Object.entries(list.fields).filter(([key]) => fieldKeys.includes(key)))
     : list.fields
-  const invalidFields = useInvalidFields(list.fields, value)
 
+  const isRequireds = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(list.fields).map(([key, field]) => [key, field.createView.isRequired])
+      ),
+    [list.fields]
+  )
+
+  const invalidFields = useInvalidFields(list.fields, value, isRequireds)
   return {
     state: 'editing',
     props: {
@@ -138,6 +155,7 @@ export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildIte
       forceValidation,
       invalidFields,
       value,
+      isRequireds,
       onChange: newItemValue => setValue(newItemValue),
     },
     async build() {
