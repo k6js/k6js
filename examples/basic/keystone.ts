@@ -28,6 +28,7 @@ export default auth.withAuth(
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+      prismaClientPath: 'node_modules/.prisma/client',
     },
     ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /

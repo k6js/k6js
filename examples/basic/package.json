@@ -22,7 +22,7 @@
     "@keystone-ui/loading": "^6.0.2",
     "@keystone-ui/modals": "^6.0.3",
     "@keystone-ui/tooltip": "^6.0.2",
-    "@types/react": "^19.1.4",
+    "@prisma/client": "^6.5.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "react": "^19.1.0",
@@ -31,7 +31,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "@types/react": "^19.1.8",
+    "prisma": "^6.5.0"
   },
   "repository": "https://github.com/k6js/k6js/tree/main/examples/basic"
 }
