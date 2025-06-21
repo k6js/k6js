@@ -1,7 +1,12 @@
 import { useMemo } from 'react'
 import isDeepEqual from 'fast-deep-equal'
 import { type FragmentDefinitionNode, type SelectionSetNode, parse } from 'graphql'
-import type { BaseListTypeInfo, ConditionalFieldFilterCase, FieldController, FieldMeta } from '@keystone-6/core/types'
+import type {
+  BaseListTypeInfo,
+  ConditionalFieldFilterCase,
+  FieldController,
+  FieldMeta,
+} from '@keystone-6/core/types'
 import { testFilter } from './Fields'
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {

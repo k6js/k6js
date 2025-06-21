@@ -82,7 +82,7 @@ importers:
     dependencies:
       '@keystone-6/auth':
         specifier: npm:@k6js-next/auth-next@0.0.0-20250618-02
-        version: '@k6js-next/auth-next@0.0.0-20250618-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+        version: '@k6js-next/auth-next@0.0.0-20250618-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
       '@keystone-6/core':
         specifier: npm:@k6js-next/core-next@0.0.0-20250618-02
         version: '@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
@@ -107,7 +107,7 @@ importers:
         version: link:../../packages/admin-ui
       '@keystone-6/auth':
         specifier: npm:@k6js-next/auth-next@0.0.0-20250618-02
-        version: '@k6js-next/auth-next@0.0.0-20250618-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+        version: '@k6js-next/auth-next@0.0.0-20250618-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
       '@keystone-6/core':
         specifier: npm:@k6js-next/core-next@0.0.0-20250618-02
         version: '@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
@@ -161,7 +161,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@types/react':
-        specifier: ^19.1.8
+        specifier: ^19.1.0
         version: 19.1.8
       prisma:
         specifier: ^6.5.0
@@ -198,7 +198,7 @@ importers:
         specifier: 24.0.3
         version: 24.0.3
       '@types/react':
-        specifier: ^19.1.8
+        specifier: ^19.1.0
         version: 19.1.8
       prisma:
         specifier: 6.5.0
@@ -259,7 +259,7 @@ importers:
         version: 19.1.0(react@19.1.0)
     devDependencies:
       '@types/react':
-        specifier: ^19.1.8
+        specifier: ^19.1.0
         version: 19.1.8
 
 packages:
@@ -7257,7 +7257,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@k6js-next/auth-next@0.0.0-20250618-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@k6js-next/auth-next@0.0.0-20250618-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250618-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@babel/runtime': 7.27.6
       '@keystar/ui': 0.7.19(next@15.3.3(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7297,7 +7297,7 @@ snapshots:
       '@react-aria/utils': 3.28.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-stately/data': 3.13.1(react@19.1.0)
       '@sindresorhus/slugify': 1.1.2
-      apollo-upload-client: 17.0.0(@apollo/client@3.13.8(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(graphql@16.11.0)
+      apollo-upload-client: 17.0.0(@apollo/client@3.13.8(@types/react@19.1.8)(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(graphql@16.11.0)
       bcryptjs: 3.0.2
       body-parser: 2.2.0
       bytes: 3.1.2
@@ -9220,7 +9220,7 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apollo-upload-client@17.0.0(@apollo/client@3.13.8(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(graphql@16.11.0):
+  apollo-upload-client@17.0.0(@apollo/client@3.13.8(@types/react@19.1.8)(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(graphql@16.11.0):
     dependencies:
       '@apollo/client': 3.13.8(@types/react@19.1.8)(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       extract-files: 11.0.0

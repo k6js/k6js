@@ -78,7 +78,7 @@ const User: Lists.User = list({
         columns: ['type', 'value'],
         itemView: {
           fieldMode: 'read',
-        }
+        },
       },
     }),
     posts: relationship({ ref: 'Post.author', many: true }),
@@ -115,7 +115,7 @@ export const lists: Lists = {
   PhoneNumber: list({
     access: allowAll,
     ui: {
-      isHidden: true,
+      hideNavigation: true,
       // parentRelationship: 'user',
     },
     fields: {
@@ -193,11 +193,11 @@ export const lists: Lists = {
         defaultValue: 'draft',
       }),
       content: document({
-      // relationships: {
-      //   mention: {
-      //     label: 'Mention',
-      //     listKey: 'User',
-      //   },
+        // relationships: {
+        //   mention: {
+        //     label: 'Mention',
+        //     listKey: 'User',
+        //   },
         // },
         // formatting: true,
         layouts: [

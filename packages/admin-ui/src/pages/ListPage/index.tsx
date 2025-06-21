@@ -5,6 +5,7 @@ import { ActionButton } from '@keystar/ui/button'
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
+import { editIcon } from '@keystar/ui/icon/icons/editIcon'
 import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
@@ -43,6 +44,7 @@ import { useSort } from './useSort'
 import { ProgressCircle } from '@keystar/ui/progress'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import type { ListMeta } from '@keystone-6/core/types'
+import { UpdateItemDialog } from '../../components/UpdateItemDialog'
 
 type ListPageProps = { listKey: string; components?: ListPageComponents }
 type SelectedKeys = 'all' | Set<number | string>
@@ -457,6 +459,12 @@ function ListTable({
               <Text>Delete</Text>
             </Item>
           ) : null}
+          {!itemActions?.actions?.find(i => i.key === 'update') ? (
+            <Item key="update" textValue="Update">
+              <Icon src={editIcon} />
+              <Text>Update</Text>
+            </Item>
+          ) : null}
           <>
             {itemActions?.actions?.length
               ? itemActions.actions.map(i => (
@@ -502,6 +510,17 @@ function ListTable({
       >
         {idsForDeletion && (
           <DeleteItemsDialog items={idsForDeletion} listKey={listKey} refetch={refetch} />
+        )}
+      </DialogContainer>
+      <DialogContainer
+        onDismiss={() => {
+          setSelectedKeys(new Set())
+          setIdsForAction(new Set())
+          setActiveAction(null)
+        }}
+      >
+        {activeAction === 'update' && idsForAction && (
+          <UpdateItemDialog items={idsForAction} listKey={listKey} refetch={refetch} />
         )}
       </DialogContainer>
     </Fragment>

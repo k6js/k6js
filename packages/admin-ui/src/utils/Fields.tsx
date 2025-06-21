@@ -15,7 +15,7 @@ import type {
   ConditionalFieldFilter,
   ConditionalFieldFilterCase,
   FieldGroupMeta,
-  FieldMeta
+  FieldMeta,
 } from '@keystone-6/core/types'
 
 // with implicit ANDing
