@@ -26,7 +26,3 @@ export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 export { Container } from './Container'
 export { CreateButtonLink } from './CreateButtonLink'
 export { Pagination, usePaginationParams } from '../pages/ListPage/Pagination'
-
-// export page specific components
-export * from '../pages/ItemPage/common'
-export * from '../pages/ListPage/exports'

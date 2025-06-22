@@ -10,7 +10,7 @@ import { toastQueue } from '@keystar/ui/toast'
 import { useList } from '@keystone-6/core/admin-ui/context'
 
 import { Fields } from '../utils/Fields'
-import { useBuildItem } from '../utils/useUpdateItems'
+import { useUpdateBuildItem } from '../utils/useUpdateItems'
 import { TagGroup } from '@keystar/ui/tag'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
 import { GraphQLErrorNotice } from './GraphQLErrorNotice'
@@ -107,7 +107,7 @@ export function UpdateItemDialog({
 
     return isSuccess
   }
-  const builder = useBuildItem(list, selectedKeys)
+  const builder = useUpdateBuildItem(list, selectedKeys)
   const dialogState = useDialogContainer()
   const formId = useId()
   const fields = useMemo(

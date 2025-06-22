@@ -31,7 +31,8 @@
       "components/index.ts",
       "pages/*/index.tsx",
       "views/*/index.tsx",
-      "utils/index.ts"
+      "utils/index.ts",
+      "pages/extra.ts"
     ]
   },
   "files": [

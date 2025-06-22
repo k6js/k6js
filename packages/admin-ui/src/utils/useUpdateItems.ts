@@ -130,7 +130,7 @@ type BuildItemHookResult = {
   build: () => Promise<Record<string, unknown> | undefined>
 }
 
-export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildItemHookResult {
+export function useUpdateBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildItemHookResult {
   const [forceValidation, setForceValidation] = useState(false)
   const fields = fieldKeys.length
     ? Object.fromEntries(Object.entries(list.fields).filter(([key]) => fieldKeys.includes(key)))
