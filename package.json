@@ -27,7 +27,6 @@
   "workspaces": {
     "packages": [
       "examples/*",
-      "examples/*/*",
       "packages/*"
     ]
   },
@@ -47,15 +46,6 @@
       "!packages/**/dist/**",
       "!packages/core/src/fields/**/test-fixtures.{js,ts}"
     ]
-  },
-  "resolutionsttttt": {
-    "react": "npm:^19.1.0",
-    "react-dom": "npm:^19.1.0",
-    "next": "npm:^15.3.3",
-    "@keystar/ui": "npm:0.7.19",
-    "@keystone-6/fields-document": "npm:0.0.0-rc-20250618053610",
-    "@keystone-6/core": "npm:@k6js-next/core-next@0.0.0-20250618-02",
-    "@keystone-6/auth": "npm:@k6js-next/auth-next@0.0.0-20250618-02"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
