@@ -1,14 +1,14 @@
 import { type HTMLAttributes, type ReactNode, Fragment } from 'react'
+import { usePathname } from 'next/navigation'
 
 import { Breadcrumbs, Item } from '@keystar/ui/breadcrumbs'
 import { Grid, HStack } from '@keystar/ui/layout'
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style'
 import { Heading, Text } from '@keystar/ui/typography'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
+import type { ListMeta } from '@keystone-6/core/types'
 
 import { Container } from '../../components/Container'
-import type { ListMeta } from '@keystone-6/core/types'
-import { useKeystone } from '@keystone-6/core/admin-ui/context'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 type ItemPageHeaderProps = {
   label: string
@@ -18,7 +18,7 @@ type ItemPageHeaderProps = {
 
 export function ItemPageHeader(props: ItemPageHeaderProps) {
   const { label, list, title = label } = props
-  const router = useRouter()
+  const pathname = usePathname()
   const { adminPath } = useKeystone()
 
   return (
@@ -31,7 +31,7 @@ export function ItemPageHeader(props: ItemPageHeaderProps) {
         <Fragment>
           <Breadcrumbs flex size="medium" minWidth="alias.singleLineWidth">
             <Item href={`${adminPath}/${list.path}`}>{list.label}</Item>
-            <Item href={`${router.pathname}`}>{label}</Item>
+            <Item href={`${pathname}`}>{label}</Item>
           </Breadcrumbs>
 
           {/* Every page must have an H1 for accessibility. */}

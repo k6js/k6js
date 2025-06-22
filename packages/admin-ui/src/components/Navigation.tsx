@@ -1,4 +1,6 @@
 import { type ReactNode, type PropsWithChildren, useState } from 'react'
+import { usePathname } from 'next/navigation'
+
 import { ActionButton } from '@keystar/ui/button'
 import { DialogContainer } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
@@ -16,11 +18,10 @@ import {
 } from '@keystar/ui/nav-list'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
-
 import type { ListMeta } from '@keystone-6/core/types'
 import { useKeystone } from '@keystone-6/core/admin-ui/context'
+
 import { WelcomeDialog } from './WelcomeDialog'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 
 type NavItemProps = {
   /**
@@ -39,21 +40,23 @@ type NavItemProps = {
   isSelected?: boolean
 }
 
-export function getHrefFromList(list: Pick<ListMeta, 'path' | 'isSingleton'>) {
-  const { adminPath } = useKeystone()
+export function getHrefFromList(
+  list: Pick<ListMeta, 'path' | 'isSingleton'>,
+  adminPath: string = ''
+) {
   return `${adminPath}/${list.path}${list.isSingleton ? '/1' : `${adminPath}`}`
 }
 
 /** A navigation item represents a page in the AdminUI. */
 export function NavItem(props: NavItemProps) {
   const { children, href, isSelected: isSelectedProp } = props
-  const router = useRouter()
+  const pathname = usePathname()
 
   let ariaCurrent: 'page' | boolean | undefined = isSelectedProp
   if (!ariaCurrent) {
-    if (router.pathname === href) {
+    if (pathname === href) {
       ariaCurrent = 'page'
-    } else if (router.pathname.split('/')[1] === href.split('/')[1]) {
+    } else if (pathname.split('/')[1] === href.split('/')[1]) {
       ariaCurrent = true
     }
   }
@@ -81,7 +84,7 @@ export function NavContainer({ children }: PropsWithChildren) {
 
 /** @private Exported for internal consumption only. */
 export function Navigation() {
-  const { adminMeta, adminConfig } = useKeystone()
+  const { adminMeta, adminConfig, adminPath } = useKeystone()
   const lists = Object.values(adminMeta?.lists ?? [])
   const visibleLists = lists.filter(x => !x.hideNavigation)
 
@@ -93,7 +96,7 @@ export function Navigation() {
         <NavItem href="/">Dashboard</NavItem>
         <Divider />
         {visibleLists.map((list: ListMeta) => (
-          <NavItem key={list.key} href={getHrefFromList(list)}>
+          <NavItem key={list.key} href={getHrefFromList(list, adminPath)}>
             {list.label}
           </NavItem>
         ))}

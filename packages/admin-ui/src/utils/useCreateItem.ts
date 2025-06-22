@@ -1,11 +1,10 @@
+import { useRouter } from 'next/navigation'
 import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
 
 import { toastQueue } from '@keystar/ui/toast'
 
 import type { ListMeta } from '@keystone-6/core/types'
 import { type ApolloError, gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { usePreventNavigation } from './usePreventNavigation'
-import type { Fields } from '.'
 import {
   serializeValueToOperationItem,
   makeDefaultValueState,
@@ -13,7 +12,9 @@ import {
   useInvalidFields,
 } from '@keystone-6/core/admin-ui/utils'
 import { useKeystone } from '@keystone-6/core/admin-ui/context'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
+
+import { usePreventNavigation } from './usePreventNavigation'
+import type { Fields } from '.'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
@@ -145,6 +146,7 @@ export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildIte
   )
 
   const invalidFields = useInvalidFields(list.fields, value, isRequireds)
+
   return {
     state: 'editing',
     props: {

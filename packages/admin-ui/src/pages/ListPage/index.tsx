@@ -1,4 +1,5 @@
-import { type Key, Fragment, useEffect, useMemo, useState, use, type Usable } from 'react'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { type Key, Fragment, useEffect, useMemo, useState } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton } from '@keystar/ui/button'
@@ -25,12 +26,15 @@ import {
 import { toastQueue } from '@keystar/ui/toast'
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
-
+import { ProgressCircle } from '@keystar/ui/progress'
+import { ActionGroup } from '@keystar/ui/action-group'
 import type { TypedDocumentNode } from '@keystone-6/core/admin-ui/apollo'
 import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
-import { EmptyState } from '../../components/EmptyState'
 import { GraphQLErrorNotice, PageContainer } from '@keystone-6/core/admin-ui/components'
+import type { ListMeta } from '@keystone-6/core/types'
+
+import { EmptyState } from '../../components/EmptyState'
 import { CreateButtonLink, ErrorBoundary } from '../../components'
 import { type ListPageComponents } from '../../types'
 import { FieldSelection } from './FieldSelection'
@@ -41,11 +45,8 @@ import { useFilters } from './useFilters'
 import { useSearchFilter } from '../../utils/useSearchFilter'
 import { useSelectedFields } from './useSelectedFields'
 import { useSort } from './useSort'
-import { ProgressCircle } from '@keystar/ui/progress'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
-import type { ListMeta } from '@keystone-6/core/types'
 import { UpdateItemDialog } from '../../components/UpdateItemDialog'
-import { ActionGroup } from '@keystar/ui/action-group'
+import { toQueryParams } from './lib'
 
 type ListPageProps = { listKey: string; components?: ListPageComponents }
 type SelectedKeys = 'all' | Set<number | string>
@@ -54,14 +55,17 @@ const storeableQueries = ['sortBy', 'fields']
 
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const query = Object.fromEntries(searchParams.entries())
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
   const resetToDefaults = () => {
     localStorage.removeItem(localStorageKey)
-    router.replace({ pathname: router.pathname })
+    router.replace(pathname)
   }
 
   useEffect(() => {
-    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(x => {
+    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(query).some(x => {
       return x.startsWith('!') || storeableQueries.includes(x)
     })
 
@@ -72,16 +76,16 @@ function useQueryParamsFromLocalStorage(listKey: string) {
         parsed = JSON.parse(queryParamsFromLocalStorage!)
       } catch (err) {}
       if (parsed) {
-        router.replace({ query: { ...router.query, ...parsed } })
+        router.replace(toQueryParams({ ...query, ...parsed }))
       }
     }
   }, [localStorageKey])
 
   useEffect(() => {
     const queryParamsToSerialize: Record<string, string> = {}
-    for (const key in router.query) {
+    for (const key in query) {
       if (key.startsWith('!') || storeableQueries.includes(key)) {
-        queryParamsToSerialize[key] = router.query[key] as string
+        queryParamsToSerialize[key] = query[key] as string
       }
     }
     if (Object.keys(queryParamsToSerialize).length) {
@@ -89,7 +93,7 @@ function useQueryParamsFromLocalStorage(listKey: string) {
     } else {
       localStorage.removeItem(localStorageKey)
     }
-  }, [localStorageKey, router])
+  }, [localStorageKey, query])
 
   return { resetToDefaults }
 }
@@ -113,7 +117,9 @@ export function ListPage(props: ListPageProps) {
   const listKey = keystone.listsKeyByPath[props.listKey]
   const list = useList(listKey)
   const components = props.components ?? {}
-  const { query, push, replace } = useRouter()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = Object.fromEntries(searchParams.entries())
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
   const { currentPage, pageSize } = usePaginationParams({
     defaultPageSize: list.pageSize,
@@ -128,12 +134,12 @@ export function ListPage(props: ListPageProps) {
     if (!filters.filters.length) {
       const filters = getDefaultFilters(list)
       if (!filters.length) return
-      replace({
-        query: {
+      router.replace(
+        toQueryParams({
           ...query,
           ...Object.fromEntries(filters),
-        },
-      })
+        })
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list])
@@ -189,9 +195,9 @@ export function ListPage(props: ListPageProps) {
     const { search, ...queries } = query
 
     if (value.trim()) {
-      push({ query: { ...queries, search: value } })
+      router.push(toQueryParams({ ...queries, search: value }))
     } else {
-      push({ query: queries })
+      router.push(toQueryParams(queries))
     }
   }
 
@@ -244,6 +250,7 @@ export function ListPage(props: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           )}
+          {!!dataWithPevious && loading && <ProgressCircle size="small" isIndeterminate />}
           {components.ListPageActions?.length && (
             <ActionGroup
               aria-label={'actions'}
@@ -344,11 +351,13 @@ function ListTable({
   const list = useList(listKey)
   const { adminPath } = useKeystone()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = Object.fromEntries(searchParams.entries())
   const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
   const onSortChange = (sortDescriptor: SortDescriptor) => {
     const sortBy =
       sortDescriptor.direction === 'ascending' ? `-${sortDescriptor.column}` : sortDescriptor.column
-    router.push({ query: { ...router.query, sortBy } })
+    router.push(toQueryParams({ ...query, sortBy: sortBy as string }))
   }
   const selectionMode = allowDelete ? 'multiple' : 'none'
   const selectedItemCount = selectedKeys === 'all' ? 'all' : selectedKeys.size
@@ -371,7 +380,7 @@ function ListTable({
           aria-labelledby={LIST_PAGE_TITLE_ID}
           selectionMode={selectionMode}
           onSortChange={onSortChange}
-          sortDescriptor={parseSortQuery(router.query.sortBy) || parseInitialSort(list.initialSort)}
+          sortDescriptor={parseSortQuery(query.sortBy!) || parseInitialSort(list.initialSort)}
           density="spacious"
           overflowMode="truncate"
           onSelectionChange={setSelectedKeys}
