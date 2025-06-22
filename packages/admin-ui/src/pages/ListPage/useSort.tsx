@@ -1,29 +1,20 @@
-import { useMemo } from 'react'
-import { type ListMeta } from '@keystone-6/core/types'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
+'use client'
+import { useSearchParams } from 'next/navigation'
+import type { ListMeta } from '@keystone-6/core/types'
 
-export function useSort (list: ListMeta, orderableFields: Set<string>) {
-  const { query } = useRouter()
-  let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
-
-  return useMemo(() => {
-    if (sortByFromUrl === '') return null
-    if (sortByFromUrl === null) return list.initialSort
-
-    if (sortByFromUrl.startsWith('-')) {
-      const field = sortByFromUrl.slice(1)
-      if (!orderableFields.has(field)) return null
-
-      return {
-        field,
-        direction: 'DESC' as const
-      }
-    }
-
-    if (!orderableFields.has(sortByFromUrl)) return null
-    return {
-      field: sortByFromUrl,
-      direction: 'ASC' as const
-    }
-  }, [sortByFromUrl, list, orderableFields])
+export function useSort(list: ListMeta) {
+  const searchParams = useSearchParams()
+  const sortByFromUrl = searchParams.get('sortBy')
+  if (!sortByFromUrl) return null
+  const fieldKey = sortByFromUrl.startsWith('-') ? sortByFromUrl.slice(1) : sortByFromUrl
+  const direction = sortByFromUrl.startsWith('-') ? ('DESC' as const) : ('ASC' as const)
+  const field = list.fields[fieldKey]
+  if (!field) return null
+  if (!field.isOrderable) return null
+  if (sortByFromUrl === '') return null
+  if (sortByFromUrl === null) return list.initialSort
+  return {
+    field: fieldKey,
+    direction,
+  }
 }

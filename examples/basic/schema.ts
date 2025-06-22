@@ -10,6 +10,7 @@ import {
   image,
   file,
   integer,
+  multiselect,
 } from '@keystone-6/core/fields'
 import { document } from '@keystone-6/fields-document'
 import { v4 } from 'uuid'
@@ -47,8 +48,8 @@ const User: Lists.User = list({
     /** Email is used to log into the system. */
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     /** Avatar upload for the users profile, stored locally */
-    avatar: image({ storage: 'my_images' }),
-    attachment: file({ storage: 'my_files' }),
+    // avatar: image({ storage: 'my_images' }),
+    // attachment: file({ storage: 'my_files' }),
     /** Used to log in. */
     password: password(),
     /** Administrators have more access to various lists and fields. */
@@ -67,26 +68,41 @@ const User: Lists.User = list({
         },
       },
     }),
-    roles: text({}),
     phoneNumbers: relationship({
       ref: 'PhoneNumber.user',
       many: true,
       ui: {
         // TODO: Work out how to use custom views to customise the card + edit / create forms
         // views: './admin/fieldViews/user/phoneNumber',
-        displayMode: 'cards',
-        cardFields: ['type', 'value'],
-        inlineEdit: { fields: ['type', 'value'] },
-        inlineCreate: { fields: ['type', 'value'] },
-        linkToItem: true,
-        // removeMode: 'delete',
+        displayMode: 'table',
+        columns: ['type', 'value'],
+        itemView: {
+          fieldMode: 'read',
+        },
       },
     }),
     posts: relationship({ ref: 'Post.author', many: true }),
+    roles: multiselect({
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Author', value: 'author' },
+        { label: 'Subscriber', value: 'subscriber' },
+        { label: 'Contributor', value: 'contributor' },
+        { label: 'Member', value: 'member' },
+        { label: 'Customer', value: 'customer' },
+        { label: 'VIP', value: 'vip' },
+        { label: 'Super Admin', value: 'super-admin' },
+      ],
+      defaultValue: ['subscriber'],
+      // ui: {
+      //   displayMode: 'checkboxes',
+      // },
+    }),
     randomNumber: virtual({
       field: graphql.field({
         type: graphql.Float,
-        resolve () {
+        resolve() {
           return randomNumber()
         },
       }),
@@ -99,14 +115,14 @@ export const lists: Lists = {
   PhoneNumber: list({
     access: allowAll,
     ui: {
-      isHidden: true,
+      hideNavigation: true,
       // parentRelationship: 'user',
     },
     fields: {
       label: virtual({
         field: graphql.field({
           type: graphql.String,
-          resolve (item) {
+          resolve(item) {
             return `${item.type} - ${item.value}`
           },
         }),
@@ -131,6 +147,32 @@ export const lists: Lists = {
         },
       }),
       value: text({}),
+      content: document({
+        formatting: {
+          inlineMarks: {
+            bold: true,
+            italic: true,
+          },
+          listTypes: { unordered: true },
+        },
+        links: true,
+        // relationships: {
+        //   mention: {
+        //     label: 'Mention',
+        //     listKey: 'User',
+        //   },
+        // },
+        // formatting: true,
+        // layouts: [
+        //   [1, 1],
+        //   [1, 1, 1],
+        //   [2, 1],
+        //   [1, 2],
+        //   [1, 2, 1],
+        // ],
+        // links: true,
+        // dividers: true,
+      }),
     },
   }),
   Post: list({
@@ -151,13 +193,13 @@ export const lists: Lists = {
         defaultValue: 'draft',
       }),
       content: document({
-        relationships: {
-          mention: {
-            label: 'Mention',
-            listKey: 'User',
-          },
-        },
-        formatting: true,
+        // relationships: {
+        //   mention: {
+        //     label: 'Mention',
+        //     listKey: 'User',
+        //   },
+        // },
+        // formatting: true,
         layouts: [
           [1, 1],
           [1, 1, 1],
@@ -168,18 +210,18 @@ export const lists: Lists = {
         links: true,
         dividers: true,
       }),
-      publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
+      // publishDate: timestamp({ ui: { views: '@k6js/admin-ui/views/timestamp' } }),
       archiveDate: timestamp(),
       score: integer({ defaultValue: 1 }),
       isDeleted: checkbox({ defaultValue: false }),
       author: relationship({
         ref: 'User.posts',
         ui: {
-          displayMode: 'cards',
-          cardFields: ['name', 'email'],
-          inlineEdit: { fields: ['name', 'email'] },
-          linkToItem: true,
-          inlineCreate: { fields: ['name', 'email'] },
+          // displayMode: 'cards',
+          // cardFields: ['name', 'email'],
+          // inlineEdit: { fields: ['name', 'email'] },
+          // linkToItem: true,
+          // inlineCreate: { fields: ['name', 'email'] },
         },
       }),
     },
@@ -193,7 +235,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       number: graphql.field({ type: graphql.Int }),
       generatedAt: graphql.field({
         type: graphql.Int,
-        resolve () {
+        resolve() {
           return Date.now()
         },
       }),

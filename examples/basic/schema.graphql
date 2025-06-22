@@ -5,38 +5,14 @@ type User {
   id: ID!
   name: String
   email: String
-  avatar: ImageFieldOutput
-  attachment: FileFieldOutput
   password: PasswordState
   isAdmin: Boolean
-  roles: String
   phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  roles: [String!]
   randomNumber: Float
-}
-
-type ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  url: String!
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
-}
-
-type FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
 }
 
 type PasswordState {
@@ -57,7 +33,6 @@ input UserWhereInput {
   email: StringFilter
   password: PasswordFilter
   isAdmin: BooleanFilter
-  roles: StringFilter
   phoneNumbers: PhoneNumberManyRelationFilter
   posts: PostManyRelationFilter
 }
@@ -127,7 +102,6 @@ input UserOrderByInput {
   name: OrderDirection
   email: OrderDirection
   isAdmin: OrderDirection
-  roles: OrderDirection
 }
 
 enum OrderDirection {
@@ -138,24 +112,11 @@ enum OrderDirection {
 input UserUpdateInput {
   name: String
   email: String
-  avatar: ImageFieldInput
-  attachment: FileFieldInput
   password: String
   isAdmin: Boolean
-  roles: String
   phoneNumbers: PhoneNumberRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
-}
-
-input ImageFieldInput {
-  upload: Upload!
-}
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
-
-input FileFieldInput {
-  upload: Upload!
+  roles: [String!]
 }
 
 input PhoneNumberRelateToManyForUpdateInput {
@@ -180,13 +141,11 @@ input UserUpdateArgs {
 input UserCreateInput {
   name: String
   email: String
-  avatar: ImageFieldInput
-  attachment: FileFieldInput
   password: String
   isAdmin: Boolean
-  roles: String
   phoneNumbers: PhoneNumberRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
+  roles: [String!]
 }
 
 input PhoneNumberRelateToManyForCreateInput {
@@ -205,6 +164,11 @@ type PhoneNumber {
   user: User
   type: String
   value: String
+  content: PhoneNumber_content_Document
+}
+
+type PhoneNumber_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input PhoneNumberWhereUniqueInput {
@@ -245,6 +209,7 @@ input PhoneNumberUpdateInput {
   user: UserRelateToOneForUpdateInput
   type: String
   value: String
+  content: JSON
 }
 
 input UserRelateToOneForUpdateInput {
@@ -262,6 +227,7 @@ input PhoneNumberCreateInput {
   user: UserRelateToOneForCreateInput
   type: String
   value: String
+  content: JSON
 }
 
 input UserRelateToOneForCreateInput {
@@ -274,7 +240,6 @@ type Post {
   title: String
   status: String
   content: Post_content_Document
-  publishDate: DateTime
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
@@ -298,7 +263,6 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   status: StringFilter
-  publishDate: DateTimeNullableFilter
   archiveDate: DateTimeNullableFilter
   score: IntNullableFilter
   isDeleted: BooleanFilter
@@ -331,7 +295,6 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
-  publishDate: OrderDirection
   archiveDate: OrderDirection
   score: OrderDirection
   isDeleted: OrderDirection
@@ -341,7 +304,6 @@ input PostUpdateInput {
   title: String
   status: String
   content: JSON
-  publishDate: DateTime
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
@@ -357,7 +319,6 @@ input PostCreateInput {
   title: String
   status: String
   content: JSON
-  publishDate: DateTime
   archiveDate: DateTime
   score: Int
   isDeleted: Boolean
@@ -412,17 +373,17 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
-  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+  phoneNumbers(where: PhoneNumberWhereInput! = {}, orderBy: [PhoneNumberOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PhoneNumberWhereUniqueInput): [PhoneNumber!]
   phoneNumbersCount(where: PhoneNumberWhereInput! = {}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
+  authenticatedItem: User
   randomNumber: RandomNumber
   uuid: ID!
 }
@@ -431,8 +392,6 @@ type RandomNumber {
   number: Int
   generatedAt: Int
 }
-
-union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
@@ -445,23 +404,24 @@ type KeystoneAdminMeta {
 
 type KeystoneAdminUIListMeta {
   key: String!
-  itemQueryName: String!
-  listQueryName: String!
-  hideCreate: Boolean!
-  hideDelete: Boolean!
   path: String!
+  description: String
   label: String!
+  labelField: String!
   singular: String!
   plural: String!
-  description: String
-  initialColumns: [String!]!
-  pageSize: Int!
-  labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  graphql: KeystoneAdminUIGraphQL!
+  pageSize: Int!
+  initialColumns: [String!]!
+  initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
-  isHidden: Boolean!
+  initialFilter: JSON
   isSingleton: Boolean!
+  hideNavigation: Boolean!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
 }
 
 type KeystoneAdminUIFieldMeta {
@@ -487,12 +447,8 @@ enum KeystoneAdminUIFieldMetaIsNonNull {
 }
 
 type KeystoneAdminUIFieldMetaCreateView {
-  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
-}
-
-enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-  edit
-  hidden
+  fieldMode: JSON!
+  isRequired: JSON!
 }
 
 type KeystoneAdminUIFieldMetaListView {
@@ -505,14 +461,9 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 }
 
 type KeystoneAdminUIFieldMetaItemView {
-  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
-  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
-}
-
-enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-  edit
-  read
-  hidden
+  fieldMode: JSON!
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition!
+  isRequired: JSON!
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
@@ -529,6 +480,33 @@ type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIGraphQL {
+  names: KeystoneAdminUIGraphQLNames!
+}
+
+type KeystoneAdminUIGraphQLNames {
+  outputTypeName: String!
+  whereInputName: String!
+  whereUniqueInputName: String!
+  createInputName: String!
+  createMutationName: String!
+  createManyMutationName: String!
+  relateToOneForCreateInputName: String!
+  relateToManyForCreateInputName: String!
+  itemQueryName: String!
+  listOrderName: String!
+  listQueryCountName: String!
+  listQueryName: String!
+  updateInputName: String!
+  updateMutationName: String!
+  updateManyInputName: String!
+  updateManyMutationName: String!
+  relateToOneForUpdateInputName: String!
+  relateToManyForUpdateInputName: String!
+  deleteMutationName: String!
+  deleteManyMutationName: String!
 }
 
 type KeystoneAdminUISort {

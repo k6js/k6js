@@ -1,0 +1,29 @@
+{
+  "name": "@keystone-6/example-document-field",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "dev:site": "next dev -p 3001",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^6.5.1",
+    "@keystone-6/document-renderer": "^1.1.2",
+    "@keystone-6/fields-document": "^9.1.1",
+    "@preconstruct/next": "^4.0.0",
+    "@prisma/client": "6.5.0",
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.3",
+    "@types/react": "^19.1.0",
+    "prisma": "6.5.0",
+    "typescript": "^5.8.3"
+  },
+  "repository": "https://github.com/k6js/k6js/tree/main/examples/document-field"
+}

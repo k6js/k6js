@@ -1,31 +1,42 @@
-import { useEffect } from 'react'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useEffect, useRef } from 'react'
 
-export function usePreventNavigation (shouldPreventNavigationRef: { current: boolean }) {
-  const router = useRouter()
+export function usePreventNavigation(shouldPreventNavigationRef: { current: boolean }) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const query = Object.fromEntries(searchParams.entries())
+
+  const prevPathnameRef = useRef<string>(null)
+  const prevSearchParamsRef = useRef<Record<string, string | null>>(null)
 
   useEffect(() => {
-    const clientSideRouteChangeHandler = () => {
-      if (
-        shouldPreventNavigationRef.current &&
-        !window.confirm('There are unsaved changes, are you sure you want to exit?')
-      ) {
-        // throwing from here seems to be the only way to prevent the navigation
-        // we're throwing just a string here rather than an error because throwing an error
-        // causes Next to show an error overlay in dev but it doesn't show the overlay when we throw a string
-        throw 'Navigation cancelled by user'
-      }
+    prevPathnameRef.current = pathname
+    prevSearchParamsRef.current = query
+  }, [])
+
+  useEffect(() => {
+    if (
+      shouldPreventNavigationRef.current &&
+      (pathname !== prevPathnameRef.current || query !== prevSearchParamsRef.current) &&
+      !window.confirm('There are unsaved changes, are you sure you want to exit?')
+    ) {
+      throw 'Navigation cancelled by user'
     }
-    router.events.on('routeChangeStart', clientSideRouteChangeHandler)
-    const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
-      if (shouldPreventNavigationRef.current) {
-        event.preventDefault()
-      }
+
+    prevPathnameRef.current = pathname
+    prevSearchParamsRef.current = query
+  }, [pathname, query, shouldPreventNavigationRef])
+
+  const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
+    if (shouldPreventNavigationRef.current) {
+      event.preventDefault()
     }
+  }
+
+  useEffect(() => {
     window.addEventListener('beforeunload', beforeUnloadHandler)
     return () => {
-      router.events.off('routeChangeStart', clientSideRouteChangeHandler)
       window.removeEventListener('beforeunload', beforeUnloadHandler)
     }
-  }, [shouldPreventNavigationRef, router.events])
+  }, [])
 }

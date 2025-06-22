@@ -7,11 +7,11 @@ import type { DataGetter } from './dataGetter'
 
 export type Value = Record<
   string,
-  | { kind: 'error', errors: readonly [GraphQLError, ...GraphQLError[]] }
-  | { kind: 'value', value: any }
+  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
+  | { kind: 'value'; value: any }
 >
 
-export function useChangedFieldsAndDataForUpdate (
+export function useChangedFieldsAndDataForUpdate(
   fields: Record<string, FieldMeta>,
   itemGetter: DataGetter<ItemData>,
   value: Value
@@ -27,10 +27,7 @@ export function useChangedFieldsAndDataForUpdate (
   return useMemo(() => {
     const changedFields = new Set<string>()
     Object.keys(serializedFieldValues).forEach(fieldKey => {
-      let isEqual = isDeepEqual(
-        serializedFieldValues[fieldKey],
-        serializedValuesFromItem[fieldKey]
-      )
+      let isEqual = isDeepEqual(serializedFieldValues[fieldKey], serializedValuesFromItem[fieldKey])
       if (!isEqual) {
         changedFields.add(fieldKey)
       }

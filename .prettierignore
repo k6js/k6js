@@ -14,3 +14,4 @@ nexus-typegen.ts
 tests/test-projects/live-reloading/schemas/syntax-error.js
 *.vscode
 **/schema.graphql
+**/.admin/index.tsx

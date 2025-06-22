@@ -1,5 +1,5 @@
-import { type GraphQLError } from 'graphql'
-import { type JSONValue } from '@keystone-6/core/types'
+import type { GraphQLError, GraphQLFormattedError } from 'graphql'
+import type { JSONValue } from '@keystone-6/core/types'
 
 type Path = (string | number)[]
 
@@ -16,23 +16,23 @@ export type DataGetter<Value> = {
   get<
     Key extends NonNullable<Value> extends Array<any>
       ? number
-      : Exclude<keyof NonNullable<Value>, symbol>
+      : Exclude<keyof NonNullable<Value>, symbol>,
   >(
     field: Key
   ): DataGetter<(Key extends keyof NonNullable<Value> ? NonNullable<Value>[Key] : never) | null>
 }
 
-function dataGetterWithNoErrors (data: any, path: Path): DataGetter<any> {
+function dataGetterWithNoErrors(data: any, path: Path): DataGetter<any> {
   return {
     data,
     path,
-    get (field) {
+    get(field) {
       return dataGetterWithNoErrors(data?.[field] ?? null, path.concat(field))
     },
   }
 }
 
-function dataGetterWithErrors (
+function dataGetterWithErrors(
   data: any,
   errors: readonly [GraphQLError, ...GraphQLError[]],
   path: Path
@@ -41,7 +41,7 @@ function dataGetterWithErrors (
     data,
     errors,
     path,
-    get (field) {
+    get(field) {
       const newPath = path.concat(field)
       const newItem = data?.[field] ?? null
       const errorsForField = errors.filter(error => {
@@ -59,9 +59,9 @@ function dataGetterWithErrors (
   }
 }
 
-export function makeDataGetter<Data extends JSONValue> (
+export function makeDataGetter<Data extends JSONValue>(
   data: Data,
-  errors: readonly GraphQLError[] | undefined
+  errors: readonly GraphQLFormattedError[] | undefined
 ): DataGetter<Data> {
   if (errors?.length) {
     return dataGetterWithErrors(data, errors as readonly [GraphQLError, ...GraphQLError[]], [])

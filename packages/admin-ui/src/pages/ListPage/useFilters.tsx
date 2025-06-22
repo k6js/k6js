@@ -1,49 +1,52 @@
+'use client'
+import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
-import { type JSONValue, type ListMeta } from '@keystone-6/core/types'
-import { useRouter } from '@keystone-6/core/admin-ui/router'
 
-export type Filter = { field: string, type: string, value: JSONValue }
+import type { JSONValue, ListMeta } from '@keystone-6/core/types'
 
-export function useFilters (list: ListMeta, filterableFields: Set<string>) {
-  const { query } = useRouter()
+export type Filter = {
+  field: string
+  type: string
+  value: JSONValue
+}
+
+export function useFilters(list: ListMeta) {
+  const searchParams = useSearchParams()
   const possibleFilters = useMemo(() => {
-    const possibleFilters: Record<string, { type: string, field: string }> = {}
-    Object.entries(list.fields).forEach(([fieldPath, field]) => {
-      if (field.controller.filter && filterableFields.has(fieldPath)) {
-        Object.keys(field.controller.filter.types).forEach(type => {
-          possibleFilters[`!${fieldPath}_${type}`] = { type, field: fieldPath }
-        })
-      }
-    })
-    return possibleFilters
-  }, [list, filterableFields])
-  const filters = useMemo(() => {
-    let filters: Filter[] = []
-    Object.keys(query).forEach(key => {
-      const filter = possibleFilters[key]
-      const val = query[key]
-      if (filter && typeof val === 'string') {
-        let value
-        try {
-          value = JSON.parse(val)
-        } catch (err) {}
-        if (val !== undefined) {
-          filters.push({ ...filter, value })
+    const possibleFilters: Record<string, { type: string; field: string }> = {}
+
+    for (const [fieldPath, field] of Object.entries(list.fields)) {
+      if (field.isFilterable && field.controller.filter) {
+        for (const filterType in field.controller.filter.types) {
+          possibleFilters[`!${fieldPath}_${filterType}`] = {
+            type: filterType,
+            field: fieldPath,
+          }
         }
       }
+    }
+    return possibleFilters
+  }, [list])
+  const filters = useMemo(() => {
+    const filters: Filter[] = []
+    for (const [key, val] of searchParams.entries()) {
+      const filter = possibleFilters[key]
+      if (!filter) continue
+      if (typeof val !== 'string') continue
+      try {
+        const value = JSON.parse(val)
+        filters.push({ ...filter, value })
+      } catch (err) {}
+    }
+
+    const where = filters.map(filter => {
+      return list.fields[filter.field].controller.filter!.graphql({
+        type: filter.type,
+        value: filter.value,
+      })
     })
 
-    const where = filters.reduce((_where, filter) => {
-      return Object.assign(
-        _where,
-        list.fields[filter.field].controller.filter!.graphql({
-          type: filter.type,
-          value: filter.value,
-        })
-      )
-    }, {})
-    if (list.isSingleton) return { filters, where: { id: { equals: 1 }, AND: [where] } }
-    return { filters, where }
-  }, [query, possibleFilters, list])
+    return { filters, where: { AND: where } }
+  }, [searchParams, possibleFilters, list])
   return filters
 }

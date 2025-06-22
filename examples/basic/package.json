@@ -9,26 +9,24 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
-    "@k6js/admin-ui": "^0.2.0",
-    "@keystone-6/auth": "^8.0.0",
-    "@keystone-6/core": "^6.1.0",
+    "@babel/runtime": "^7.25.0",
+    "@k6js/admin-ui": "workspace:*",
+    "@keystar/ui": "0.7.19",
+    "@keystone-6/auth": "^8.1.0",
+    "@keystone-6/core": "^6.5.1",
     "@keystone-6/document-renderer": "^1.1.2",
-    "@keystone-6/fields-document": "^9.0.0",
-    "@keystone-ui/button": "^7.0.2",
-    "@keystone-ui/core": "^5.0.2",
-    "@keystone-ui/fields": "^7.2.0",
-    "@keystone-ui/icons": "^6.0.2",
-    "@keystone-ui/tooltip": "^6.0.2",
-    "@types/react": "^18.3.3",
+    "@keystone-6/fields-document": "^9.1.1",
+    "@prisma/client": "^6.5.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "slate-dom": "^0.114.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "@types/react": "^19.1.0",
+    "prisma": "^6.5.0"
   },
   "repository": "https://github.com/k6js/k6js/tree/main/examples/basic"
 }

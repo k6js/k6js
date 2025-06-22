@@ -1,78 +1,65 @@
-import { useToasts } from '@keystone-ui/toast'
-import { type ComponentProps, useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import isDeepEqual from 'fast-deep-equal'
-import { useMutation, gql, type ApolloError } from '@keystone-6/core/admin-ui/apollo'
-import { useKeystone } from '@keystone-6/core/admin-ui/context'
-import type { ListMeta } from '@keystone-6/core/types'
-import { usePreventNavigation } from './usePreventNavigation'
-import type { Fields, Value } from '.'
+import { useRouter } from 'next/navigation'
+import { type ComponentProps, useEffect, useMemo, useRef, useState } from 'react'
 
-type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
+import { toastQueue } from '@keystar/ui/toast'
+
+import type { ListMeta } from '@keystone-6/core/types'
+import { type ApolloError, gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
+import {
+  serializeValueToOperationItem,
+  makeDefaultValueState,
+  useHasChanges,
+  useInvalidFields,
+} from '@keystone-6/core/admin-ui/utils'
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
+
+import { usePreventNavigation } from './usePreventNavigation'
+import type { Fields } from '.'
 
 type CreateItemHookResult = {
   state: 'editing' | 'loading' | 'created'
   shouldPreventNavigation: boolean
   error?: ApolloError
   props: ComponentProps<typeof Fields>
-  create: () => Promise<{ id: string, label: string | null } | undefined>
+  create: () => Promise<{ id: string; label: string | null } | undefined>
 }
 
-export function useCreateItem (list: ListMeta): CreateItemHookResult {
-  const toasts = useToasts()
-  const { createViewFieldModes } = useKeystone()
-
-  const [createItem, { loading, error, data: returnedData }] = useMutation(
-    gql`mutation($data: ${list.gqlNames.createInputName}!) {
-      item: ${list.gqlNames.createMutationName}(data: $data) {
+export function useCreateItem(list: ListMeta): CreateItemHookResult {
+  const router = useRouter()
+  const { adminPath } = useKeystone()
+  const [tryCreateItem, { loading, error, data: returnedData }] = useMutation(
+    gql`mutation($data: ${list.graphql.names.createInputName}!) {
+      item: ${list.graphql.names.createMutationName}(data: $data) {
         id
         label: ${list.labelField}
-    }
-  }`
+      }
+    }`
   )
 
-  const [value, setValue] = useState(() => {
-    const value: ValueWithoutServerSideErrors = {}
-    Object.keys(list.fields).forEach(fieldPath => {
-      value[fieldPath] = { kind: 'value', value: list.fields[fieldPath].controller.defaultValue }
-    })
-    return value
-  })
-
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>()
-
-    Object.keys(value).forEach(fieldPath => {
-      const val = value[fieldPath].value
-
-      const validateFn = list.fields[fieldPath].controller.validate
-      if (validateFn) {
-        const result = validateFn(val)
-        if (result === false) {
-          invalidFields.add(fieldPath)
-        }
-      }
-    })
-    return invalidFields
-  }, [list, value])
+  const isRequireds = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(list.fields).map(([key, field]) => [key, field.createView.isRequired])
+      ),
+    [list.fields]
+  )
 
   const [forceValidation, setForceValidation] = useState(false)
+  const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
+  const invalidFields = useInvalidFields(list.fields, value, isRequireds)
 
-  const data: Record<string, any> = {}
-  Object.keys(list.fields).forEach(fieldPath => {
-    const { controller } = list.fields[fieldPath]
-    const serialized = controller.serialize(value[fieldPath].value)
-    if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-      Object.assign(data, serialized)
-    }
-  })
-
-  const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0
+  const hasChangedFields = useHasChanges(
+    'create',
+    list.fields,
+    value,
+    makeDefaultValueState(list.fields)
+  )
+  const shouldPreventNavigation = !returnedData?.item && hasChangedFields
   const shouldPreventNavigationRef = useRef(shouldPreventNavigation)
 
   useEffect(() => {
     shouldPreventNavigationRef.current = shouldPreventNavigation
   }, [shouldPreventNavigation])
-
   usePreventNavigation(shouldPreventNavigationRef)
 
   return {
@@ -80,34 +67,33 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
     shouldPreventNavigation,
     error,
     props: {
+      view: 'createView',
+      position: 'form',
       fields: list.fields,
       groups: list.groups,
-      fieldModes:
-        createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
       forceValidation,
       invalidFields,
       value,
-      onChange: useCallback((getNewValue: (value: Value) => Value) => {
-        setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
-      }, []),
+      isRequireds,
+      onChange: newItemValue => setValue(newItemValue),
     },
-    async create (): Promise<{ id: string, label: string | null } | undefined> {
+    async create(): Promise<{ id: string; label: string | null } | undefined> {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
 
-      if (newForceValidation) return undefined
+      if (newForceValidation) return
 
-      let outputData: { item: { id: string, label: string | null } }
+      let outputData: { item: { id: string; label: string | null } }
       try {
-        outputData = await createItem({
+        outputData = await tryCreateItem({
           variables: {
-            data,
+            data: serializeValueToOperationItem('create', list.fields, value),
           },
-          update (cache, { data }) {
+          update(cache, { data }) {
             if (typeof data?.item?.id === 'string') {
               cache.evict({
                 id: 'ROOT_QUERY',
-                fieldName: `${list.gqlNames.itemQueryName}(${JSON.stringify({
+                fieldName: `${list.graphql.names.itemQueryName}(${JSON.stringify({
                   where: { id: data.item.id },
                 })})`,
               })
@@ -115,16 +101,70 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
           },
         }).then(x => x.data)
       } catch {
-        return undefined
+        // TODO: what about `error` returned from the mutation? do we need
+        // to handle that too, should they be combined? does this code path
+        // even happen?
+        toastQueue.critical(`Unable to create ${list.singular.toLocaleLowerCase()}`)
+        return
       }
+
       shouldPreventNavigationRef.current = false
-      const label = outputData.item.label || outputData.item.id
-      toasts.addToast({
-        title: label,
-        message: 'Created Successfully',
-        tone: 'positive',
+      toastQueue.positive(`${list.singular} created`, {
+        timeout: 5000,
+        actionLabel: 'Create another',
+        onAction: () => {
+          router.push(`${adminPath}/${list.path}/create`)
+        },
+        shouldCloseOnAction: true,
       })
+
       return outputData.item
+    },
+  }
+}
+
+type BuildItemHookResult = {
+  state: 'editing'
+  error?: ApolloError
+  props: ComponentProps<typeof Fields>
+  build: () => Promise<Record<string, unknown> | undefined>
+}
+
+export function useBuildItem(list: ListMeta, fieldKeys: string[] = []): BuildItemHookResult {
+  const [forceValidation, setForceValidation] = useState(false)
+  const [value, setValue] = useState(() => makeDefaultValueState(list.fields))
+  const fields = fieldKeys.length
+    ? Object.fromEntries(Object.entries(list.fields).filter(([key]) => fieldKeys.includes(key)))
+    : list.fields
+
+  const isRequireds = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(list.fields).map(([key, field]) => [key, field.createView.isRequired])
+      ),
+    [list.fields]
+  )
+
+  const invalidFields = useInvalidFields(list.fields, value, isRequireds)
+
+  return {
+    state: 'editing',
+    props: {
+      view: 'createView',
+      position: 'form',
+      fields,
+      groups: list.groups,
+      forceValidation,
+      invalidFields,
+      value,
+      isRequireds,
+      onChange: newItemValue => setValue(newItemValue),
+    },
+    async build() {
+      const newForceValidation = invalidFields.size !== 0
+      setForceValidation(newForceValidation)
+      if (newForceValidation) return
+      return serializeValueToOperationItem('create', list.fields, value)
     },
   }
 }
