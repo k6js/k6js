@@ -60,7 +60,7 @@ const components: ListPageComponents = {
   ListItemsActions: {
     actions: [
       {
-        key: 'delete',
+        key: 'delete1',
         label: 'Action 1',
         onAction: (idsForAction, list, refetch) => {
           console.log('sdadsad', idsForAction, list, refetch)
@@ -167,10 +167,9 @@ const components: ListPageComponents = {
       },
     ],
     Component: ({ list, refetch, selectedItems, action, onClear }) => {
-      console.log('list', list, selectedItems, action)
       return (
         <Fragment>
-          {action === 'delete' && (
+          {action === 'delete1' && (
             <DialogContainer
               onDismiss={() => {
                 onClear?.()

@@ -453,16 +453,16 @@ function ListTable({
           }}
           buttonLabelBehavior="show"
         >
+          {!itemActions?.actions?.find(i => i.key === 'update') ? (
+            <Item key="__update" textValue="Update">
+              <Icon src={editIcon} />
+              <Text>Update</Text>
+            </Item>
+          ) : null}
           {!itemActions?.actions?.find(i => i.key === 'delete') ? (
             <Item key="delete" textValue="Delete">
               <Icon src={trash2Icon} />
               <Text>Delete</Text>
-            </Item>
-          ) : null}
-          {!itemActions?.actions?.find(i => i.key === 'update') ? (
-            <Item key="update" textValue="Update">
-              <Icon src={editIcon} />
-              <Text>Update</Text>
             </Item>
           ) : null}
           <>
@@ -519,7 +519,7 @@ function ListTable({
           setActiveAction(null)
         }}
       >
-        {activeAction === 'update' && idsForAction && (
+        {activeAction === '__update' && idsForAction && (
           <UpdateItemDialog items={idsForAction} listKey={listKey} refetch={refetch} />
         )}
       </DialogContainer>
