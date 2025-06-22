@@ -271,7 +271,12 @@ function ItemForm({
             isRequireds={isRequireds}
           />
           {components.ItemPageSidebar && (
-            <components.ItemPageSidebar listKey={listKey} item={value as any} />
+            <components.ItemPageSidebar
+              list={list}
+              item={value as any}
+              loading={loading}
+              hasChanges={hasChangedFields}
+            />
           )}
         </StickySidebar>
 
@@ -287,6 +292,14 @@ function ItemForm({
           <ResetButton hasChanges={hasChangedFields} onReset={resetValueState} />
           <Box flex />
           {!list.hideDelete ? <DeleteButton list={list} value={value} /> : null}
+          {components.ItemPageActions && (
+            <components.ItemPageActions
+              list={list}
+              item={value as any}
+              loading={loading}
+              hasChanges={hasChangedFields}
+            />
+          )}
         </BaseToolbar>
       </form>
 
@@ -340,8 +353,9 @@ export function ItemPage(props: ItemPageProps) {
       header={
         components.ItemPageHeader ? (
           <components.ItemPageHeader
-            listKey={listKey}
+            list={list}
             item={data?.item as any}
+            loading={pageLoading}
             label={
               pageLoading
                 ? 'Loading...'

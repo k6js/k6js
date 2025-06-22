@@ -45,6 +45,7 @@ import { ProgressCircle } from '@keystar/ui/progress'
 import { useRouter } from '@keystone-6/core/admin-ui/router'
 import type { ListMeta } from '@keystone-6/core/types'
 import { UpdateItemDialog } from '../../components/UpdateItemDialog'
+import { ActionGroup } from '@keystar/ui/action-group'
 
 type ListPageProps = { listKey: string; components?: ListPageComponents }
 type SelectedKeys = 'all' | Set<number | string>
@@ -203,7 +204,7 @@ export function ListPage(props: ListPageProps) {
   const allowDelete = !(list.hideDelete ?? true)
   const isConstrained = Boolean(filters.filters.length || query.search)
   const isEmpty = Boolean(data?.count === 0 && !isConstrained)
-
+  const [listAction, setListAction] = useState<Key | null>(null)
   return (
     <PageContainer
       header={
@@ -243,9 +244,39 @@ export function ListPage(props: ListPageProps) {
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
           )}
-          {components.ListPageActions && (
-            <components.ListPageActions listKey={listKey} refetch={refetch} />
+          {components.ListPageActions?.length && (
+            <ActionGroup
+              aria-label={'actions'}
+              prominence="low"
+              overflowMode="collapse"
+              onAction={key => {
+                const action = components.ListPageActions?.find(i => i.key === key)
+                action?.onAction?.(list, refetch)
+                setListAction(key)
+              }}
+            >
+              {components.ListPageActions.map(i => (
+                <Item key={i.key} textValue={i.label}>
+                  {i.icon && <Icon src={i.icon} />}
+                  <Text>{i.label}</Text>
+                </Item>
+              ))}
+            </ActionGroup>
           )}
+          {components.ListPageActions?.filter(l => l.Component).map(lpa => {
+            if (!lpa.Component) return null
+            return (
+              <lpa.Component
+                key={lpa.key}
+                list={list}
+                refetch={refetch}
+                isActive={listAction === lpa.key}
+                onComplete={() => {
+                  setListAction(null)
+                }}
+              />
+            )
+          })}
         </HStack>
 
         {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
@@ -415,59 +446,45 @@ function ListTable({
             },
           })}
           onAction={key => {
-            setActiveAction(key)
-            const customAction = itemActions?.actions?.find(i => i.key === key)
-            customAction?.onAction?.(idsForAction, list, refetch, () => {
-              setSelectedKeys(new Set())
-              setActiveAction(null)
-              setIdsForAction(null)
-            })
+            const ids =
+              selectedKeys === 'all'
+                ? data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
+                : [...selectedKeys]
             switch (key) {
               case 'delete':
-                if (itemActions?.actions?.find(i => i.key === 'delete')) {
-                  if (selectedKeys === 'all') {
-                    const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
-                    setIdsForAction(new Set(ids))
-                  } else {
-                    setIdsForAction(selectedKeys)
-                  }
-                  return
-                }
-                if (selectedKeys === 'all') {
-                  const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
+                if (!itemActions?.find(i => i.key === 'delete')) {
                   setIdsForDeletion(new Set(ids))
-                } else {
-                  setIdsForDeletion(selectedKeys)
+                  break
                 }
-                break
               default:
-                console.log('make', selectedKeys)
-                if (selectedKeys === 'all') {
-                  const ids = data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
-                  setIdsForAction(new Set(ids))
-                } else {
-                  setIdsForAction(selectedKeys)
-                }
+                setIdsForAction(new Set(ids))
+                setActiveAction(key)
+                const customAction = itemActions?.find(i => i.key === key)
+                customAction?.onAction?.(idsForAction, list, refetch, () => {
+                  setSelectedKeys(new Set())
+                  setActiveAction(null)
+                  setIdsForAction(null)
+                })
                 break
             }
           }}
           buttonLabelBehavior="show"
         >
-          {!itemActions?.actions?.find(i => i.key === 'update') ? (
+          {!itemActions?.find(i => i.key === 'update') ? (
             <Item key="__update" textValue="Update">
               <Icon src={editIcon} />
               <Text>Update</Text>
             </Item>
           ) : null}
-          {!itemActions?.actions?.find(i => i.key === 'delete') ? (
+          {!itemActions?.find(i => i.key === 'delete') ? (
             <Item key="delete" textValue="Delete">
               <Icon src={trash2Icon} />
               <Text>Delete</Text>
             </Item>
           ) : null}
           <>
-            {itemActions?.actions?.length
-              ? itemActions.actions.map(i => (
+            {itemActions?.length
+              ? itemActions.map(i => (
                   <Item key={i.key} textValue={i.label}>
                     <ErrorBoundary>
                       <Icon src={i.icon || zapIcon} />
@@ -479,19 +496,25 @@ function ListTable({
           </>
         </ActionBar>
       </ActionBarContainer>
-      {itemActions?.Component ? (
-        <itemActions.Component
-          list={list}
-          refetch={refetch}
-          selectedItems={idsForAction}
-          action={activeAction}
-          onClear={() => {
-            setSelectedKeys(new Set())
-            setActiveAction(null)
-            setIdsForAction(null)
-          }}
-        />
-      ) : null}
+      {itemActions
+        ?.filter(l => l.Component)
+        .map(lia => {
+          if (!lia.Component) return null
+          return (
+            <lia.Component
+              key={lia.key}
+              selectedItems={idsForAction}
+              list={list}
+              refetch={refetch}
+              onClear={() => {
+                setActiveAction(null)
+                setSelectedKeys(new Set())
+                setIdsForAction(null)
+              }}
+              isActive={activeAction === lia.key}
+            />
+          )
+        })}
       {!!data?.count && (
         <Pagination
           currentPage={currentPage}
