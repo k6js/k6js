@@ -16,27 +16,22 @@ import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 
 export function HomePage() {
   const { adminMeta } = useKeystone()
-  const lists = adminMeta?.lists ?? {}
+  const visibleLists = useMemo(() => {
+    return Object.values(adminMeta?.lists ?? {}).filter(list => !list.hideNavigation)
+  }, [adminMeta?.lists])
   const LIST_COUNTS_QUERY = useMemo(
     () =>
       gql(`
     query KsFetchListCounts {
-      keystone {
-        adminMeta {
-          lists {
-            key
-          }
-        }
-      }
       ${[
         ...(function* () {
-          for (const list of Object.values(lists)) {
+          for (const list of visibleLists) {
             yield `${list.key}: ${list.graphql.names.listQueryCountName}`
           }
         })(),
       ].join('\n')}
     }`),
-    [lists]
+    [visibleLists]
   )
   const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
 
@@ -68,7 +63,7 @@ export function HomePage() {
           )`}
           gap="large"
         >
-          {Object.values(lists).map(list => {
+          {visibleLists.map(list => {
             return (
               <ListCard
                 key={list.key}
@@ -77,7 +72,7 @@ export function HomePage() {
                 hideCreate={list.hideCreate ?? false}
               />
             )
-          }) ?? []}
+          })}
         </Grid>
       </VStack>
     </PageContainer>
