@@ -1,5 +1,11 @@
 # @k6js/admin-ui
 
+## 0.4.3
+
+### Patch Changes
+
+- 2d75bf9: updated everthing until Aug 15th
+
 ## 0.2.1
 
 ### Patch Changes

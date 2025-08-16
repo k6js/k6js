@@ -1,6 +1,6 @@
 {
   "name": "@k6js/admin-ui",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "license": "MIT",
   "main": "dist/k6js-admin-ui.cjs.js",
   "module": "dist/k6js-admin-ui.esm.js",
