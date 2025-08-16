@@ -8,23 +8,23 @@ import { plusIcon } from '@keystar/ui/icon/icons/plusIcon'
 import { Grid, VStack } from '@keystar/ui/layout'
 import { useLink } from '@keystar/ui/link'
 import { css, FocusRing, tokenSchema, transition } from '@keystar/ui/style'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
 
 import { GraphQLErrorNotice, PageContainer } from '@keystone-6/core/admin-ui/components'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 
 export function HomePage() {
-  const { adminMeta } = useKeystone()
-  const visibleLists = useMemo(() => {
-    return Object.values(adminMeta?.lists ?? {}).filter(list => !list.hideNavigation)
-  }, [adminMeta?.lists])
+  const { lists: allLists } = useKeystone()
+  const visibleLists = Object.values(allLists).filter(list => !list.hideNavigation)
+
   const LIST_COUNTS_QUERY = useMemo(
     () =>
       gql(`
     query KsFetchListCounts {
       ${[
         ...(function* () {
+          if (visibleLists.length === 0) yield '__typename' // noop
           for (const list of visibleLists) {
             yield `${list.key}: ${list.graphql.names.listQueryCountName}`
           }
@@ -33,6 +33,7 @@ export function HomePage() {
     }`),
     [visibleLists]
   )
+
   const { data, error } = useQuery(LIST_COUNTS_QUERY, { errorPolicy: 'all' })
 
   return (

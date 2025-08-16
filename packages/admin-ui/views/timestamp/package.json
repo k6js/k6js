@@ -1,4 +1,0 @@
-{
-  "main": "dist/k6js-admin-ui-views-timestamp.cjs.js",
-  "module": "dist/k6js-admin-ui-views-timestamp.esm.js"
-}

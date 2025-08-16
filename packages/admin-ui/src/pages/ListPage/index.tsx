@@ -1,160 +1,353 @@
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { type Key, Fragment, useEffect, useMemo, useState } from 'react'
+import isDeepEqual from 'fast-deep-equal'
+import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
+import {
+  type FormEvent,
+  type Key,
+  Fragment,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
-import { ActionButton } from '@keystar/ui/button'
-import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
+import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
+import { AlertDialog, Dialog, DialogContainer, DialogTrigger } from '@keystar/ui/dialog'
 import { Icon } from '@keystar/ui/icon'
+import { chevronDownIcon } from '@keystar/ui/icon/icons/chevronDownIcon'
+import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { textSelectIcon } from '@keystar/ui/icon/icons/textSelectIcon'
 import { editIcon } from '@keystar/ui/icon/icons/editIcon'
-import { searchXIcon } from '@keystar/ui/icon/icons/searchXIcon'
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
 import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { zapIcon } from '@keystar/ui/icon/icons/zapIcon'
-import { HStack, VStack } from '@keystar/ui/layout'
+import { Flex, HStack, VStack } from '@keystar/ui/layout'
+import { Menu, MenuTrigger } from '@keystar/ui/menu'
+import { ProgressCircle } from '@keystar/ui/progress'
 import { SearchField } from '@keystar/ui/search-field'
+import { Content } from '@keystar/ui/slots'
 import { css, tokenSchema } from '@keystar/ui/style'
 import {
   type SortDescriptor,
-  TableView,
+  Cell,
+  Column,
+  Row,
   TableBody,
   TableHeader,
-  Column,
-  Cell,
-  Row,
+  TableView,
 } from '@keystar/ui/table'
 import { toastQueue } from '@keystar/ui/toast'
-import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Heading, Text } from '@keystar/ui/typography'
-import { ProgressCircle } from '@keystar/ui/progress'
 import { ActionGroup } from '@keystar/ui/action-group'
 import type { TypedDocumentNode } from '@keystone-6/core/admin-ui/apollo'
 import { gql, useMutation, useQuery } from '@keystone-6/core/admin-ui/apollo'
 import { useKeystone, useList } from '@keystone-6/core/admin-ui/context'
 import { GraphQLErrorNotice, PageContainer } from '@keystone-6/core/admin-ui/components'
-import type { ListMeta } from '@keystone-6/core/types'
+import type { FieldMeta, JSONValue, ListMeta } from '@keystone-6/core/types'
 
-import { EmptyState } from '../../components/EmptyState'
 import { CreateButtonLink, ErrorBoundary } from '../../components'
+import { EmptyState } from '../../components/EmptyState'
 import { type ListPageComponents } from '../../types'
-import { FieldSelection } from './FieldSelection'
 import { FilterAdd } from './FilterAdd'
-import { FilterList } from './FilterList'
-import { Pagination, usePaginationParams } from './Pagination'
-import { useFilters } from './useFilters'
 import { useSearchFilter } from '../../utils/useSearchFilter'
-import { useSelectedFields } from './useSelectedFields'
-import { useSort } from './useSort'
 import { UpdateItemDialog } from '../../components/UpdateItemDialog'
-import { toQueryParams } from './lib'
+import { PaginationControls, snapValueToClosest } from './PaginationControls'
+import { Tag } from './Tag'
+import { searchParamsToUrlQuery, urlQueryToSearchParams } from './lib'
 
 type ListPageProps = { listKey: string; components?: ListPageComponents }
 type SelectedKeys = 'all' | Set<number | string>
-
-const storeableQueries = ['sortBy', 'fields']
-
-function useQueryParamsFromLocalStorage(listKey: string) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const query = Object.fromEntries(searchParams.entries())
-  const localStorageKey = `keystone.list.${listKey}.list.page.info`
-  const resetToDefaults = () => {
-    localStorage.removeItem(localStorageKey)
-    router.replace(pathname)
-  }
-
-  useEffect(() => {
-    const hasSomeQueryParamsWhichAreAboutListPage = Object.keys(query).some(x => {
-      return x.startsWith('!') || storeableQueries.includes(x)
-    })
-
-    if (!hasSomeQueryParamsWhichAreAboutListPage) {
-      const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey)
-      let parsed
-      try {
-        parsed = JSON.parse(queryParamsFromLocalStorage!)
-      } catch (err) {}
-      if (parsed) {
-        router.replace(toQueryParams({ ...query, ...parsed }))
-      }
-    }
-  }, [localStorageKey])
-
-  useEffect(() => {
-    const queryParamsToSerialize: Record<string, string> = {}
-    for (const key in query) {
-      if (key.startsWith('!') || storeableQueries.includes(key)) {
-        queryParamsToSerialize[key] = query[key] as string
-      }
-    }
-    if (Object.keys(queryParamsToSerialize).length) {
-      localStorage.setItem(localStorageKey, JSON.stringify(queryParamsToSerialize))
-    } else {
-      localStorage.removeItem(localStorageKey)
-    }
-  }, [localStorageKey, query])
-
-  return { resetToDefaults }
+export type Filter = {
+  field: string
+  type: string
+  value: JSONValue
 }
 
-function getDefaultFilters(list: ListMeta) {
-  const filters = Object.entries(list.initialFilter ?? {}).flatMap(([fieldKey, filter]) => {
-    const { controller } = list.fields[fieldKey]
-    if (controller.filter && filter) {
-      const filters = controller.filter?.parseGraphQL(filter as any as never)
-      return filters.map(
-        filter => [`!${fieldKey}_${filter.type}`, JSON.stringify(filter.value)] as const
-      )
+function FilterTag({
+  filter,
+  field,
+  onAdd,
+  onRemove,
+}: {
+  filter: Filter
+  field: FieldMeta
+  onAdd: (filter: Filter) => void
+  onRemove: () => void
+}) {
+  const Label = field.controller.filter!.Label
+  const tagElement = (
+    <Tag onRemove={onRemove}>
+      <Text>
+        <span>{field.label} </span>
+        <Label
+          label={field.controller.filter!.types[filter.type].label}
+          type={filter.type}
+          value={filter.value}
+        />
+      </Text>
+    </Tag>
+  )
+
+  // TODO: Special "empty" types need to be documented somewhere. Filters that
+  // have no editable value, basically `null` or `!null`. Which offers:
+  // * better DX — we can avoid weird nullable types and UIs that don't make sense
+  // * better UX — users don't have to jump through mental hoops, like "is not exactly" + submit empty field
+  if (filter.type === 'empty' || filter.type === 'not_empty') return tagElement
+
+  return (
+    <DialogTrigger type="popover" mobileType="tray">
+      {tagElement}
+      {onDismiss => (
+        <FilterDialog onAdd={onAdd} onDismiss={onDismiss} field={field} filter={filter} />
+      )}
+    </DialogTrigger>
+  )
+}
+
+function FilterDialog({
+  filter,
+  field,
+  onAdd,
+  onDismiss,
+}: {
+  filter: Filter
+  field: FieldMeta
+  onAdd: (filter: Filter) => void
+  onDismiss: () => void
+}) {
+  const formId = useId()
+  const [value, setValue] = useState(filter.value)
+  const onSubmit = (event: FormEvent) => {
+    if (event.target !== event.currentTarget) return
+    event.preventDefault()
+
+    onAdd(filter)
+    onDismiss()
+  }
+
+  const Filter = field.controller.filter!.Filter
+  const filterTypeLabel = field.controller.filter?.types[filter.type].label
+
+  return (
+    <Dialog>
+      <Heading>{field.label}</Heading>
+      <Content>
+        <form onSubmit={onSubmit} id={formId}>
+          <Filter
+            autoFocus
+            context="edit"
+            typeLabel={filterTypeLabel}
+            onChange={setValue}
+            type={filter.type}
+            value={value}
+          />
+        </form>
+      </Content>
+      <ButtonGroup>
+        <Button onPress={onDismiss}>Cancel</Button>
+        <Button type="submit" prominence="high" form={formId}>
+          Save
+        </Button>
+      </ButtonGroup>
+    </Dialog>
+  )
+}
+
+function getFilters(list: ListMeta, query: ParsedUrlQueryInput) {
+  const param_ = query.filter
+  const params = Array.isArray(param_) ? param_ : typeof param_ === 'string' ? [param_] : []
+  if (!params.length) return []
+  const filters: Filter[] = []
+
+  for (const [fieldPath, field] of Object.entries(list.fields)) {
+    if (!field.isFilterable) continue
+    if (!field.controller.filter) continue
+
+    for (const filterType in field.controller.filter.types) {
+      const prefix = `${fieldPath}_${filterType}`
+      for (const queryFilter of params) {
+        if (queryFilter === prefix) {
+          filters.push({
+            type: filterType,
+            field: fieldPath,
+            value: null,
+          })
+          continue
+        }
+
+        if (!queryFilter.startsWith(prefix)) continue
+        const queryValue = queryFilter.slice(prefix.length + 1)
+        try {
+          const value = JSON.parse(queryValue)
+          filters.push({
+            type: filterType,
+            field: fieldPath,
+            value,
+          })
+        } catch {}
+      }
     }
-    return []
-  })
+  }
+
   return filters
 }
 
+function getSort(list: ListMeta, query: ParsedUrlQueryInput): SortDescriptor | null {
+  const param = typeof query.sortBy === 'string' ? query.sortBy : null
+  if (param === '') return null
+  if (!param) {
+    if (!list.initialSort) return null
+    return {
+      column: list.initialSort.field,
+      direction: list.initialSort.direction === 'ASC' ? 'ascending' : 'descending',
+    }
+  }
+
+  const fieldKey = param.startsWith('-') ? param.slice(1) : param
+  const direction = param.startsWith('-') ? 'descending' : 'ascending'
+  const field = list.fields[fieldKey]
+  if (!field) return null
+  if (!field.isOrderable) return null
+
+  return {
+    column: fieldKey,
+    direction,
+  }
+}
+
+function getCurrentPage(_: ListMeta, query: ParsedUrlQuery) {
+  const currentPage = Number(query.page)
+  if (Number.isNaN(currentPage) || currentPage < 1) return 1
+  return currentPage
+}
+
+function getPageSize(list: ListMeta, query: ParsedUrlQuery) {
+  const pageSize = Number(query.pageSize)
+  if (Number.isNaN(pageSize) || pageSize < 1) return list.pageSize
+  return snapValueToClosest(pageSize)
+}
+
+function getColumns(list: ListMeta, query: ParsedUrlQueryInput): string[] {
+  const param_ = query.column
+  const params = Array.isArray(param_) ? param_ : typeof param_ === 'string' ? [param_] : []
+  if (!params.length) return list.initialColumns
+  return params
+}
+
 export function ListPage(props: ListPageProps) {
-  const keystone = useKeystone()
-  const listKey = keystone.listsKeyByPath[props.listKey]
+  const { adminPath, listsKeyByPath } = useKeystone()
+  const listKey = listsKeyByPath[props.listKey]
+
+  const localStorageListKey = `keystone.list.${listKey}.list.page.info`
+
   const list = useList(listKey)
   const components = props.components ?? {}
   const router = useRouter()
   const searchParams = useSearchParams()
-  const query = Object.fromEntries(searchParams.entries())
-  const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey)
-  const { currentPage, pageSize } = usePaginationParams({
-    defaultPageSize: list.pageSize,
-  })
-  const sort = useSort(list)
-  const filters = useFilters(list)
-  const searchParam = typeof query.search === 'string' ? query.search : ''
-  const [searchString, setSearchString] = useState(searchParam)
-  const search = useSearchFilter(searchParam, list, list.initialSearchFields)
+  const query = searchParamsToUrlQuery(searchParams)
+  const [sort, setSort] = useState<SortDescriptor | null>(() => getSort(list, {}))
+  const [columns, setColumns] = useState<string[]>(list.initialColumns)
+  const [filters, setFilters] = useState<Filter[]>(() => getFilters(list, {}))
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(list.pageSize)
+  const [searchString, setSearchString] = useState('')
+  const [selectedItems, setSelectedItems] = useState<SelectedKeys>(() => new Set([]))
+  const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
+  const [idsForAction, setIdsForAction] = useState<Set<Key> | null>(null)
+  const [activeAction, setActiveAction] = useState<Key | null>(null)
+  const dirty = useMemo(() => {
+    const defaultFilters = getFilters(list, {})
+    const defaultSort = getSort(list, {})
+    return (
+      !!searchString ||
+      !isDeepEqual(filters, defaultFilters) ||
+      !isDeepEqual(sort, defaultSort) ||
+      !isDeepEqual(columns, list.initialColumns)
+    )
+  }, [searchString, filters, sort, columns, list.initialColumns])
 
   useEffect(() => {
-    if (!filters.filters.length) {
-      const filters = getDefaultFilters(list)
-      if (!filters.length) return
-      router.replace(
-        toQueryParams({
-          ...query,
-          ...Object.fromEntries(filters),
-        })
-      )
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list])
+    // if (!isReady) return
+    let localStorageQuery
+    try {
+      localStorageQuery = JSON.parse(localStorage.getItem(localStorageListKey) ?? '{}')
+    } catch {}
 
-  const selectedFields = useSelectedFields(list)
+    setSort(getSort(list, { ...localStorageQuery, ...query }))
+    setColumns(getColumns(list, { ...localStorageQuery, ...query }))
+    setFilters(getFilters(list, { ...localStorageQuery, ...query }))
+    setCurrentPage(getCurrentPage(list, { ...localStorageQuery, ...query }))
+    setPageSize(getPageSize(list, { ...localStorageQuery, ...query }))
+    setSearchString(typeof query.search === 'string' ? query.search : '')
+  }, [list /*, isReady*/])
+
+  useEffect(() => {
+    // if (!isReady) return
+    const updatedQuery: ParsedUrlQueryInput = {
+      ...(columns.length ? { column: columns } : {}),
+      ...(sort ? { sortBy: sort.direction === 'ascending' ? sort.column : `-${sort.column}` } : {}),
+      ...(filters.length
+        ? {
+            filter: (function () {
+              const result: string[] = []
+              for (const filter of filters) {
+                if (filter.type === 'not_empty' || filter.type === 'empty') {
+                  result.push(`${filter.field}_${filter.type}`)
+                  continue
+                }
+
+                result.push(`${filter.field}_${filter.type}_${JSON.stringify(filter.value)}`)
+              }
+              return result
+            })(),
+          }
+        : {}),
+      ...(currentPage > 1 ? { page: currentPage } : {}),
+      ...(pageSize !== list.pageSize ? { pageSize } : {}),
+      ...(searchString ? { search: searchString } : {}),
+    }
+
+    localStorage.setItem(localStorageListKey, JSON.stringify(updatedQuery))
+    router.replace(urlQueryToSearchParams(updatedQuery))
+  }, [columns, sort, filters, currentPage, pageSize, searchString, list])
+
+  const allowCreate = !(list.hideCreate ?? true)
+  const allowDelete = !(list.hideDelete ?? true)
+  const isConstrained = Boolean(filters.length || query.search)
+  const selectionMode = allowDelete ? 'multiple' : 'none'
+  const selectedItemCount = selectedItems === 'all' ? 'all' : selectedItems.size
+  const readableFields = Object.values(list.fields).map(f => ({
+    id: f.key,
+    value: f.key,
+    label: f.label,
+    isDisabled: f.listView.fieldMode === 'read',
+  }))
+  const shownFields = columns.map(fieldKey => list.fields[fieldKey]).filter(Boolean)
+  const where = useMemo(
+    () =>
+      filters.map(filter => {
+        return list.fields[filter.field].controller.filter!.graphql({
+          type: filter.type,
+          value: filter.value,
+        })
+      }),
+    [list, filters]
+  )
+
+  const search = useSearchFilter(searchString, list, list.initialSearchFields)
   const { data, error, refetch, loading } = useQuery(
     useMemo((): TypedDocumentNode<{
       items: Record<string, unknown>[] | null
       count: number | null
     }> => {
-      const selectedGqlFields = [...selectedFields]
-        .map(fieldPath => list.fields[fieldPath].controller.graphqlSelection)
+      const selectedGqlFields = shownFields
+        .filter(field => field.key !== 'id') // id is always included
+        .map(field => field.controller.graphqlSelection)
         .join('\n')
 
-      // TODO: FIXME: this is bad
+      // TODO: less interpolation
       return gql`
         query (
           $where: ${list.graphql.names.whereInputName},
@@ -168,48 +361,62 @@ export function ListPage(props: ListPageProps) {
             skip: $skip,
             orderBy: $orderBy
           ) {
-            ${selectedFields.has('id') ? '' : 'id'}
+            id
             ${selectedGqlFields}
           }
           count: ${list.graphql.names.listQueryCountName}(where: $where)
         }
       `
-    }, [list, selectedFields]),
+    }, [list, shownFields]),
     {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
       variables: {
-        where: { ...filters.where, ...search },
+        where: { AND: where, ...search },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
-        orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
+        orderBy: sort
+          ? [
+              {
+                [sort.column]: sort.direction === 'ascending' ? 'asc' : 'desc',
+              },
+            ]
+          : undefined,
       },
     }
   )
 
   useEffect(() => {
-    if (searchParam === searchString) return
-    setSearchString(searchParam)
-  }, [searchParam])
-  const updateSearch = (value: string) => {
-    const { search, ...queries } = query
+    if (typeof data?.count !== 'number') return
 
-    if (value.trim()) {
-      router.push(toQueryParams({ ...queries, search: value }))
-    } else {
-      router.push(toQueryParams(queries))
+    const lastPage = Math.max(Math.ceil(data.count / pageSize), 1)
+    if (currentPage > lastPage) {
+      setCurrentPage(lastPage)
     }
-  }
+  }, [data])
 
-  const [dataWithPevious, setDataWithPrevious] = useState<typeof data>(data)
-  if (!loading && data !== dataWithPevious) {
-    setDataWithPrevious(data)
-  }
-
-  const allowCreate = !(list.hideCreate ?? true)
-  const allowDelete = !(list.hideDelete ?? true)
-  const isConstrained = Boolean(filters.filters.length || query.search)
   const isEmpty = Boolean(data?.count === 0 && !isConstrained)
+  const headers = shownFields.map(field => {
+    return {
+      id: field.key,
+      label: field.label,
+      allowsSorting: !isConstrained && !data?.items?.length ? false : field.isOrderable,
+    }
+  })
+
+  function onAddFilter(newFilter: Filter) {
+    setFilters(prevFilters => [...prevFilters, newFilter])
+  }
+
+  function resetToDefaults() {
+    const defaultFilters = getFilters(list, {})
+    const defaultSort = getSort(list, {})
+    setSearchString('')
+    setColumns(list.initialColumns)
+    setFilters(defaultFilters)
+    setSort(defaultSort)
+  }
+  const itemActions = components.ListItemsActions
   const [listAction, setListAction] = useState<Key | null>(null)
   return (
     <PageContainer
@@ -223,34 +430,48 @@ export function ListPage(props: ListPageProps) {
       title={list.label}
     >
       <VStack flex gap="large" paddingY="xlarge" minHeight={0} minWidth={0}>
-        {/* TODO: FIXME: not sure where to put this */}
-        {/* {list.description !== null && (
-          <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
-        )} */}
         <HStack gap="regular" alignItems="center">
           <SearchField
             aria-label="Search"
             isDisabled={isEmpty}
-            // label={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
-            onClear={() => updateSearch('')}
-            onSubmit={updateSearch}
-            onChange={setSearchString}
+            onClear={() => setSearchString('')}
+            onChange={v => setSearchString(v)}
             placeholder="Search…"
             value={searchString}
             width="alias.singleLineWidth"
             flexGrow={{ mobile: 1, tablet: 0 }}
           />
-          <FilterAdd listKey={listKey} isDisabled={isEmpty} />
-          <FieldSelection listKey={listKey} isDisabled={isEmpty} />
-          {Boolean(isConstrained || query.sortBy || query.fields) && (
+          <FilterAdd listKey={listKey} onAdd={onAddFilter} isDisabled={isEmpty} />
+          <MenuTrigger>
+            <ActionButton isDisabled={isEmpty}>
+              <Text>Columns</Text>
+              <Icon src={chevronDownIcon} />
+            </ActionButton>
+            <Menu
+              items={readableFields}
+              disallowEmptySelection
+              onSelectionChange={selection => {
+                if (selection === 'all') {
+                  setColumns(readableFields.map(field => field.id))
+                } else {
+                  setColumns(readableFields.filter(f => selection.has(f.id)).map(f => f.id))
+                }
+              }}
+              selectionMode="multiple"
+              selectedKeys={columns}
+            >
+              {item => <Item key={item.value}>{item.label}</Item>}
+            </Menu>
+          </MenuTrigger>
+          {dirty ? (
             <TooltipTrigger>
               <ActionButton aria-label="reset" onPress={resetToDefaults} prominence="low">
                 <Icon src={undo2Icon} />
               </ActionButton>
               <Tooltip>Reset to defaults</Tooltip>
             </TooltipTrigger>
-          )}
-          {!!dataWithPevious && loading && <ProgressCircle size="small" isIndeterminate />}
+          ) : null}
+          {/*isReady && */ loading && <ProgressCircle size="small" isIndeterminate />}
           {components.ListPageActions?.length && (
             <ActionGroup
               aria-label={'actions'}
@@ -286,22 +507,210 @@ export function ListPage(props: ListPageProps) {
           })}
         </HStack>
 
-        {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+        {filters.length ? (
+          <Flex gap="small" wrap>
+            {filters.map(filter => {
+              const field = list.fields[filter.field]
+              const onRemove = () =>
+                setFilters(prevFilters => prevFilters.filter(f => f !== filter))
+              return (
+                <FilterTag
+                  key={`${filter.field}_${filter.type}`}
+                  field={field}
+                  filter={filter}
+                  onAdd={onAddFilter}
+                  onRemove={onRemove}
+                />
+              )
+            })}
+          </Flex>
+        ) : null}
 
         <GraphQLErrorNotice errors={[error?.networkError, ...(error?.graphQLErrors ?? [])]} />
 
-        <ListTable
-          listKey={listKey}
-          allowDelete={allowDelete}
-          data={dataWithPevious}
-          currentPage={currentPage}
-          isConstrained={isConstrained}
-          pageSize={pageSize}
-          refetch={refetch}
-          selectedFields={selectedFields}
-          loading={loading}
-          itemActions={components.ListItemsActions}
-        />
+        <ActionBarContainer flex minHeight="scale.3000">
+          <TableView
+            aria-labelledby={LIST_PAGE_TITLE_ID}
+            selectionMode={selectionMode}
+            onSortChange={setSort}
+            sortDescriptor={sort ?? undefined}
+            density="spacious"
+            overflowMode="truncate"
+            onSelectionChange={setSelectedItems}
+            selectedKeys={selectedItems}
+            renderEmptyState={() =>
+              loading ? (
+                <ProgressCircle isIndeterminate />
+              ) : isConstrained ? (
+                <EmptyState
+                  icon={searchXIcon}
+                  title="No results"
+                  message="No items found. Try adjusting your search or filters."
+                />
+              ) : (
+                <EmptyState
+                  icon={textSelectIcon}
+                  title="Empty list"
+                  message="Add the first item to see it here."
+                />
+              )
+            }
+            flex
+            UNSAFE_style={{
+              opacity: loading && !!data ? 0.5 : undefined,
+            }}
+          >
+            <TableHeader columns={headers}>
+              {({ label, id, ...options }) => (
+                <Column key={id} isRowHeader {...options}>
+                  {label}
+                </Column>
+              )}
+            </TableHeader>
+            <TableBody items={data?.items ?? []}>
+              {row => {
+                return (
+                  <Row href={`${adminPath}/${list.path}/${row?.id}`}>
+                    {key => {
+                      const field = list.fields[key]
+                      const value = row[key]
+                      const CellContent = field.views.Cell
+                      return (
+                        <Cell>
+                          {CellContent ? (
+                            <CellContent value={value} field={field.controller} item={row} />
+                          ) : (
+                            <Text>{value?.toString()}</Text>
+                          )}
+                        </Cell>
+                      )
+                    }}
+                  </Row>
+                )
+              }}
+            </TableBody>
+          </TableView>
+
+          <ActionBar
+            selectedItemCount={selectedItemCount}
+            onClearSelection={() => {
+              setSelectedItems(new Set())
+              setIdsForAction(null)
+            }}
+            UNSAFE_className={css({
+              // TODO: update in @keystar/ui package
+              // make `tokenSchema.size.shadow.regular` token "0 1px 4px"
+              'div:has([data-focus-scope-start])': {
+                backgroundColor: tokenSchema.color.background.canvas,
+                border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.emphasis}`,
+                borderRadius: tokenSchema.size.radius.regular,
+                boxShadow: `0 1px 4px ${tokenSchema.color.shadow.regular}`,
+              },
+            })}
+            onAction={key => {
+              const ids =
+                selectedItems === 'all'
+                  ? data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
+                  : [...selectedItems]
+              switch (key) {
+                case 'delete':
+                  if (!itemActions?.find(i => i.key === 'delete')) {
+                    setIdsForDeletion(new Set(ids))
+                    break
+                  }
+                default:
+                  setIdsForAction(new Set(ids))
+                  setActiveAction(key)
+                  const customAction = itemActions?.find(i => i.key === key)
+                  customAction?.onAction?.(idsForAction, list, refetch, () => {
+                    setSelectedItems(new Set())
+                    setActiveAction(null)
+                    setIdsForAction(null)
+                  })
+                  break
+              }
+            }}
+            buttonLabelBehavior="show"
+          >
+            {!itemActions?.find(i => i.key === 'update') ? (
+              <Item key="__update" textValue="Update">
+                <Icon src={editIcon} />
+                <Text>Update</Text>
+              </Item>
+            ) : null}
+            {!itemActions?.find(i => i.key === 'delete') ? (
+              <Item key="delete" textValue="Delete">
+                <Icon src={trash2Icon} />
+                <Text>Delete</Text>
+              </Item>
+            ) : null}
+            <>
+              {itemActions?.length
+                ? itemActions.map(i => (
+                    <Item key={i.key} textValue={i.label}>
+                      <ErrorBoundary>
+                        <Icon src={i.icon || zapIcon} />
+                      </ErrorBoundary>
+                      <Text>{i.label}</Text>
+                    </Item>
+                  ))
+                : null}
+            </>
+          </ActionBar>
+        </ActionBarContainer>
+        {itemActions
+          ?.filter(l => l.Component)
+          .map(lia => {
+            if (!lia.Component) return null
+            return (
+              <lia.Component
+                key={lia.key}
+                selectedItems={idsForAction}
+                list={list}
+                refetch={refetch}
+                onClear={() => {
+                  setActiveAction(null)
+                  setSelectedItems(new Set())
+                  setIdsForAction(null)
+                }}
+                isActive={activeAction === lia.key}
+              />
+            )
+          })}
+        {!!data?.count && (
+          <PaginationControls
+            singular={list.singular}
+            plural={list.plural}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            total={data.count}
+            onChangePage={(page: number) => setCurrentPage(page)}
+            onChangePageSize={(pageSize: number) => setPageSize(pageSize)}
+            defaultPageSize={list.pageSize}
+          />
+        )}
+
+        <DialogContainer
+          onDismiss={() => {
+            setSelectedItems(new Set())
+            setIdsForDeletion(null)
+          }}
+        >
+          {idsForDeletion && (
+            <DeleteItemsDialog items={idsForDeletion} listKey={listKey} refetch={refetch} />
+          )}
+        </DialogContainer>
+        <DialogContainer
+          onDismiss={() => {
+            setSelectedItems(new Set())
+            setIdsForAction(new Set())
+            setActiveAction(null)
+          }}
+        >
+          {activeAction === '__update' && idsForAction && (
+            <UpdateItemDialog items={idsForAction} listKey={listKey} refetch={refetch} />
+          )}
+        </DialogContainer>
       </VStack>
     </PageContainer>
   )
@@ -323,262 +732,6 @@ function ListPageHeader({ listKey, showCreate }: { listKey: string; showCreate?:
       )}
     </Fragment>
   )
-}
-
-function ListTable({
-  allowDelete,
-  data,
-  currentPage,
-  isConstrained,
-  listKey,
-  pageSize,
-  refetch,
-  selectedFields,
-  loading,
-  itemActions,
-}: {
-  allowDelete: boolean
-  currentPage: number
-  isConstrained: boolean
-  listKey: string
-  pageSize: number
-  refetch: () => void
-  selectedFields: ReturnType<typeof useSelectedFields>
-  data: { items: Record<string, unknown>[] | null; count: number | null } | undefined
-  loading: boolean
-  itemActions?: ListPageComponents['ListItemsActions']
-}) {
-  const list = useList(listKey)
-  const { adminPath } = useKeystone()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const query = Object.fromEntries(searchParams.entries())
-  const [selectedKeys, setSelectedKeys] = useState<SelectedKeys>(() => new Set([]))
-  const onSortChange = (sortDescriptor: SortDescriptor) => {
-    const sortBy =
-      sortDescriptor.direction === 'ascending' ? `-${sortDescriptor.column}` : sortDescriptor.column
-    router.push(toQueryParams({ ...query, sortBy: sortBy as string }))
-  }
-  const selectionMode = allowDelete ? 'multiple' : 'none'
-  const selectedItemCount = selectedKeys === 'all' ? 'all' : selectedKeys.size
-  const [idsForDeletion, setIdsForDeletion] = useState<Set<Key> | null>(null)
-  const [idsForAction, setIdsForAction] = useState<Set<Key> | null>(null)
-  const [activeAction, setActiveAction] = useState<Key | null>(null)
-  const columns = [...selectedFields].map(path => {
-    const field = list.fields[path]
-    return {
-      id: path,
-      label: field.label,
-      allowsSorting: !isConstrained && !data?.items?.length ? false : field.isOrderable,
-    }
-  })
-
-  return (
-    <Fragment>
-      <ActionBarContainer flex minHeight="scale.3000">
-        <TableView
-          aria-labelledby={LIST_PAGE_TITLE_ID}
-          selectionMode={selectionMode}
-          onSortChange={onSortChange}
-          sortDescriptor={parseSortQuery(query.sortBy!) || parseInitialSort(list.initialSort)}
-          density="spacious"
-          overflowMode="truncate"
-          onSelectionChange={setSelectedKeys}
-          selectedKeys={selectedKeys}
-          renderEmptyState={() =>
-            loading ? (
-              <ProgressCircle isIndeterminate />
-            ) : isConstrained ? (
-              <EmptyState
-                icon={searchXIcon}
-                title="No results"
-                message="No items found. Try adjusting your search or filters."
-              />
-            ) : (
-              <EmptyState
-                icon={textSelectIcon}
-                title="Empty list"
-                message="Add the first item to see it here."
-              />
-            )
-          }
-          flex
-          UNSAFE_style={{
-            opacity: loading && !!data ? 0.5 : undefined,
-          }}
-        >
-          <TableHeader columns={columns}>
-            {({ label, id, ...options }) => (
-              <Column key={id} isRowHeader {...options}>
-                {label}
-              </Column>
-            )}
-          </TableHeader>
-          <TableBody items={data?.items ?? []}>
-            {row => {
-              return (
-                <Row href={`${adminPath}/${list.path}/${row?.id}`}>
-                  {key => {
-                    const field = list.fields[key]
-                    const value = row[key]
-                    const CellContent = field.views.Cell
-                    return (
-                      <Cell>
-                        {CellContent ? (
-                          <CellContent value={value} field={field.controller} item={row} />
-                        ) : (
-                          <Text>{value?.toString()}</Text>
-                        )}
-                      </Cell>
-                    )
-                  }}
-                </Row>
-              )
-            }}
-          </TableBody>
-        </TableView>
-
-        <ActionBar
-          selectedItemCount={selectedItemCount}
-          onClearSelection={() => {
-            setSelectedKeys(new Set())
-            setActiveAction(null)
-          }}
-          UNSAFE_className={css({
-            // TODO: update in @keystar/ui package
-            // make `tokenSchema.size.shadow.regular` token "0 1px 4px"
-            'div:has([data-focus-scope-start])': {
-              backgroundColor: tokenSchema.color.background.canvas,
-              border: `${tokenSchema.size.border.regular} solid ${tokenSchema.color.border.emphasis}`,
-              borderRadius: tokenSchema.size.radius.regular,
-              boxShadow: `0 1px 4px ${tokenSchema.color.shadow.regular}`,
-            },
-          })}
-          onAction={key => {
-            const ids =
-              selectedKeys === 'all'
-                ? data?.items?.filter(x => x.id != null).map(x => `${x.id}`)
-                : [...selectedKeys]
-            switch (key) {
-              case 'delete':
-                if (!itemActions?.find(i => i.key === 'delete')) {
-                  setIdsForDeletion(new Set(ids))
-                  break
-                }
-              default:
-                setIdsForAction(new Set(ids))
-                setActiveAction(key)
-                const customAction = itemActions?.find(i => i.key === key)
-                customAction?.onAction?.(idsForAction, list, refetch, () => {
-                  setSelectedKeys(new Set())
-                  setActiveAction(null)
-                  setIdsForAction(null)
-                })
-                break
-            }
-          }}
-          buttonLabelBehavior="show"
-        >
-          {!itemActions?.find(i => i.key === 'update') ? (
-            <Item key="__update" textValue="Update">
-              <Icon src={editIcon} />
-              <Text>Update</Text>
-            </Item>
-          ) : null}
-          {!itemActions?.find(i => i.key === 'delete') ? (
-            <Item key="delete" textValue="Delete">
-              <Icon src={trash2Icon} />
-              <Text>Delete</Text>
-            </Item>
-          ) : null}
-          <>
-            {itemActions?.length
-              ? itemActions.map(i => (
-                  <Item key={i.key} textValue={i.label}>
-                    <ErrorBoundary>
-                      <Icon src={i.icon || zapIcon} />
-                    </ErrorBoundary>
-                    <Text>{i.label}</Text>
-                  </Item>
-                ))
-              : null}
-          </>
-        </ActionBar>
-      </ActionBarContainer>
-      {itemActions
-        ?.filter(l => l.Component)
-        .map(lia => {
-          if (!lia.Component) return null
-          return (
-            <lia.Component
-              key={lia.key}
-              selectedItems={idsForAction}
-              list={list}
-              refetch={refetch}
-              onClear={() => {
-                setActiveAction(null)
-                setSelectedKeys(new Set())
-                setIdsForAction(null)
-              }}
-              isActive={activeAction === lia.key}
-            />
-          )
-        })}
-      {!!data?.count && (
-        <Pagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          plural={list.plural}
-          singular={list.singular}
-          total={data.count}
-        />
-      )}
-
-      <DialogContainer
-        onDismiss={() => {
-          setSelectedKeys(new Set())
-          setIdsForDeletion(null)
-        }}
-      >
-        {idsForDeletion && (
-          <DeleteItemsDialog items={idsForDeletion} listKey={listKey} refetch={refetch} />
-        )}
-      </DialogContainer>
-      <DialogContainer
-        onDismiss={() => {
-          setSelectedKeys(new Set())
-          setIdsForAction(new Set())
-          setActiveAction(null)
-        }}
-      >
-        {activeAction === '__update' && idsForAction && (
-          <UpdateItemDialog items={idsForAction} listKey={listKey} refetch={refetch} />
-        )}
-      </DialogContainer>
-    </Fragment>
-  )
-}
-
-function parseSortQuery(queryString?: string | string[]): SortDescriptor | undefined {
-  if (!queryString) return
-
-  // TODO: handle multiple sort queries?
-  if (Array.isArray(queryString)) return parseSortQuery(queryString[0])
-
-  const column = queryString.startsWith('-') ? queryString.slice(1) : queryString
-  const direction = queryString.startsWith('-') ? 'ascending' : 'descending'
-
-  return { column, direction }
-}
-
-function parseInitialSort(
-  sort?: { field: string; direction: 'ASC' | 'DESC' } | null
-): SortDescriptor | undefined {
-  if (!sort) return undefined
-  return {
-    column: sort.field,
-    direction: sort.direction === 'ASC' ? 'ascending' : 'descending',
-  }
 }
 
 function DeleteItemsDialog(props: { items: Set<Key>; listKey: string; refetch: () => void }) {

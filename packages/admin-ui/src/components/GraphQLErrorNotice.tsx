@@ -25,7 +25,7 @@ export function GraphQLErrorNotice({
                 const lines = error.message.split('\n')
                 for (const line of lines) {
                   yield (
-                    <Text elementType="li" key={i++}>
+                    <Text key={i++} elementType="li">
                       {line}
                     </Text>
                   )

@@ -30,6 +30,8 @@ export function usePreventNavigation(shouldPreventNavigationRef: { current: bool
   const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
     if (shouldPreventNavigationRef.current) {
       event.preventDefault()
+      event.returnValue = ''
+      return
     }
   }
 

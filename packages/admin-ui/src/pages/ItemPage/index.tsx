@@ -342,9 +342,9 @@ export function ItemPage(props: ItemPageProps) {
     )
     for (const field of data?.keystone.adminMeta.list?.fields ?? []) {
       if (field.itemView) {
-        fieldModes[field.path] = field.itemView.fieldMode
-        fieldPositions[field.path] = field.itemView.fieldPosition
-        isRequireds[field.path] = field.itemView.isRequired
+        fieldModes[field.key] = field.itemView.fieldMode
+        fieldPositions[field.key] = field.itemView.fieldPosition
+        isRequireds[field.key] = field.itemView.isRequired
       }
     }
     return { fieldModes, fieldPositions, isRequireds }

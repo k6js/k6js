@@ -9,9 +9,9 @@ overrides:
   react-dom: ^19.1.0
   next: ^15.3.4
   '@keystar/ui': 0.7.19
-  '@keystone-6/fields-document': 0.0.0-rc-20250618053610
-  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250622-02
-  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250622-02
+  '@keystone-6/fields-document': 0.0.0-rc-20250730060834
+  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250802-01
+  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250802-01
 
 importers:
 
@@ -81,11 +81,11 @@ importers:
   examples/auth:
     dependencies:
       '@keystone-6/auth':
-        specifier: npm:@k6js-next/auth-next@0.0.0-20250622-02
-        version: '@k6js-next/auth-next@0.0.0-20250622-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+        specifier: npm:@k6js-next/auth-next@0.0.0-20250802-01
+        version: '@k6js-next/auth-next@0.0.0-20250802-01(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250622-02
-        version: '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250802-01
+        version: '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@prisma/client':
         specifier: ^6.10.1
         version: 6.10.1(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)
@@ -109,17 +109,17 @@ importers:
         specifier: 0.7.19
         version: 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@keystone-6/auth':
-        specifier: npm:@k6js-next/auth-next@0.0.0-20250622-02
-        version: '@k6js-next/auth-next@0.0.0-20250622-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+        specifier: npm:@k6js-next/auth-next@0.0.0-20250802-01
+        version: '@k6js-next/auth-next@0.0.0-20250802-01(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250622-02
-        version: '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250802-01
+        version: '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
         version: 1.1.2(react@19.1.0)
       '@keystone-6/fields-document':
-        specifier: 0.0.0-rc-20250618053610
-        version: 0.0.0-rc-20250618053610(@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))
+        specifier: 0.0.0-rc-20250730060834
+        version: 0.0.0-rc-20250730060834(@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))
       '@prisma/client':
         specifier: ^6.5.0
         version: 6.10.1(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)
@@ -152,14 +152,14 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250622-02
-        version: '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250802-01
+        version: '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
         version: 1.1.2(react@19.1.0)
       '@keystone-6/fields-document':
-        specifier: 0.0.0-rc-20250618053610
-        version: 0.0.0-rc-20250618053610(@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))
+        specifier: 0.0.0-rc-20250730060834
+        version: 0.0.0-rc-20250730060834(@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -207,8 +207,8 @@ importers:
         specifier: 0.7.19
         version: 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250622-02
-        version: '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250802-01
+        version: '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@react-aria/i18n':
         specifier: 3.12.8
         version: 3.12.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -279,12 +279,14 @@ packages:
 
   '@apollo/server-gateway-interface@1.1.1':
     resolution: {integrity: sha512-pGwCl/po6+rxRmDMFgozKQo2pbsSwE91TpsDBAOgf74CRDPXHHtM88wbwjab0wMMZh95QfR45GGyDIdhY24bkQ==}
+    deprecated: '@apollo/server-gateway-interface v1 is part of Apollo Server v4, which is deprecated and will transition to end-of-life on January 26, 2026. As long as you are already using a non-EOL version of Node.js, upgrading to v2 should take only a few minutes. See https://www.apollographql.com/docs/apollo-server/previous-versions for details.'
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
   '@apollo/server@4.12.2':
     resolution: {integrity: sha512-jKRlf+sBMMdKYrjMoiWKne42Eb6paBfDOr08KJnUaeaiyWFj+/040FjVPQI7YGLfdwnYIsl1NUUqS2UdgezJDg==}
     engines: {node: '>=14.16.0'}
+    deprecated: Apollo Server v4 is deprecated and will transition to end-of-life on January 26, 2026. As long as you are already using a non-EOL version of Node.js, upgrading to v5 should take only a few minutes. See https://www.apollographql.com/docs/apollo-server/previous-versions for details.
     peerDependencies:
       graphql: ^16.6.0
 
@@ -1596,14 +1598,14 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@k6js-next/auth-next@0.0.0-20250622-02':
-    resolution: {integrity: sha512-PzCmXo4DulDrGzsp80s81MEb10sNoCy9lLHiAjxQj2419wddK9ROpE47r2RFuq8Ar5+IQ/3WIsUr7lsTvnvF8w==}
+  '@k6js-next/auth-next@0.0.0-20250802-01':
+    resolution: {integrity: sha512-BziqgZxZLE7Yd+9SzWunO2Gh6AEoGMRaZ36Wrdnw4Rahs1J9UDc0sqG0zIYfZjrOgB2K4hxG+DCi3t4nwZlGRQ==}
     peerDependencies:
       '@keystone-6/core': ^6.0.0
       react: ^19.1.0
 
-  '@k6js-next/core-next@0.0.0-20250622-02':
-    resolution: {integrity: sha512-sUvfzosHClTyq3LTKjv0dRB4/AUd+mi36xcEsOt0/SpVTrfyag8PD4fhgEk8Bp2Ws/S7kY5GWm9xIGlaZCXejA==}
+  '@k6js-next/core-next@0.0.0-20250802-01':
+    resolution: {integrity: sha512-JRr2D6eaqJ8/4bAPiKB1+iZfuQ1N+dPP52z80CqlxPp4oWm+ejxJCa5vz7b1Nc8oJcWeve4DFZbhAVot2wXhXg==}
     hasBin: true
 
   '@keystar/ui@0.7.19':
@@ -1616,8 +1618,8 @@ packages:
       next:
         optional: true
 
-  '@keystone-6/document-renderer@0.0.0-rc-20250618053610':
-    resolution: {integrity: sha512-U8lb4yI7mH8vymCd9wRz+3UEOZ5d+xJZRyoMKMyrc0ErQn7yrRyAjBZENALP+vDERVDtOMo5qqPsp9W7gMQ0kA==}
+  '@keystone-6/document-renderer@0.0.0-rc-20250730060834':
+    resolution: {integrity: sha512-3kRNv21Lp/N7ykUc89uk6z9bK92ONovn/X5DZVUbgYqR8ie6sorXqz9X9OgRAGmabylmQ4ELKmq0zx68aiSmNQ==}
     peerDependencies:
       react: ^19.1.0
 
@@ -1626,10 +1628,10 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-  '@keystone-6/fields-document@0.0.0-rc-20250618053610':
-    resolution: {integrity: sha512-WSsc0YFzbZYIEzbTE0GIyZjBYCuFn+Zkza7+hco8G3CmVQXtVsBAItvx7mZyIG7BMcg1lJ5WNBZ/wo4m/KWzEw==}
+  '@keystone-6/fields-document@0.0.0-rc-20250730060834':
+    resolution: {integrity: sha512-MamhY6f5QTMHKNjMcqKSTFAoKTfG/frba4qiDefYaElglTI5hdZlHiUhZsnV/qWryL6fytd/9OT8JBoIYh+uBg==}
     peerDependencies:
-      '@keystone-6/core': 0.0.0-rc-20250618053610
+      '@keystone-6/core': 0.0.0-rc-20250730060834
 
   '@manypkg/cli@0.24.0':
     resolution: {integrity: sha512-O1vbx4TnwaeeDXlNaa+N0LIKg3JmI2gEG8JaGn97UuXgiXJIYlAhfepJTykICV0i0oQHvb0xNfNmvYhwJ/cGgA==}
@@ -5331,6 +5333,9 @@ packages:
   zod@3.25.67:
     resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
+  zod@4.0.16:
+    resolution: {integrity: sha512-Djo/cM339grjI7/HmN+ixYO2FzEMcWr/On50UlQ/RjrWK1I/hPpWhpC76heCptnRFpH0LMwrEbUY50HDc0V8wg==}
+
   zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
 
@@ -7028,11 +7033,11 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@k6js-next/auth-next@0.0.0-20250622-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@k6js-next/auth-next@0.0.0-20250802-01(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@babel/runtime': 7.27.6
       '@keystar/ui': 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       fast-deep-equal: 3.1.3
       graphql: 16.11.0
       next: 15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7047,7 +7052,7 @@ snapshots:
       - sass
       - supports-color
 
-  '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)':
+  '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.11.0)
       '@apollo/client': 3.13.8(@types/react@19.1.8)(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7214,7 +7219,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@keystone-6/document-renderer@0.0.0-rc-20250618053610(react@19.1.0)':
+  '@keystone-6/document-renderer@0.0.0-rc-20250730060834(react@19.1.0)':
     dependencies:
       react: 19.1.0
 
@@ -7222,14 +7227,14 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  '@keystone-6/fields-document@0.0.0-rc-20250618053610(@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))':
+  '@keystone-6/fields-document@0.0.0-rc-20250730060834(@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))':
     dependencies:
       '@babel/runtime': 7.27.6
       '@braintree/sanitize-url': 7.0.4
       '@emotion/weak-memoize': 0.4.0
       '@keystar/ui': 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250622-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
-      '@keystone-6/document-renderer': 0.0.0-rc-20250618053610(react@19.1.0)
+      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250802-01(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+      '@keystone-6/document-renderer': 0.0.0-rc-20250730060834(react@19.1.0)
       '@react-aria/i18n': 3.12.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-aria/overlays': 3.27.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-aria/utils': 3.28.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7250,7 +7255,7 @@ snapshots:
       slate: 0.112.0
       slate-history: 0.113.1(slate@0.112.0)
       slate-react: 0.112.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(slate-dom@0.114.0(slate@0.112.0))(slate@0.112.0)
-      zod: 3.25.67
+      zod: 4.0.16
     transitivePeerDependencies:
       - next
       - slate-dom
@@ -11687,5 +11692,7 @@ snapshots:
   zen-observable@0.8.15: {}
 
   zod@3.25.67: {}
+
+  zod@4.0.16: {}
 
   zwitch@1.0.5: {}

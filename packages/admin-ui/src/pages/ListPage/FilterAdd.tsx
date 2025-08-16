@@ -1,5 +1,3 @@
-'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { type FormEvent, Fragment, useId, useMemo, useRef, useState } from 'react'
 
 import { ActionButton, ButtonGroup, Button } from '@keystar/ui/button'
@@ -14,20 +12,25 @@ import { Heading, Text } from '@keystar/ui/typography'
 import type { FieldMeta, JSONValue } from '@keystone-6/core/types'
 import { useList } from '@keystone-6/core/admin-ui/context'
 
-import { toQueryParams } from './lib'
+import type { Filter } from '.'
 
 type State =
   | { kind: 'selecting-field' }
   | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue }
 
-export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled?: boolean }) {
+export function FilterAdd({
+  listKey,
+  onAdd,
+  isDisabled,
+}: {
+  listKey: string
+  onAdd: (filter: Filter) => void
+  isDisabled?: boolean
+}) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [state, setState] = useState<State>({ kind: 'selecting-field' })
   const [forceValidation, setForceValidation] = useState(false)
-  const router = useRouter()
   const formId = useId()
-  const searchParams = useSearchParams()
-  const query = Object.fromEntries(searchParams.entries())
 
   const { fieldsWithFilters, filtersByFieldThenType, list } = useFilterFields(listKey)
   const resetState = () => {
@@ -58,12 +61,11 @@ export function FilterAdd({ listKey, isDisabled }: { listKey: string; isDisabled
       return
     }
 
-    router.push(
-      toQueryParams({
-        ...query,
-        [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
-      })
-    )
+    onAdd({
+      field: state.fieldPath,
+      type: state.filterType,
+      value: state.filterValue,
+    })
     resetState()
   }
 

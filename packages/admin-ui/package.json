@@ -30,14 +30,12 @@
       "index.ts",
       "components/index.ts",
       "pages/*/index.tsx",
-      "views/*/index.tsx",
       "utils/index.ts",
       "pages/extra.ts"
     ]
   },
   "files": [
     "dist",
-    "views",
     "components",
     "utils",
     "pages"

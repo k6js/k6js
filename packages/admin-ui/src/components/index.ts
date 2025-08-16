@@ -25,4 +25,4 @@ export { GraphQLErrorNotice } from './GraphQLErrorNotice'
 // additional exports
 export { Container } from './Container'
 export { CreateButtonLink } from './CreateButtonLink'
-export { Pagination, usePaginationParams } from '../pages/ListPage/Pagination'
+export { PaginationControls, snapValueToClosest } from '../pages/ListPage/PaginationControls'

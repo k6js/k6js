@@ -2,9 +2,11 @@ import { ActionButton } from '@keystar/ui/button'
 import { Icon } from '@keystar/ui/icon'
 import { chevronLeftIcon } from '@keystar/ui/icon/icons/chevronLeftIcon'
 import { chevronRightIcon } from '@keystar/ui/icon/icons/chevronRightIcon'
+import { undo2Icon } from '@keystar/ui/icon/icons/undo2Icon'
 import { HStack } from '@keystar/ui/layout'
 import { Picker } from '@keystar/ui/picker'
 import { Item } from '@keystar/ui/tag'
+import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip'
 import { Text } from '@keystar/ui/typography'
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
@@ -15,40 +17,33 @@ type PageItem = {
 }
 
 export function PaginationControls(props: {
-  pageSize: number
-  total: number
-  currentPage: number
   singular: string
   plural: string
+  currentPage: number
+  pageSize: number
+  total: number
+  defaultPageSize?: number
   onChangePage: (page: number) => void
   onChangePageSize: (pageSize: number) => void
   extraActions?: ReactNode
 }) {
-  const { currentPage, total, pageSize } = props
-
+  const { currentPage, total, pageSize, defaultPageSize } = props
   const { stats } = getPaginationStats(props)
 
   const nextPage = currentPage + 1
   const prevPage = currentPage - 1
-  const minPage = 1
+  const lastPage = Math.max(Math.ceil(total / pageSize), 1)
 
-  const limit = Math.ceil(total / pageSize)
   const pageItems = useMemo(() => {
     const result: PageItem[] = []
-    for (let page = minPage; page <= limit; page++) {
+    for (let page = 1; page <= lastPage; page++) {
       result.push({
         id: page,
         label: String(page),
       })
     }
     return result
-  }, [limit])
-
-  // Don't render the pagination component if the pageSize is greater than the
-  // total number of items in the list.
-  // if (total <= pageSize) {
-  //   return null
-  // }
+  }, [lastPage])
 
   return (
     <HStack
@@ -73,14 +68,22 @@ export function PaginationControls(props: {
               props.onChangePageSize(Number(key))
             }}
             selectedKey={pageSize}
-            // disable sizes greater than the total, allowing the next page to be the last
-            disabledKeys={PAGE_SIZES.filter(n => {
-              return n > snapValueToNextAvailable(total)
-            })}
             width="scale.1000"
           >
             {item => <Item>{item.label}</Item>}
           </Picker>
+          {defaultPageSize !== undefined && pageSize !== defaultPageSize ? (
+            <TooltipTrigger>
+              <ActionButton
+                aria-label="reset"
+                onPress={() => props.onChangePageSize(defaultPageSize)}
+                prominence="low"
+              >
+                <Icon src={undo2Icon} />
+              </ActionButton>
+              <Tooltip>Reset to defaults</Tooltip>
+            </TooltipTrigger>
+          ) : null}
         </HStack>
         <Text color="neutralSecondary">{stats}</Text>
       </HStack>
@@ -94,7 +97,7 @@ export function PaginationControls(props: {
         <HStack isHidden={{ below: 'desktop' }} gap="regular" alignItems="center">
           <Picker
             // prominence="low"
-            aria-label={`Page number, of 11 pages`}
+            aria-label={`Page number, of ${lastPage} pages`}
             items={pageItems}
             onSelectionChange={page => {
               props.onChangePage(Number(page))
@@ -104,12 +107,12 @@ export function PaginationControls(props: {
           >
             {item => <Item>{item.label}</Item>}
           </Picker>
-          <Text>of {limit} pages</Text>
+          <Text>of {lastPage} pages</Text>
         </HStack>
         <HStack gap="regular">
           <ActionButton
             aria-label="Previous page"
-            isDisabled={prevPage < minPage}
+            isDisabled={prevPage < 1}
             onPress={() => props.onChangePage(prevPage)}
             // prominence="low"
           >
@@ -117,7 +120,7 @@ export function PaginationControls(props: {
           </ActionButton>
           <ActionButton
             aria-label="Next page"
-            isDisabled={nextPage > limit}
+            isDisabled={nextPage > lastPage}
             onPress={() => props.onChangePage(nextPage)}
             // prominence="low"
           >
@@ -159,10 +162,6 @@ function getPaginationStats({
 }
 
 const PAGE_SIZES = [10, 25, 50, 100]
-
-function snapValueToNextAvailable(input: number, range = PAGE_SIZES) {
-  return range.find(value => input <= value) ?? range[range.length - 1]
-}
 
 export function snapValueToClosest(input: number, range = PAGE_SIZES) {
   return range.reduce((prev, curr) =>
