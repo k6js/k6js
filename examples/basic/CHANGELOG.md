@@ -1,5 +1,12 @@
 # @keystone-6/example-app-basic
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [7c6d22a]
+  - @k6js/admin-ui@0.4.4
+
 ## 0.0.6
 
 ### Patch Changes
