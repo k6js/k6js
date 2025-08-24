@@ -22,8 +22,8 @@ import { Heading, Text } from '@keystar/ui/typography'
 
 import type {
   BaseListTypeInfo,
-  ConditionalFieldFilter,
-  ConditionalFieldFilterCase,
+  ConditionalFilter,
+  ConditionalFilterCase,
   ListMeta,
 } from '@keystone-6/core/types'
 import { useKeystone, useList, useListItem } from '@keystone-6/core/admin-ui/context'
@@ -169,8 +169,8 @@ function ItemForm({
   listKey: string
   initialValue: Record<string, unknown>
   onSaveSuccess: () => void
-  fieldModes: Record<string, ConditionalFieldFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
-  isRequireds: Record<string, ConditionalFieldFilterCase<BaseListTypeInfo>>
+  fieldModes: Record<string, ConditionalFilter<'edit' | 'read' | 'hidden', BaseListTypeInfo>>
+  isRequireds: Record<string, ConditionalFilterCase<BaseListTypeInfo>>
   fieldPositions: Record<string, 'form' | 'sidebar'>
   components?: ItemPageComponents
 }) {

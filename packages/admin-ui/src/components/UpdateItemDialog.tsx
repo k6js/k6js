@@ -113,8 +113,8 @@ export function UpdateItemDialog({
   const fields = useMemo(
     () =>
       Object.values(list.fields)
-        .filter(f => f.path !== 'id')
-        .map(field => ({ label: field.label, id: field.path })),
+        .filter(f => f.key !== 'id')
+        .map(field => ({ label: field.label, id: field.key })),
     [list.fields]
   )
   return (

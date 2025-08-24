@@ -166,7 +166,7 @@ export function useUpdateBuildItem(list: ListMeta, fieldKeys: string[] = []): Bu
       setForceValidation(newForceValidation)
       if (newForceValidation) return
       return Object.values(fields).reduce((acc, field) => {
-        const fieldValue = value[field.path]
+        const fieldValue = value[field.key]
         const fieldValueSerialized = field.controller.serialize(fieldValue)
         Object.assign(acc, fieldValueSerialized)
         return acc

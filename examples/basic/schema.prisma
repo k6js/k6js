@@ -20,7 +20,7 @@ model User {
   isAdmin      Boolean       @default(false)
   phoneNumbers PhoneNumber[] @relation("PhoneNumber_user")
   posts        Post[]        @relation("Post_author")
-  roles        String        @default("[\"subscriber\"]")
+  roles        Json
 }
 
 model PhoneNumber {
@@ -29,7 +29,7 @@ model PhoneNumber {
   userId  String? @map("user")
   type    String?
   value   String  @default("")
-  content String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content Json
 
   @@index([userId])
 }
@@ -38,7 +38,7 @@ model Post {
   id          String    @id @default(cuid())
   title       String    @default("")
   status      String    @default("draft")
-  content     String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  content     Json
   archiveDate DateTime?
   score       Int?      @default(1)
   isDeleted   Boolean   @default(false)

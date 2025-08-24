@@ -24,11 +24,10 @@ function isUuid(x: unknown) {
 }
 
 export function useSearchFilter(value: string, list: ListMeta, searchFields: string[]) {
-  const { adminMeta } = useKeystone()
-  const { lists = {} } = adminMeta ?? {}
+  const { lists } = useKeystone()
   return useMemo(() => {
     const trimmedSearch = value.trim()
-    if (!trimmedSearch.length) return { OR: [] }
+    if (!trimmedSearch.length) return []
 
     const conditions: Record<string, any>[] = []
     const idField = list.fields.id.fieldMeta as { type: string; kind: string }
@@ -98,13 +97,13 @@ export function useSearchFilter(value: string, list: ListMeta, searchFields: str
       }
 
       conditions.push({
-        [field.path]: {
+        [field.key]: {
           contains: trimmedSearch,
           mode: field.search === 'insensitive' ? 'insensitive' : undefined,
         },
       })
     }
 
-    return { OR: conditions }
+    return conditions
   }, [value, list, searchFields])
 }

@@ -1,15 +1,7 @@
 import isDeepEqual from 'fast-deep-equal'
-import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
-import {
-  type FormEvent,
-  type Key,
-  Fragment,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { ParsedUrlQuery, ParsedUrlQueryInput } from 'querystring'
+import { type FormEvent, type Key, Fragment, useEffect, useId, useMemo, useState } from 'react'
 
 import { ActionBar, ActionBarContainer, Item } from '@keystar/ui/action-bar'
 import { ActionButton, Button, ButtonGroup } from '@keystar/ui/button'
@@ -372,7 +364,10 @@ export function ListPage(props: ListPageProps) {
       fetchPolicy: 'cache-and-network',
       errorPolicy: 'all',
       variables: {
-        where: { AND: where, ...search },
+        where: {
+          ...(where.length ? { AND: where } : {}),
+          ...(search.length ? { OR: search } : {}),
+        },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort
