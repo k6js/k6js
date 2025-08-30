@@ -16,12 +16,12 @@
     "@keystone-6/core": "^6.5.1",
     "@keystone-6/document-renderer": "^1.1.2",
     "@keystone-6/fields-document": "^9.1.1",
-    "@prisma/client": "^6.5.0",
+    "@prisma/client": "6.5.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "slate-dom": "^0.114.0",
+    "slate-dom": "^0.118.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

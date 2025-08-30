@@ -5,11 +5,9 @@ import { Button } from '@keystar/ui/button'
 import { HStack } from '@keystar/ui/layout'
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog'
 import { useList } from '@keystone-6/core/admin-ui/context'
-import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon'
+import { pencilIcon } from '@keystar/ui/icon/icons/pencilIcon'
 
 import { Fragment, useState } from 'react'
-import { pencilIcon } from '@keystar/ui/icon/icons/pencilIcon'
-import { cableCarIcon } from '@keystar/ui/icon/icons/cableCarIcon'
 
 const components: ListPageComponents = {
   ListPageHeader: ({ listKey, showCreate }) => {
@@ -173,11 +171,11 @@ const components: ListPageComponents = {
     {
       key: 'delete',
       label: 'Action 1',
-      icon: cableCarIcon,
+      icon: 'cableCarIcon',
       onAction: (idsForAction, list, refetch) => {
         console.log('delete1', idsForAction, list, refetch)
       },
-      Component: ({ list, refetch, selectedItems, isActive, onClear }) => {
+      Component: ({ list, refetch, selectedItemIds, isActive, onClear }) => {
         if (!isActive) return null
         return (
           <DialogContainer
@@ -185,7 +183,7 @@ const components: ListPageComponents = {
               onClear?.()
             }}
           >
-            {selectedItems && (
+            {selectedItemIds && (
               <AlertDialog
                 title="Delete items"
                 cancelLabel="Cancel"
@@ -196,8 +194,8 @@ const components: ListPageComponents = {
                 }}
                 tone="critical"
               >
-                Are you sure? This will permanently delete {selectedItems.size} item
-                {selectedItems.size === 1 ? '' : 's'}.
+                Are you sure? This will permanently delete {selectedItemIds.length} item
+                {selectedItemIds.length === 1 ? '' : 's'}.
               </AlertDialog>
             )}
           </DialogContainer>
@@ -207,7 +205,7 @@ const components: ListPageComponents = {
     {
       key: 'action2',
       label: 'Action 2',
-      icon: trash2Icon,
+      icon: 'trash2Icon',
       onAction: (idsForAction, list, refetch) => {
         console.log('2343242', idsForAction, list, refetch)
       },

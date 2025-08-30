@@ -1,6 +1,4 @@
 'use client'
-import { CreateItemPage } from '@k6js/admin-ui/pages/CreateItemPage'
+import { CreateItemPageInternal } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage'
 
-export default () => {
-  return CreateItemPage({ listKey: 'posts' })
-}
+export default () => <CreateItemPageInternal listKey="posts" />

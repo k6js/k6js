@@ -30,8 +30,7 @@
       "index.ts",
       "components/index.ts",
       "pages/*/index.tsx",
-      "utils/index.ts",
-      "pages/extra.ts"
+      "utils/index.ts"
     ]
   },
   "files": [

@@ -1,6 +1,7 @@
-import type { MaybePromise, ListMeta } from '@keystone-6/core/types'
-import type { Key } from 'react'
-import type { ItemData } from './utils'
+import type { MaybePromise, ListMeta, ActionMeta } from '@keystone-6/core/types'
+import type { ActionErrorResult } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage'
+
+export type ItemData = Record<string, unknown> | null | undefined
 
 export type ItemPageComponents = {
   ItemPageHeader?: (props: {
@@ -8,6 +9,9 @@ export type ItemPageComponents = {
     item: ItemData
     loading: boolean
     label: string
+    title: string
+    actions: ActionMeta[],
+    onAction: ((action: ActionMeta, resultId: string) => void) | null
   }) => React.JSX.Element
   ItemPageSidebar?: (props: {
     list: ListMeta
@@ -23,7 +27,9 @@ export type ItemPageComponents = {
   }) => React.JSX.Element
 }
 
+export type ListItemsActionType = NonNullable<ListPageComponents['ListItemsActions']>[number]
 export type ListPageComponents = {
+  hideUpdate?: boolean
   ListPageHeader?: (props: { listKey: string; showCreate: boolean }) => React.JSX.Element
   ListPageActions?: {
     key: string
@@ -40,18 +46,20 @@ export type ListPageComponents = {
   ListItemsActions?: {
     key: string
     label: string
-    icon?: React.JSX.Element
+    icon?: string
     onAction: (
-      selectedItems: Set<Key> | null,
+      selectedItemIds: string[],
       list: ListMeta,
       refetch: () => void,
-      onClear: () => void
+      onClear: () => void,
+      onErrors: (result: ActionErrorResult) => void
     ) => MaybePromise<void>
     Component?: (props: {
-      selectedItems: Set<Key> | null
+      selectedItemIds: string[]
       list: ListMeta
       refetch: () => void
       onClear: () => void
+      onErrors: (result: ActionErrorResult) => void
       isActive: boolean
     }) => React.JSX.Element
   }[]

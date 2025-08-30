@@ -1,4 +1,4 @@
-import { type Key, useId, useMemo, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { ButtonGroup, Button } from '@keystar/ui/button'
 import { Dialog, useDialogContainer } from '@keystar/ui/dialog'
 import { ComboboxMulti, Item } from '@keystar/ui/combobox'
@@ -6,34 +6,42 @@ import { Box, VStack } from '@keystar/ui/layout'
 import { Content } from '@keystar/ui/slots'
 import { Heading } from '@keystar/ui/typography'
 import { toastQueue } from '@keystar/ui/toast'
+import { TagGroup } from '@keystar/ui/tag'
 
 import { useList } from '@keystone-6/core/admin-ui/context'
-
-import { Fields } from '../utils/Fields'
-import { useUpdateBuildItem } from '../utils/useUpdateItems'
-import { TagGroup } from '@keystar/ui/tag'
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'
-import { GraphQLErrorNotice } from './GraphQLErrorNotice'
+import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components'
+import { Fields } from '@keystone-6/core/admin-ui/utils'
+import type {
+  ActionErrorResult,
+  ActionErrors,
+} from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage'
+import type { ActionMeta } from '@keystone-6/core/types'
+
+import { useUpdateBuildItem } from '../utils/useUpdateItems'
 
 export function UpdateItemDialog({
   listKey,
-  items,
+  itemIds,
   refetch,
+  onErrors,
+  action,
 }: {
   listKey: string
-  items: Set<Key>
+  itemIds: string[]
   refetch: () => void
+  action: ActionMeta
+  onErrors: (result: ActionErrorResult) => void
 }) {
-  let isSuccess = true
   const [selectedKeys, setSelectedKeys] = useState<string[]>(['____________________'])
   const [search, setSearch] = useState('')
   const list = useList(listKey)
-  const [updateMany, { loading, error }] = useMutation(
+  const [updateMany, { loading, error }] = useMutation<{ results?: ({ id: string } | null)[] }>(
     useMemo(
       () =>
         gql`
           mutation($data: [${list.graphql.names.updateManyInputName}!]!) {
-            ${list.graphql.names.updateManyMutationName}(data: $data) {
+            results: ${list.graphql.names.updateManyMutationName}(data: $data) {
               id
               ${list.labelField}
             }
@@ -45,67 +53,41 @@ export function UpdateItemDialog({
   )
 
   const onUpdate = async (subItem: Record<string, unknown>) => {
-    const { data, errors } = await updateMany({
-      variables: { data: [...items].map(id => ({ where: { id }, data: subItem })) },
-    })
-    /*
-      Data returns an array where successful deletions are item objects
-      and unsuccessful deletions are null values.
-      Run a reduce to count success and failure as well as
-      to generate the success message to be passed to the success toast
-     */
-    const { successfulItems, unsuccessfulItems } = data[
-      list.graphql.names.updateManyMutationName
-    ].reduce(
-      (
-        acc: {
-          successfulItems: number
-          unsuccessfulItems: number
-          successMessage: string
-        },
-        curr: any
-      ) => {
-        if (curr) {
-          acc.successfulItems++
-          acc.successMessage =
-            acc.successMessage === ''
-              ? (acc.successMessage += curr[list.labelField])
-              : (acc.successMessage += `, ${curr[list.labelField]}`)
-        } else {
-          acc.unsuccessfulItems++
-        }
-        return acc
-      },
-      { successfulItems: 0, unsuccessfulItems: 0, successMessage: '' } as {
-        successfulItems: number
-        unsuccessfulItems: number
-        successMessage: string
+    try {
+      const { errors } = await updateMany({
+        variables: { data: [...itemIds].map(id => ({ where: { id }, data: subItem })) },
+      })
+      const countFail = errors?.length ?? 0
+      const countSuccess = itemIds.length - countFail
+      const failed = new Set<string>()
+      const actionErrors: ActionErrors = {}
+      for (const error of errors ?? []) {
+        const i = error.path?.[1]
+        if (typeof i !== 'number') continue
+        const itemId = itemIds[i]
+
+        failed.add(itemId)
+        actionErrors[itemId] ??= []
+        actionErrors[itemId].push(error)
       }
-    )
 
-    // if there are errors
-    if (errors?.length) {
-      // find out how many items failed to delete.
-      // reduce error messages down to unique instances, and append to the toast as a message.
-      toastQueue.critical(
-        `Unable to update ${unsuccessfulItems} item${unsuccessfulItems === 1 ? '' : 's'}.`,
-        {
+      if (countFail) {
+        toastQueue.critical(`Could not update ${countFail} item${countFail === 1 ? '' : 's'}.`, {
+          actionLabel: 'Details',
+          onAction: () => onErrors({ action, errors: actionErrors }),
+          shouldCloseOnAction: true,
+        })
+      }
+      if (countSuccess) {
+        toastQueue.neutral(`Updated ${countSuccess} item${countSuccess === 1 ? '' : 's'}.`, {
           timeout: 5000,
-        }
-      )
-      isSuccess = false
-    }
+        })
+      }
 
-    if (successfulItems) {
-      toastQueue.positive(
-        `Updated ${successfulItems} ${successfulItems === 1 ? list.singular : list.plural}.`,
-        {
-          timeout: 5000,
-        }
-      )
+      return failed.size === 0
+    } catch (error) {
+      console.error(error)
     }
-
-    return isSuccess
   }
   const builder = useUpdateBuildItem(list, selectedKeys)
   const dialogState = useDialogContainer()

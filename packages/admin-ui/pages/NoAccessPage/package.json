@@ -1,4 +1,0 @@
-{
-  "main": "dist/k6js-admin-ui-pages-NoAccessPage.cjs.js",
-  "module": "dist/k6js-admin-ui-pages-NoAccessPage.esm.js"
-}

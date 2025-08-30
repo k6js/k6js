@@ -9,9 +9,9 @@ overrides:
   react-dom: ^19.1.0
   next: ^15.3.4
   '@keystar/ui': 0.7.19
-  '@keystone-6/fields-document': 0.0.0-rc-20250730060834
-  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250824-02
-  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250824-02
+  '@keystone-6/fields-document': 0.0.0-rc-20250828073606
+  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250830-06
+  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250830-06
 
 importers:
 
@@ -81,18 +81,18 @@ importers:
   examples/auth:
     dependencies:
       '@keystone-6/auth':
-        specifier: npm:@k6js-next/auth-next@0.0.0-20250824-02
-        version: '@k6js-next/auth-next@0.0.0-20250824-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+        specifier: npm:@k6js-next/auth-next@0.0.0-20250830-06
+        version: '@k6js-next/auth-next@0.0.0-20250830-06(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250824-02
-        version: '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250830-06
+        version: '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@prisma/client':
-        specifier: ^6.10.1
-        version: 6.10.1(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.8.3))(typescript@5.8.3)
     devDependencies:
       prisma:
-        specifier: ^6.10.1
-        version: 6.10.1(typescript@5.8.3)
+        specifier: 6.5.0
+        version: 6.5.0(typescript@5.8.3)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -109,20 +109,20 @@ importers:
         specifier: 0.7.19
         version: 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@keystone-6/auth':
-        specifier: npm:@k6js-next/auth-next@0.0.0-20250824-02
-        version: '@k6js-next/auth-next@0.0.0-20250824-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
+        specifier: npm:@k6js-next/auth-next@0.0.0-20250830-06
+        version: '@k6js-next/auth-next@0.0.0-20250830-06(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)'
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250824-02
-        version: '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250830-06
+        version: '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
         version: 1.1.2(react@19.1.0)
       '@keystone-6/fields-document':
-        specifier: 0.0.0-rc-20250730060834
-        version: 0.0.0-rc-20250730060834(@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))
+        specifier: 0.0.0-rc-20250828073606
+        version: 0.0.0-rc-20250828073606(@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.118.1(slate@0.118.1))
       '@prisma/client':
-        specifier: ^6.5.0
-        version: 6.10.1(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)
+        specifier: 6.5.0
+        version: 6.5.0(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
@@ -136,8 +136,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       slate-dom:
-        specifier: ^0.114.0
-        version: 0.114.0(slate@0.112.0)
+        specifier: ^0.118.0
+        version: 0.118.1(slate@0.118.1)
       uuid:
         specifier: ^9.0.0
         version: 9.0.1
@@ -152,14 +152,14 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250824-02
-        version: '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250830-06
+        version: '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@keystone-6/document-renderer':
         specifier: ^1.1.2
         version: 1.1.2(react@19.1.0)
       '@keystone-6/fields-document':
-        specifier: 0.0.0-rc-20250730060834
-        version: 0.0.0-rc-20250730060834(@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))
+        specifier: 0.0.0-rc-20250828073606
+        version: 0.0.0-rc-20250828073606(@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.118.1(slate@0.118.1))
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -207,8 +207,8 @@ importers:
         specifier: 0.7.19
         version: 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@keystone-6/core':
-        specifier: npm:@k6js-next/core-next@0.0.0-20250824-02
-        version: '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+        specifier: npm:@k6js-next/core-next@0.0.0-20250830-06
+        version: '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       '@react-aria/i18n':
         specifier: 3.12.8
         version: 3.12.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1598,14 +1598,14 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@k6js-next/auth-next@0.0.0-20250824-02':
-    resolution: {integrity: sha512-xu1U0caaOFGgBPqtC7UE9c3ZowSI4KozoW/xrsa2psI2S0bOkm1NsCrCCRGJLnZ2AGyqL+03AjouSvk0rJpXzg==}
+  '@k6js-next/auth-next@0.0.0-20250830-06':
+    resolution: {integrity: sha512-HeMAhNVZruJqtpb0Aw3snQeIr+BLO/6OWqijggE5u2Ea0VysSOF7UHDDBssqpJyO7shzCh6o3e7oL8cWyBXUVQ==}
     peerDependencies:
       '@keystone-6/core': ^6.0.0
       react: ^19.1.0
 
-  '@k6js-next/core-next@0.0.0-20250824-02':
-    resolution: {integrity: sha512-lVxGuN9lUvrIwTRRsoY9z/ur2djWbIFOwZZ3slwHdfIRJvyjsG8EECCYByRJJ8DFc0suyg2aMArE7Qfa680VuA==}
+  '@k6js-next/core-next@0.0.0-20250830-06':
+    resolution: {integrity: sha512-23g7nZse+JVwXTDo14L40EKDOIFhbB0agHwjhjiyliVZRj3dID6pl+ZBE/uYdcuga9wD47PyUgm/QuMxvHganQ==}
     hasBin: true
 
   '@keystar/ui@0.7.19':
@@ -1618,8 +1618,8 @@ packages:
       next:
         optional: true
 
-  '@keystone-6/document-renderer@0.0.0-rc-20250730060834':
-    resolution: {integrity: sha512-3kRNv21Lp/N7ykUc89uk6z9bK92ONovn/X5DZVUbgYqR8ie6sorXqz9X9OgRAGmabylmQ4ELKmq0zx68aiSmNQ==}
+  '@keystone-6/document-renderer@0.0.0-rc-20250828073606':
+    resolution: {integrity: sha512-C5lxnRxns6ROQSMt819FATkE5FjoexgmJi0ODZLE7qPBGxP4BQpsZq2bsMcjD0S4zermnmxCtzki4zOIx5HtEw==}
     peerDependencies:
       react: ^19.1.0
 
@@ -1628,10 +1628,10 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-  '@keystone-6/fields-document@0.0.0-rc-20250730060834':
-    resolution: {integrity: sha512-MamhY6f5QTMHKNjMcqKSTFAoKTfG/frba4qiDefYaElglTI5hdZlHiUhZsnV/qWryL6fytd/9OT8JBoIYh+uBg==}
+  '@keystone-6/fields-document@0.0.0-rc-20250828073606':
+    resolution: {integrity: sha512-m/Z2TVmH3LGW42Jt4TG+z8XRyns0E8R4nDDCGqHqUUSnLgP8p4o4APbsMSdR+hqW6GTtewYmwDbp0g/60T+Avg==}
     peerDependencies:
-      '@keystone-6/core': 0.0.0-rc-20250730060834
+      '@keystone-6/core': 0.0.0-rc-20250828073606
 
   '@manypkg/cli@0.24.0':
     resolution: {integrity: sha512-O1vbx4TnwaeeDXlNaa+N0LIKg3JmI2gEG8JaGn97UuXgiXJIYlAhfepJTykICV0i0oQHvb0xNfNmvYhwJ/cGgA==}
@@ -1752,18 +1752,6 @@ packages:
 
   '@preconstruct/next@4.0.0':
     resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
-
-  '@prisma/client@6.10.1':
-    resolution: {integrity: sha512-Re4pMlcUsQsUTAYMK7EJ4Bw2kg3WfZAAlr8GjORJaK4VOP6LxRQUQ1TuLnxcF42XqGkWQ36q5CQF1yVadANQ6w==}
-    engines: {node: '>=18.18'}
-    peerDependencies:
-      prisma: '*'
-      typescript: '>=5.1.0'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-      typescript:
-        optional: true
 
   '@prisma/client@6.5.0':
     resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
@@ -4863,8 +4851,8 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
 
-  slate-dom@0.114.0:
-    resolution: {integrity: sha512-3LWIfiDPNQSY+SCPsvMTErCkx2gXTViLoWISisw6uM+unwiOkEF9ZmpHp88/SSmcq6k3P4aIquehUNeNUlkdiA==}
+  slate-dom@0.118.1:
+    resolution: {integrity: sha512-D6J0DF9qdJrXnRDVhYZfHzzpVxzqKRKFfS0Wcin2q0UC+OnQZ0lbCGJobatVbisOlbSe7dYFHBp9OZ6v1lEcbQ==}
     peerDependencies:
       slate: '>=0.99.0'
 
@@ -4873,16 +4861,16 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-react@0.112.1:
-    resolution: {integrity: sha512-V9b+waxPweXqAkSQmKQ1afG4Me6nVQACPpxQtHPIX02N7MXa5f5WilYv+bKt7vKKw+IZC2F0Gjzhv5BekVgP/A==}
+  slate-react@0.117.4:
+    resolution: {integrity: sha512-9ckilyUzQS1VHJnstIpgInhcWnTDgv2Cd7m1HOQVl3zasChoapPSMftzT/wl/48grZaZYZIi4xVuzGTcFRUWFg==}
     peerDependencies:
       react: ^19.1.0
       react-dom: ^19.1.0
-      slate: '>=0.99.0'
-      slate-dom: '>=0.110.2'
+      slate: '>=0.114.0'
+      slate-dom: '>=0.116.0'
 
-  slate@0.112.0:
-    resolution: {integrity: sha512-PRnfFgDA3tSop4OH47zu4M1R4Uuhm/AmASu29Qp7sGghVFb713kPBKEnSf1op7Lx/nCHkRlCa3ThfHtCBy+5Yw==}
+  slate@0.118.1:
+    resolution: {integrity: sha512-6H1DNgnSwAFhq/pIgf+tLvjNzH912M5XrKKhP9Frmbds2zFXdSJ6L/uFNyVKxQIkPzGWPD0m+wdDfmEuGFH5Tg==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -5333,8 +5321,8 @@ packages:
   zod@3.25.67:
     resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
-  zod@4.0.16:
-    resolution: {integrity: sha512-Djo/cM339grjI7/HmN+ixYO2FzEMcWr/On50UlQ/RjrWK1I/hPpWhpC76heCptnRFpH0LMwrEbUY50HDc0V8wg==}
+  zod@4.1.5:
+    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
 
   zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
@@ -7033,11 +7021,11 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@k6js-next/auth-next@0.0.0-20250824-02(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@k6js-next/auth-next@0.0.0-20250830-06(@babel/core@7.27.4)(@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@babel/runtime': 7.27.6
       '@keystar/ui': 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
       fast-deep-equal: 3.1.3
       graphql: 16.11.0
       next: 15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7052,7 +7040,7 @@ snapshots:
       - sass
       - supports-color
 
-  '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)':
+  '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.11.0)
       '@apollo/client': 3.13.8(@types/react@19.1.8)(graphql@16.11.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7219,7 +7207,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@keystone-6/document-renderer@0.0.0-rc-20250730060834(react@19.1.0)':
+  '@keystone-6/document-renderer@0.0.0-rc-20250828073606(react@19.1.0)':
     dependencies:
       react: 19.1.0
 
@@ -7227,14 +7215,14 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  '@keystone-6/fields-document@0.0.0-rc-20250730060834(@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.114.0(slate@0.112.0))':
+  '@keystone-6/fields-document@0.0.0-rc-20250828073606(@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3))(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(slate-dom@0.118.1(slate@0.118.1))':
     dependencies:
       '@babel/runtime': 7.27.6
       '@braintree/sanitize-url': 7.0.4
       '@emotion/weak-memoize': 0.4.0
       '@keystar/ui': 0.7.19(next@15.3.4(@babel/core@7.27.4)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250824-02(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
-      '@keystone-6/document-renderer': 0.0.0-rc-20250730060834(react@19.1.0)
+      '@keystone-6/core': '@k6js-next/core-next@0.0.0-20250830-06(@babel/core@7.27.4)(@prisma/generator-helper@6.5.0)(@types/express@4.17.23)(@types/react@19.1.8)(babel-plugin-macros@3.1.0)(typescript@5.8.3)'
+      '@keystone-6/document-renderer': 0.0.0-rc-20250828073606(react@19.1.0)
       '@react-aria/i18n': 3.12.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-aria/overlays': 3.27.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-aria/utils': 3.28.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7252,10 +7240,10 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
-      slate-history: 0.113.1(slate@0.112.0)
-      slate-react: 0.112.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(slate-dom@0.114.0(slate@0.112.0))(slate@0.112.0)
-      zod: 4.0.16
+      slate: 0.118.1
+      slate-history: 0.113.1(slate@0.118.1)
+      slate-react: 0.117.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(slate-dom@0.118.1(slate@0.118.1))(slate@0.118.1)
+      zod: 4.1.5
     transitivePeerDependencies:
       - next
       - slate-dom
@@ -7420,7 +7408,7 @@ snapshots:
 
   '@preconstruct/next@4.0.0': {}
 
-  '@prisma/client@6.10.1(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)':
+  '@prisma/client@6.5.0(prisma@6.10.1(typescript@5.8.3))(typescript@5.8.3)':
     optionalDependencies:
       prisma: 6.10.1(typescript@5.8.3)
       typescript: 5.8.3
@@ -11288,7 +11276,7 @@ snapshots:
 
   slash@3.0.0: {}
 
-  slate-dom@0.114.0(slate@0.112.0):
+  slate-dom@0.118.1(slate@0.118.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -11296,32 +11284,30 @@ snapshots:
       is-plain-object: 5.0.0
       lodash: 4.17.21
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
+      slate: 0.118.1
       tiny-invariant: 1.3.1
 
-  slate-history@0.113.1(slate@0.112.0):
+  slate-history@0.113.1(slate@0.118.1):
     dependencies:
       is-plain-object: 5.0.0
-      slate: 0.112.0
+      slate: 0.118.1
 
-  slate-react@0.112.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(slate-dom@0.114.0(slate@0.112.0))(slate@0.112.0):
+  slate-react@0.117.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(slate-dom@0.118.1(slate@0.118.1))(slate@0.118.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
       is-hotkey: 0.2.0
-      is-plain-object: 5.0.0
       lodash: 4.17.21
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.112.0
-      slate-dom: 0.114.0(slate@0.112.0)
+      slate: 0.118.1
+      slate-dom: 0.118.1(slate@0.118.1)
       tiny-invariant: 1.3.1
 
-  slate@0.112.0:
+  slate@0.118.1:
     dependencies:
       immer: 10.1.1
-      is-plain-object: 5.0.0
       tiny-warning: 1.0.3
 
   source-map-js@1.2.1: {}
@@ -11693,6 +11679,6 @@ snapshots:
 
   zod@3.25.67: {}
 
-  zod@4.0.16: {}
+  zod@4.1.5: {}
 
   zwitch@1.0.5: {}

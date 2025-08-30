@@ -1,4 +1,0 @@
-{
-  "main": "dist/k6js-admin-ui-pages-CreateItemPage.cjs.js",
-  "module": "dist/k6js-admin-ui-pages-CreateItemPage.esm.js"
-}

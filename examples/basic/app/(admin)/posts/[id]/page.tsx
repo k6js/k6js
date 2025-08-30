@@ -5,8 +5,8 @@ import { type ItemPageComponents } from '@k6js/admin-ui'
 import { Button } from '@keystar/ui/button'
 
 const components: ItemPageComponents = {
-  ItemPageHeader: ({ item }) => <div>Page Header Custom - {item?.id}</div>,
-  ItemPageSidebar: ({ item }) => <div>Page sidebar Custom - {item?.id}</div>,
+  ItemPageHeader: ({ item }) => <div>Page Header Custom - {item?.id as string}</div>,
+  ItemPageSidebar: ({ item }) => <div>Page sidebar Custom - {item?.id as string}</div>,
   ItemPageActions: ({ item, loading, hasChanges }) => (
     <Button
       isDisabled={hasChanges}
