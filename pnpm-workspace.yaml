@@ -16,5 +16,5 @@ overrides:
   next: ^15.3.4
   '@keystar/ui': 0.7.19
   '@keystone-6/fields-document': 0.0.0-rc-20250828073606
-  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250830-06
-  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250830-06
+  '@keystone-6/core': npm:@k6js-next/core-next@0.0.0-20250904-01
+  '@keystone-6/auth': npm:@k6js-next/auth-next@0.0.0-20250904-01

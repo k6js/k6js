@@ -256,6 +256,7 @@ export function ListPage(props: ListPageProps) {
   const localStorageListKey = `keystone.list.${listKey}.list.page.info`
 
   const list = useList(listKey)
+  const [loaded, setLoaded] = useState(false)
   const components = props.components ?? {}
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -282,6 +283,7 @@ export function ListPage(props: ListPageProps) {
 
   useEffect(() => {
     // if (!isReady) return
+    if (loaded) return
     let localStorageQuery
     try {
       localStorageQuery = JSON.parse(localStorage.getItem(localStorageListKey) ?? '{}')
@@ -293,10 +295,12 @@ export function ListPage(props: ListPageProps) {
     setCurrentPage(getCurrentPage(list, { ...localStorageQuery, ...query }))
     setPageSize(getPageSize(list, { ...localStorageQuery, ...query }))
     setSearchString(typeof query.search === 'string' ? query.search : '')
+    setLoaded(true)
   }, [list /*, isReady*/])
 
   useEffect(() => {
     // if (!isReady) return
+    if (!loaded) return // TODO: stop this race condition properly
     const updatedQuery: ParsedUrlQueryInput = {
       ...(columns.length ? { column: columns } : {}),
       ...(sort ? { sortBy: sort.direction === 'ascending' ? sort.column : `-${sort.column}` } : {}),
@@ -749,7 +753,7 @@ export function ListPage(props: ListPageProps) {
               return (
                 <ActionItemsDialog
                   itemIds={selectedItemIds}
-                  {...action}
+                  action={action}
                   list={list}
                   onSuccess={remaining => {
                     refetch()
@@ -905,13 +909,14 @@ function ActionItemsDialog({
   itemIds,
   onSuccess,
   onErrors,
-  ...action
+  action
 }: {
   list: ListMeta
   itemIds: string[]
   onSuccess: (remaining: Set<string>) => void
   onErrors: (result: ActionErrorResult) => void
-} & ActionMeta) {
+  action: ActionMeta
+}) {
   const [actionOnItems] = useMutation<{ results?: ({ id: string } | null)[] }>(
     gql`mutation($where: [${list.graphql.names.whereUniqueInputName}!]!) {
       results: ${action.graphql.names.many}(where: $where) {
@@ -942,6 +947,22 @@ function ActionItemsDialog({
         actionErrors[itemId].push(error)
       }
 
+      if (countSuccess) {
+        toastQueue.neutral(
+          replace(
+            m.successMany,
+            list,
+            {
+              count: itemIds.length,
+              countFail,
+              countSuccess,
+            },
+            countSuccess > 1
+          ),
+          { timeout: 5000 }
+        )
+      }
+
       if (countFail) {
         toastQueue.critical(
           replace(
@@ -962,22 +983,6 @@ function ActionItemsDialog({
         )
       }
 
-      if (countSuccess) {
-        toastQueue.neutral(
-          replace(
-            m.successMany,
-            list,
-            {
-              count: itemIds.length,
-              countFail,
-              countSuccess,
-            },
-            countSuccess > 1
-          ),
-          { timeout: 5000 }
-        )
-      }
-
       return onSuccess(failed)
     } catch (error) {
       console.error(error)
@@ -986,7 +991,7 @@ function ActionItemsDialog({
 
   return (
     <AlertDialog
-      tone={action.label === 'Delete' ? 'critical' : 'neutral'}
+      tone={action.key === 'delete' ? 'critical' : 'neutral'}
       title={replace(m.promptTitleMany, list, { count: itemIds.length }, itemIds.length > 1)}
       cancelLabel="Cancel"
       primaryActionLabel={replace(

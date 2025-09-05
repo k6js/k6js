@@ -11,24 +11,18 @@
     "coverage": "jest --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
-    "ci:version-packages": "yarn changeset version && cd docs && yarn remove-conditionals",
+    "ci:version-packages": "pnpm changeset version && cd docs && pnpm remove-conditionals",
     "lint:eslint": "eslint",
     "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types && yarn lint:filters",
+    "lint": "pnpm lint:prettier && pnpm lint:eslint && pnpm lint:types && pnpm lint:filters",
     "build": "preconstruct build",
     "prepare1": "manypkg check && preconstruct dev",
     "prepare": "preconstruct dev",
     "update": "manypkg upgrade",
     "changeset": "changeset",
-    "publish-changed": "yarn build && changeset publish --public",
+    "publish-changed": "pnpm build && changeset publish --public",
     "version-packages": "changeset version"
-  },
-  "workspaces": {
-    "packages": [
-      "examples/*",
-      "packages/*"
-    ]
   },
   "preconstruct": {
     "packages": [
@@ -68,5 +62,6 @@
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.1"
-  }
+  },
+  "packageManager": "pnpm@10.15.1+sha512.34e538c329b5553014ca8e8f4535997f96180a1d0f614339357449935350d924e22f8614682191264ec33d1462ac21561aff97f6bb18065351c162c7e8f6de67"
 }

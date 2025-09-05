@@ -1,5 +1,11 @@
 # @k6js/admin-ui
 
+## 0.4.6
+
+### Patch Changes
+
+- Updated up to Sept 4
+
 ## 0.4.5
 
 ### Patch Changes
