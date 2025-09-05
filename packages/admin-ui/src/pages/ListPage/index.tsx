@@ -435,8 +435,8 @@ export function ListPage(props: ListPageProps) {
     setFilters(defaultFilters)
     setSort(defaultSort)
   }
-  const itemActions = components.ListItemsActions!
-  const replaceDelete = itemActions.find(action => action.key === 'delete')
+  const itemActions = components.ListItemsActions
+  const replaceDelete = itemActions?.find(action => action.key === 'delete')
   const itemActionMap = components.ListItemsActions?.reduce((acc, action) => {
     acc[action.key] = action
     return acc
